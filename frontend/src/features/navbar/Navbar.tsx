@@ -6,8 +6,8 @@ import { COMPANY_INFO } from '@/constants/company';
 const NAV_LINKS = [
   { name: 'HOME', href: '#hero' },
   { name: 'PRODUCTS', href: '#products' },
-  { name: 'WHY CHOOSE US', href: '#why-choose-us' },
   { name: 'ABOUT', href: '#about' },
+  { name: 'WHY CHOOSE US', href: '#why-choose-us' },
   { name: 'GALLERY', href: '#gallery' },
   { name: 'TESTIMONIALS', href: '#testimonials' },
   { name: 'CONTACT', href: '#contact' },

@@ -18,6 +18,16 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Universal High-Contrast Selection Override */
+::selection,
+*::selection,
+::-moz-selection,
+*::-moz-selection {
+  background-color: #000000 !important;
+  color: #fbbf24 !important;
+  -webkit-text-fill-color: #fbbf24 !important;
+}
+
 body {
   margin: 0;
   padding: 0;

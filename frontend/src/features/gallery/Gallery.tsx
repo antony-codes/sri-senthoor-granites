@@ -85,7 +85,7 @@ export const Gallery: React.FC = () => {
   };
 
   return (
-    <section id="gallery" className="py-24 sm:py-32 relative bg-white text-gray-900 transition-colors font-sans">
+    <section id="gallery" className="py-14 sm:py-20 relative bg-white text-gray-900 transition-colors font-sans">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <SectionHeader
           badge="Realized Architecture"
@@ -100,11 +100,10 @@ export const Gallery: React.FC = () => {
             <button
               key={cat}
               onClick={() => setFilter(cat)}
-              className={`px-5 py-2.5 rounded-full text-xs font-semibold uppercase tracking-wider transition-all duration-300 whitespace-nowrap capitalize cursor-pointer ${
-                filter === cat
+              className={`px-5 py-2.5 rounded-full text-xs font-semibold uppercase tracking-wider transition-all duration-300 whitespace-nowrap capitalize cursor-pointer ${filter === cat
                   ? 'bg-black text-white shadow-md'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-black'
-              }`}
+                }`}
             >
               {cat.replace('-', ' ')}
             </button>
@@ -119,9 +118,9 @@ export const Gallery: React.FC = () => {
                 key={item.id}
                 layout
                 initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.4, delay: index * 0.05 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-40px' }}
+                transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: (index % 3) * 0.1 }}
                 className="relative rounded-3xl overflow-hidden group cursor-pointer border border-gray-200 hover:border-black transition-all duration-500 shadow-sm hover:shadow-xl bg-black h-80"
                 onClick={() => openLightbox(index)}
               >

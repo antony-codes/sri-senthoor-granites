@@ -71,7 +71,7 @@ export const Products: React.FC = () => {
   const currentCategoryObj = categories.find(c => c.id === activeCategory);
 
   return (
-    <section id="products" className="py-24 sm:py-32 relative bg-white text-gray-900 transition-colors font-sans">
+    <section id="products" className="py-14 sm:py-20 relative bg-white text-gray-900 transition-colors font-sans">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <SectionHeader
           badge="Architectural Stone Collections"

@@ -63,7 +63,7 @@ export const Contact: React.FC = () => {
   };
 
   return (
-    <section id="contact" className="py-24 sm:py-32 relative bg-white text-gray-900 transition-colors">
+    <section id="contact" className="py-14 sm:py-20 relative bg-white text-gray-900 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <SectionHeader
           badge="Direct Inquiries & Showroom Visit"
@@ -73,8 +73,14 @@ export const Contact: React.FC = () => {
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-          {/* Left Side - Showroom Info & Direct Phone Links */}
-          <div className="lg:col-span-5 flex flex-col gap-6">
+          {/* Left Side - Showroom Info & Direct Phone Links with Slide-In Entrance */}
+          <motion.div
+            initial={{ opacity: 0, x: -40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            className="lg:col-span-5 flex flex-col gap-6 will-change-transform"
+          >
             <GlassCard hoverEffect={false} className="p-8 border-accent-gold/30">
               <h3 className="font-serif text-2xl font-bold text-gray-900 mb-6">Showroom Headquarters</h3>
 
@@ -145,10 +151,16 @@ export const Contact: React.FC = () => {
                 loading="lazy"
               />
             </div>
-          </div>
+          </motion.div>
 
-          {/* Right Side - Interactive Zod Validated Contact Form */}
-          <div className="lg:col-span-7">
+          {/* Right Side - Interactive Zod Validated Contact Form with Scale & Fade Up */}
+          <motion.div
+            initial={{ opacity: 0, y: 40, scale: 0.98 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
+            className="lg:col-span-7 will-change-transform"
+          >
             <GlassCard hoverEffect={false} className="p-8 sm:p-10 border-accent-gold/30 relative">
               {isSubmitted ? (
                 <motion.div
@@ -278,7 +290,7 @@ export const Contact: React.FC = () => {
                 </form>
               )}
             </GlassCard>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

@@ -63,12 +63,12 @@ export const App: React.FC = () => {
         </AnimatePresence>
 
         {/* Main Public Website */}
-        <div className="min-h-screen flex flex-col bg-white text-gray-900 selection:bg-accent-gold selection:text-white">
+        <div className="min-h-screen flex flex-col bg-white text-gray-900 selection:bg-black selection:text-amber-400">
           <Navbar />
           <main className="flex-grow">
             <Hero />
-            <About />
             <Products />
+            <About />
             <WhyChooseUs />
             <Gallery />
             <Testimonials />

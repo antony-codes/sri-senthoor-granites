@@ -125,6 +125,20 @@ export const fetchSubCategories = async (category = 'all'): Promise<string[]> =>
   return [];
 };
 
+export const fetchTestimonials = async (includeDisabled = false): Promise<any[]> => {
+  try {
+    const query = includeDisabled ? '?includeDisabled=true' : '';
+    const res = await fetch(`${API_BASE}/testimonials${query}`);
+    const data = await res.json();
+    if (data.success && Array.isArray(data.data) && data.data.length > 0) {
+      return data.data;
+    }
+  } catch {
+    // Fallback
+  }
+  return [];
+};
+
 export const fetchProducts = async (category = 'all', subCategory = 'all', search = ''): Promise<IProduct[]> => {
   try {
     const query = new URLSearchParams();

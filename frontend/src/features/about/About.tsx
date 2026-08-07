@@ -1,12 +1,34 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { Award, Compass, Gem, UserCheck } from 'lucide-react';
 import { SectionHeader } from '@/components/common/SectionHeader';
 import { COMPANY_INFO, COMPANY_STATS } from '@/constants/company';
 
+const PILLARS = [
+  {
+    icon: <Gem className="w-5 h-5" />,
+    title: 'Hand-Picked Quarries',
+    desc: 'Direct inspection & grading of every stone slab before delivery.',
+  },
+  {
+    icon: <Compass className="w-5 h-5" />,
+    title: 'Architectural Guidance',
+    desc: 'Bespoke recommendations matched to your structural layout.',
+  },
+  {
+    icon: <Award className="w-5 h-5" />,
+    title: 'Precision Cut & Polish',
+    desc: 'Factory calibrated thickness ensuring seamless edge fitting.',
+  },
+  {
+    icon: <UserCheck className="w-5 h-5" />,
+    title: 'Priority Client Service',
+    desc: 'Personalized support led directly by founder Arshath & team.',
+  },
+];
+
 export const About: React.FC = () => {
   return (
-    <section id="about" className="py-24 sm:py-32 relative overflow-hidden bg-white text-gray-900 font-sans">
+    <section id="about" className="py-14 sm:py-20 relative overflow-hidden bg-white text-gray-900 font-sans">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <SectionHeader
           badge="Our Heritage & Vision"
@@ -19,13 +41,7 @@ export const About: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           {/* Left Column - Founder Image Card */}
           <div className="lg:col-span-5 relative">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-              className="relative rounded-3xl overflow-hidden border border-gray-200 shadow-xl group bg-black"
-            >
+            <div className="relative rounded-3xl overflow-hidden border border-gray-200 shadow-xl group bg-black">
               <img
                 src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80"
                 alt="Sri Senthoor Granites Showroom & Craft"
@@ -44,7 +60,7 @@ export const About: React.FC = () => {
                   "Every granite vein tells millions of years of earth history. We exist to bring that permanence into your sanctuary."
                 </p>
               </div>
-            </motion.div>
+            </div>
           </div>
 
           {/* Right Column - Brand Story & Pillars */}
@@ -60,59 +76,35 @@ export const About: React.FC = () => {
 
             {/* 4 Feature Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="p-6 rounded-2xl border border-gray-200 hover:border-black bg-white shadow-sm hover:shadow-lg transition-all group">
-                <div className="w-10 h-10 rounded-xl bg-black text-white flex items-center justify-center mb-3 shadow-md">
-                  <Gem className="w-5 h-5" />
+              {PILLARS.map((pillar) => (
+                <div
+                  key={pillar.title}
+                  className="p-6 rounded-2xl border border-gray-200 hover:border-black bg-white shadow-sm hover:shadow-lg transition-all group cursor-pointer"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-black text-white flex items-center justify-center mb-3 shadow-md">
+                    {pillar.icon}
+                  </div>
+                  <h4 className="font-serif text-lg font-bold text-gray-900">
+                    {pillar.title}
+                  </h4>
+                  <p className="text-xs text-gray-600 mt-1 leading-relaxed">{pillar.desc}</p>
                 </div>
-                <h4 className="font-serif text-lg font-bold text-gray-900 group-hover:text-accent-gold transition-colors">Hand-Picked Quarries</h4>
-                <p className="text-xs text-gray-600 mt-1 leading-relaxed">Direct inspection & grading of every stone slab before delivery.</p>
-              </div>
-
-              <div className="p-6 rounded-2xl border border-gray-200 hover:border-black bg-white shadow-sm hover:shadow-lg transition-all group">
-                <div className="w-10 h-10 rounded-xl bg-black text-white flex items-center justify-center mb-3 shadow-md">
-                  <Compass className="w-5 h-5" />
-                </div>
-                <h4 className="font-serif text-lg font-bold text-gray-900 group-hover:text-accent-gold transition-colors">Architectural Guidance</h4>
-                <p className="text-xs text-gray-600 mt-1 leading-relaxed">Bespoke recommendations matched to your structural layout.</p>
-              </div>
-
-              <div className="p-6 rounded-2xl border border-gray-200 hover:border-black bg-white shadow-sm hover:shadow-lg transition-all group">
-                <div className="w-10 h-10 rounded-xl bg-black text-white flex items-center justify-center mb-3 shadow-md">
-                  <Award className="w-5 h-5" />
-                </div>
-                <h4 className="font-serif text-lg font-bold text-gray-900 group-hover:text-accent-gold transition-colors">Precision Cut & Polish</h4>
-                <p className="text-xs text-gray-600 mt-1 leading-relaxed">Factory calibrated thickness ensuring seamless edge fitting.</p>
-              </div>
-
-              <div className="p-6 rounded-2xl border border-gray-200 hover:border-black bg-white shadow-sm hover:shadow-lg transition-all group">
-                <div className="w-10 h-10 rounded-xl bg-black text-white flex items-center justify-center mb-3 shadow-md">
-                  <UserCheck className="w-5 h-5" />
-                </div>
-                <h4 className="font-serif text-lg font-bold text-gray-900 group-hover:text-accent-gold transition-colors">Priority Client Service</h4>
-                <p className="text-xs text-gray-600 mt-1 leading-relaxed">Personalized support led directly by founder Arshath & team.</p>
-              </div>
+              ))}
             </div>
           </div>
         </div>
 
         {/* Bottom Counter Stats Bar */}
-        <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-6 bg-black text-white rounded-3xl p-8 sm:p-10 shadow-2xl border border-gray-800 text-center">
-          {COMPANY_STATS.map((stat, idx) => (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: idx * 0.1, duration: 0.5 }}
-              className="flex flex-col items-center"
-            >
+        <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 bg-black text-white rounded-3xl p-8 sm:p-10 shadow-2xl border border-gray-800 text-center">
+          {COMPANY_STATS.map((stat) => (
+            <div key={stat.label} className="flex flex-col items-center">
               <span className="font-serif text-4xl sm:text-5xl font-extrabold text-accent-gold tracking-tight">
                 {stat.value}
               </span>
               <span className="text-xs uppercase tracking-widest text-gray-400 mt-2 font-mono font-medium">
                 {stat.label}
               </span>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>
