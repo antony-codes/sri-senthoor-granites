@@ -1,0 +1,16 @@
+{
+  "name": "sri-senthoor-granites-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Production MERN Architecture for Sri Senthoor Granites",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev:backend": "npm --prefix backend run dev",
+    "build": "npm --prefix frontend run build && npm --prefix backend run build",
+    "install:all": "npm install && npm --prefix frontend install && npm --prefix backend install"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
