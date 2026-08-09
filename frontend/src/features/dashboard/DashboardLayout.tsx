@@ -129,7 +129,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ onLogout }) =>
               <Square className="w-6 h-6 fill-current text-black stroke-none" />
               <div className="flex flex-col">
                 <span className="font-sans text-lg font-bold tracking-tight text-black leading-tight">
-                  SriSenthoor
+                  Sri Senthoor Granites
                 </span>
                 <span className="text-[9px] uppercase tracking-widest text-black font-extrabold">
                   Management Portal

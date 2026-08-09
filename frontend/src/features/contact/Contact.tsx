@@ -76,81 +76,24 @@ export const Contact: React.FC = () => {
           subtitle="Speak directly with founder Arshath or our expert natural stone consultants. Request customized slab quotes, physical samples, or site visits."
         />
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
           {/* Left Side - Showroom Info & Direct Phone Links */}
           <motion.div
             initial={{ opacity: 0, x: -40 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            className="lg:col-span-5 flex flex-col gap-6 will-change-transform"
+            className="flex flex-col will-change-transform h-full min-h-[400px]"
           >
-            <GlassCard hoverEffect={false} className="p-8 border-gray-200">
-              <h3 className="font-sans text-2xl font-bold text-gray-900 mb-6">Showroom Headquarters</h3>
-
-              <div className="space-y-6">
-                {/* Phones */}
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center text-black shrink-0">
-                    <Phone className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <span className="text-xs uppercase tracking-widest text-gray-500 block font-semibold">Direct Phone Lines</span>
-                    <div className="flex flex-col mt-1">
-                      <a href={`tel:${COMPANY_INFO.rawPhones[1]}`} className="text-lg font-bold text-gray-900 hover:text-black transition-colors">
-                        +91 {COMPANY_INFO.rawPhones[1]}
-                      </a>
-                      <a href={`tel:${COMPANY_INFO.rawPhones[0]}`} className="text-sm font-semibold text-gray-700 hover:text-black transition-colors">
-                        +91 {COMPANY_INFO.rawPhones[0]}
-                      </a>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Address */}
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center text-black shrink-0">
-                    <MapPin className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <span className="text-xs uppercase tracking-widest text-gray-500 block font-semibold">Showroom Address</span>
-                    <address className="not-italic text-sm text-gray-800 mt-1 font-sans leading-relaxed">
-                      {COMPANY_INFO.address.full}
-                    </address>
-                    <a
-                      href={COMPANY_INFO.address.mapUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-block mt-2 text-xs uppercase tracking-widest text-black font-bold hover:underline"
-                    >
-                      Open Google Maps Location →
-                    </a>
-                  </div>
-                </div>
-
-                {/* Hours */}
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center text-black shrink-0">
-                    <Clock className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <span className="text-xs uppercase tracking-widest text-gray-500 block font-semibold">Working Hours</span>
-                    <p className="text-sm text-gray-800 mt-1 font-sans">
-                      {COMPANY_INFO.workingHours}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </GlassCard>
-
-            {/* Embedded Google Map Frame */}
-            <div className="rounded-3xl overflow-hidden glass-panel border border-gray-200 h-64 relative">
+            {/* Embedded Google Map Frame — stretches to match form height */}
+            <div className="rounded-3xl overflow-hidden border border-gray-200 flex-1 min-h-[400px] relative">
               <iframe
                 title="Sri Senthoor Granites Location"
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3918.784428414457!2d78.72304!3d10.8278!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3baaf5671d184713%3A0x63351d3434608c02!2sAriyamangalam%2C%20Tiruchirappalli%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
                 width="100%"
                 height="100%"
-                style={{ border: 0, filter: 'grayscale(0.5) contrast(1.1)' }}
+                className="absolute inset-0 w-full h-full"
+                style={{ border: 0, filter: 'grayscale(0.4) contrast(1.1)' }}
                 allowFullScreen={false}
                 loading="lazy"
               />
@@ -163,7 +106,7 @@ export const Contact: React.FC = () => {
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
-            className="lg:col-span-7 will-change-transform"
+            className="will-change-transform h-full"
           >
             <GlassCard hoverEffect={false} className="p-8 sm:p-10 border-gray-200 relative">
               {isSubmitted ? (

@@ -70,7 +70,7 @@ export const Navbar: React.FC = () => {
           >
             <Square className="w-4 h-4 fill-current text-black stroke-none" />
             <span className="font-sans text-lg sm:text-xl font-bold tracking-tight text-black">
-              SriSenthoor<span className="font-light italic text-gray-600">Granites</span>
+              Sri Senthoor Granites
             </span>
           </a>
 

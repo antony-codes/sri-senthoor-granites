@@ -57,8 +57,8 @@ export const LuxuryLoader: React.FC<LuxuryLoaderProps> = ({ onComplete }) => {
       <div className="flex flex-col items-center gap-6 relative z-10 p-4">
         {/* Brand Title & Subtitle */}
         <div className="text-center space-y-2">
-          <h2 className="font-sans text-xl sm:text-2xl font-bold uppercase tracking-widest text-white">
-            Sri Senthoor <span className="font-light italic text-gray-400">Granites</span>
+          <h2 className="font-sans text-xl sm:text-2xl font-bold tracking-widest text-white">
+            Sri Senthoor Granites
           </h2>
           <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.3em] text-gray-400 font-semibold block">
             Architectural Stone Gallery • {COMPANY_INFO.address.city}

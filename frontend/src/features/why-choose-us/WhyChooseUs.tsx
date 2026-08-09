@@ -43,7 +43,7 @@ export const WhyChooseUs: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <SectionHeader
           title="Why Choose"
-          highlightTitle="Sri Senthoor"
+          highlightTitle="Sri Senthoor Granites"
           subtitle="Four core commitments that define our material purity, precision finishing, and client dedication."
         />
 

@@ -16,7 +16,7 @@ export const Footer: React.FC = () => {
             <div className="flex items-center gap-2">
               <Square className="w-4 h-4 fill-current text-black stroke-none" />
               <span className="font-sans text-lg font-bold tracking-tight text-black">
-                SriSenthoor<span className="font-light italic text-gray-600">Granites</span>
+                Sri Senthoor Granites
               </span>
             </div>
 

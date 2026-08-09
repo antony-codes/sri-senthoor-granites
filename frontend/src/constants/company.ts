@@ -136,7 +136,7 @@ export const TESTIMONIALS = [
     id: 't2',
     name: 'Dr. Meena Swaminathan',
     role: 'Homeowner',
-    content: 'We sourced all our living room vitrified tiles and luxury rose gold bath fittings from Sri Senthoor. Their slogan "Your choice is our priority" truly reflects in how patiently they customized our slab orders!',
+    content: 'We sourced all our living room vitrified tiles and luxury rose gold bath fittings from Sri Senthoor Granites. Their slogan "Your choice is our priority" truly reflects in how patiently they customized our slab orders!',
     rating: 5,
     project: 'Luxury Bungalow, Trichy',
   },

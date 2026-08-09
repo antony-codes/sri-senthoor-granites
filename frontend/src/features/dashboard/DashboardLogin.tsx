@@ -53,7 +53,7 @@ export const DashboardLogin: React.FC<DashboardLoginProps> = ({ onLoginSuccess, 
             <Square className="w-6 h-6 fill-current text-white stroke-none" />
             <div className="flex flex-col">
               <span className="font-sans text-xl font-bold tracking-tight text-white">
-                SriSenthoor<span className="font-light italic text-gray-400">Granites</span>
+                Sri Senthoor Granites
               </span>
               <span className="text-[10px] uppercase tracking-widest text-gray-300 font-semibold">
                 Owner Management Portal
@@ -86,7 +86,7 @@ export const DashboardLogin: React.FC<DashboardLoginProps> = ({ onLoginSuccess, 
           <div className="space-y-2">
             <div className="lg:hidden flex items-center gap-2.5 mb-4">
               <Square className="w-6 h-6 fill-current text-black stroke-none" />
-              <span className="font-sans text-xl font-bold tracking-tight text-black">SriSenthoorGranites</span>
+              <span className="font-sans text-xl font-bold tracking-tight text-black">Sri Senthoor Granites</span>
             </div>
             <h1 className="font-sans text-3xl font-bold text-gray-900 tracking-tight">Admin Sign In</h1>
             <p className="text-xs text-gray-600 font-sans">

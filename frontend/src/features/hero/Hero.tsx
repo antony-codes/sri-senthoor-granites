@@ -6,7 +6,7 @@ import { COMPANY_INFO } from '@/constants/company';
 const HERO_SLIDES = [
   {
     // badge: 'IMPORTED MARBLE SLABS · STATUARIO IMPERIAL ITALIAN MARBLE',
-    titleLine1: 'Senthoor',
+    titleLine1: 'Sri Senthoor',
     titleLine2: 'Granites',
     leftSpec: 'SURFACE INTELLIGENCE · CLASS A CERTIFIED',
     rightSpec: `ZERO FLAW · ZERO COMPROMISE · EST. ${COMPANY_INFO.established}`,
