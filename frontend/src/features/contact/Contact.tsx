@@ -9,7 +9,8 @@ import { SectionHeader } from '@/components/common/SectionHeader';
 import { GlassCard } from '@/components/common/GlassCard';
 import { MagneticButton } from '@/components/common/MagneticButton';
 import { COMPANY_INFO, PRODUCT_CATEGORIES } from '@/constants/company';
-import { submitInquiryApi } from '@/services/api';
+import { submitInquiryApi, fetchCategories } from '@/services/api';
+import { ICategory } from '@/types';
 
 // Zod Schema
 const contactSchema = z.object({
@@ -24,6 +25,11 @@ type ContactFormData = z.infer<typeof contactSchema>;
 
 export const Contact: React.FC = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [categories, setCategories] = useState<ICategory[]>([]);
+
+  React.useEffect(() => {
+    fetchCategories().then((cats) => setCategories(cats)).catch(() => {});
+  }, []);
 
   const {
     register,
@@ -251,7 +257,7 @@ export const Contact: React.FC = () => {
                         {...register('productCategory')}
                         className="w-full px-4 py-3 rounded-xl glass-panel bg-gray-50 text-gray-900 focus:outline-none focus:border-accent-gold transition-colors text-sm border border-gray-200"
                       >
-                        {PRODUCT_CATEGORIES.map((p) => (
+                        {(categories.length > 0 ? categories : PRODUCT_CATEGORIES).map((p) => (
                           <option key={p.id} value={p.title} className="bg-white text-gray-900">
                             {p.title}
                           </option>

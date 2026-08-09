@@ -33,12 +33,17 @@ export const App: React.FC = () => {
     return () => window.removeEventListener('popstate', handleLocationChange);
   }, []);
 
-  // Dashboard View Handler
+  // Dashboard View Handler (Wrapped with selection styling)
   if (currentPath.startsWith('/dashboard')) {
-    if (!isAuthenticated) {
-      return <DashboardLogin onLoginSuccess={() => setIsAuthenticated(true)} />;
-    }
-    return <DashboardLayout onLogout={() => setIsAuthenticated(false)} />;
+    return (
+      <div className="min-h-screen selection:bg-black selection:text-amber-400">
+        {!isAuthenticated ? (
+          <DashboardLogin onLoginSuccess={() => setIsAuthenticated(true)} />
+        ) : (
+          <DashboardLayout onLogout={() => setIsAuthenticated(false)} />
+        )}
+      </div>
+    );
   }
 
   // Public Website View

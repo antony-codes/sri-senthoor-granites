@@ -31,9 +31,8 @@ export const About: React.FC = () => {
     <section id="about" className="py-14 sm:py-20 relative overflow-hidden bg-white text-gray-900 font-sans">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <SectionHeader
-          badge="Our Heritage & Vision"
-          title="Curating Timeless Natural Stone for"
-          highlightTitle="Architectural Masterpieces"
+          // badge="Our Heritage & Vision"
+          title="About Us"
           subtitle={`Founded in ${COMPANY_INFO.established} by ${COMPANY_INFO.founder}, Sri Senthoor Granites was built on a singular non-negotiable philosophy: "${COMPANY_INFO.slogan}".`}
         />
 

@@ -34,9 +34,6 @@ export const DashboardOverview: React.FC<{ onNavigate: (tab: string) => void }> 
       {/* Top Welcome Title */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-200 pb-6">
         <div>
-          <span className="text-xs uppercase tracking-[0.25em] text-accent-gold font-bold flex items-center gap-1.5 mb-1">
-            <Sparkles className="w-3.5 h-3.5" /> Sri Senthoor Control Center
-          </span>
           <h1 className="font-serif text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">Business Overview</h1>
         </div>
 
@@ -144,9 +141,8 @@ export const DashboardOverview: React.FC<{ onNavigate: (tab: string) => void }> 
                     <td className="py-3 font-mono">{lead.phone}</td>
                     <td className="py-3 uppercase tracking-wider text-accent-gold font-bold">{lead.productCategory}</td>
                     <td className="py-3">
-                      <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${
-                        lead.status === 'resolved' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-                      }`}>
+                      <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${lead.status === 'resolved' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                        }`}>
                         {lead.status || 'New Lead'}
                       </span>
                     </td>

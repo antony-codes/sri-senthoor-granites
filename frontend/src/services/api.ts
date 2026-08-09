@@ -64,17 +64,24 @@ export const loginAdmin = async (email: string, password: string): Promise<{ tok
 
 // --- CATEGORIES API ---
 export const fetchCategories = async (includeDisabled = false): Promise<ICategory[]> => {
+  let categories: ICategory[] = [];
   try {
     const url = includeDisabled ? `${API_BASE}/categories?includeDisabled=true` : `${API_BASE}/categories`;
     const res = await fetch(url);
     const data = await res.json();
-    if (data.success && Array.isArray(data.data) && data.data.length > 0) {
-      return data.data;
+    if (data.success && Array.isArray(data.data)) {
+      categories = data.data;
+    } else {
+      categories = STATIC_CATEGORIES as any;
     }
   } catch {
-    // Fallback
+    categories = STATIC_CATEGORIES as any;
   }
-  return STATIC_CATEGORIES as any;
+
+  if (!includeDisabled) {
+    return categories.filter((c) => c.isActive !== false);
+  }
+  return categories;
 };
 
 export const createCategoryApi = async (categoryData: Partial<ICategory>): Promise<ICategory> => {

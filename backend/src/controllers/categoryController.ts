@@ -1,5 +1,13 @@
 import { Request, Response } from 'express';
+import mongoose from 'mongoose';
 import { Category } from '../models/Category';
+
+const buildIdQuery = (id: string) => {
+  if (mongoose.Types.ObjectId.isValid(id)) {
+    return { $or: [{ _id: id }, { id }] };
+  }
+  return { id };
+};
 
 let memoryCategories = [
   {
@@ -57,24 +65,23 @@ let memoryCategories = [
 export const getCategories = async (req: Request, res: Response) => {
   try {
     const { includeDisabled } = req.query;
+    const isIncludeDisabled = includeDisabled === 'true';
     let queryFilter: any = {};
-    if (includeDisabled !== 'true') {
+    if (!isIncludeDisabled) {
       queryFilter.isActive = { $ne: false };
     }
 
     try {
-      const categories = await Category.find(queryFilter).sort({ displayOrder: 1 });
-      if (categories.length > 0) {
-        return res.json({ success: true, data: categories });
+      const dbCategories = await Category.find(queryFilter).sort({ displayOrder: 1 });
+      const count = await Category.countDocuments();
+      if (count > 0) {
+        return res.json({ success: true, data: dbCategories });
       }
     } catch {
-      // Fallthrough to memory
+      // Fallthrough to memory fallback
     }
 
-    let memoryList = memoryCategories;
-    if (includeDisabled !== 'true') {
-      memoryList = memoryList.filter(c => c.isActive !== false);
-    }
+    let memoryList = isIncludeDisabled ? memoryCategories : memoryCategories.filter(c => c.isActive !== false);
     return res.json({ success: true, data: memoryList });
   } catch (error: any) {
     return res.status(500).json({ success: false, message: error.message });
@@ -97,6 +104,7 @@ export const createCategory = async (req: Request, res: Response) => {
         displayOrder: displayOrder || 0,
         isActive: isActive !== false,
       });
+      memoryCategories.push((newCat.toObject ? newCat.toObject() : newCat) as any);
       return res.status(201).json({ success: true, data: newCat });
     } catch {
       const newCat = {
@@ -120,17 +128,26 @@ export const createCategory = async (req: Request, res: Response) => {
 export const updateCategory = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
+    
+    // Memory fallback update
+    const memoryIdx = memoryCategories.findIndex(c => c.id === id || (c as any)._id === id);
+    if (memoryIdx !== -1) {
+      memoryCategories[memoryIdx] = { ...memoryCategories[memoryIdx], ...req.body };
+    }
+
     try {
-      const updated = await Category.findOneAndUpdate({ $or: [{ id }, { _id: id }] }, req.body, { new: true });
+      const updated = await Category.findOneAndUpdate(
+        buildIdQuery(id),
+        { $set: req.body },
+        { new: true, upsert: true, setDefaultsOnInsert: true }
+      );
       if (updated) return res.json({ success: true, data: updated });
     } catch {
       // Fallback
     }
 
-    const idx = memoryCategories.findIndex(c => c.id === id || (c as any)._id === id);
-    if (idx !== -1) {
-      memoryCategories[idx] = { ...memoryCategories[idx], ...req.body };
-      return res.json({ success: true, data: memoryCategories[idx] });
+    if (memoryIdx !== -1) {
+      return res.json({ success: true, data: memoryCategories[memoryIdx] });
     }
 
     return res.status(404).json({ success: false, message: 'Category not found' });
@@ -143,7 +160,7 @@ export const deleteCategory = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     try {
-      await Category.findOneAndDelete({ $or: [{ id }, { _id: id }] });
+      await Category.findOneAndDelete(buildIdQuery(id));
     } catch {
       // Fallback
     }

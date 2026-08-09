@@ -102,10 +102,11 @@ export const CategoryManagement: React.FC = () => {
 
   // Toggle Category Active/Inactive
   const handleToggleCategoryActive = async (cat: ICategory) => {
+    const targetId = cat.id || cat._id || '';
     const nextActive = cat.isActive === false;
     try {
-      setCategories(prev => prev.map(c => (c.id === cat.id ? { ...c, isActive: nextActive } : c)));
-      await updateCategoryApi(cat.id, { isActive: nextActive });
+      setCategories(prev => prev.map(c => ((c.id === targetId || (c as any)._id === targetId) ? { ...c, isActive: nextActive } : c)));
+      await updateCategoryApi(targetId, { isActive: nextActive });
       addToast(
         'success',
         'Category Status Updated',

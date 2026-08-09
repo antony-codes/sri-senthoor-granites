@@ -161,16 +161,10 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ onLogout }) =>
 
             <div className="flex items-center gap-2 text-xs text-gray-500">
               <span className="font-semibold text-gray-900 uppercase tracking-wider capitalize">{activeTab}</span>
-              <span>/</span>
-              <span className="text-gray-500">Sri Senthoor Control Center</span>
             </div>
           </div>
 
           <div className="flex items-center gap-4 text-xs">
-            <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-green-100 border border-green-200 text-green-800 text-[11px] font-semibold">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-600 animate-pulse" />
-              <span>Real-Time Catalog Sync</span>
-            </div>
 
             <a
               href="/"

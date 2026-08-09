@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Maximize2, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { SectionHeader } from '@/components/common/SectionHeader';
+import { fetchCategories } from '@/services/api';
+import { ICategory } from '@/types';
 
 interface GalleryItem {
   id: string;
@@ -59,10 +61,20 @@ const GALLERY_ITEMS: GalleryItem[] = [
 export const Gallery: React.FC = () => {
   const [filter, setFilter] = useState('all');
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [activeCategories, setActiveCategories] = useState<ICategory[]>([]);
+
+  React.useEffect(() => {
+    fetchCategories().then((cats) => setActiveCategories(cats)).catch(() => {});
+  }, []);
+
+  const activeCatIds = new Set(activeCategories.map((c) => c.id));
+
+  // Filter gallery items to only include those belonging to active categories
+  const activeGalleryItems = GALLERY_ITEMS.filter((item) => activeCatIds.size === 0 || activeCatIds.has(item.category));
 
   const filteredItems = filter === 'all'
-    ? GALLERY_ITEMS
-    : GALLERY_ITEMS.filter((item) => item.category === filter);
+    ? activeGalleryItems
+    : activeGalleryItems.filter((item) => item.category === filter);
 
   const openLightbox = (index: number) => {
     setLightboxIndex(index);
@@ -96,16 +108,25 @@ export const Gallery: React.FC = () => {
 
         {/* Filter Pills */}
         <div className="flex items-center justify-center gap-3 overflow-x-auto pb-4 mb-12 no-scrollbar">
-          {['all', 'granites', 'vitrified-tiles', 'kadappa', 'sanitary-wares', 'bath-fittings'].map((cat) => (
+          <button
+            onClick={() => setFilter('all')}
+            className={`px-5 py-2.5 rounded-full text-xs font-semibold uppercase tracking-wider transition-all duration-300 whitespace-nowrap capitalize cursor-pointer ${filter === 'all'
+                ? 'bg-black text-white shadow-md'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-black'
+              }`}
+          >
+            All Collections
+          </button>
+          {activeCategories.map((cat) => (
             <button
-              key={cat}
-              onClick={() => setFilter(cat)}
-              className={`px-5 py-2.5 rounded-full text-xs font-semibold uppercase tracking-wider transition-all duration-300 whitespace-nowrap capitalize cursor-pointer ${filter === cat
+              key={cat.id}
+              onClick={() => setFilter(cat.id)}
+              className={`px-5 py-2.5 rounded-full text-xs font-semibold uppercase tracking-wider transition-all duration-300 whitespace-nowrap capitalize cursor-pointer ${filter === cat.id
                   ? 'bg-black text-white shadow-md'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-black'
                 }`}
             >
-              {cat.replace('-', ' ')}
+              {cat.title}
             </button>
           ))}
         </div>
