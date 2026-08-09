@@ -1,5 +1,4 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { cn } from '@/utils/cn';
 
 interface SectionHeaderProps {
@@ -12,7 +11,6 @@ interface SectionHeaderProps {
 }
 
 export const SectionHeader: React.FC<SectionHeaderProps> = ({
-  badge,
   title,
   highlightTitle,
   subtitle,
@@ -26,43 +24,18 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
   };
 
   return (
-    <div className={cn('flex flex-col max-w-3xl mb-8 sm:mb-10', alignClass[alignment], className)}>
-      {badge && (
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-accent-gold/40 bg-accent-gold/10 text-accent-gold text-xs font-semibold uppercase tracking-widest mb-3"
-        >
-          <span className="w-1.5 h-1.5 rounded-full bg-accent-gold animate-pulse" />
-          {badge}
-        </motion.div>
-      )}
-
-      <motion.h2
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6, delay: 0.1 }}
-        className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold tracking-tight leading-tight text-gray-900"
-      >
+    <div className={cn('flex flex-col max-w-2xl mb-8 sm:mb-10', alignClass[alignment], className)}>
+      <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold tracking-tight text-gray-900 leading-tight">
         {title}{' '}
         {highlightTitle && (
-          <span className="text-gold-gradient italic font-normal">{highlightTitle}</span>
+          <span className="text-accent-gold font-normal">{highlightTitle}</span>
         )}
-      </motion.h2>
+      </h2>
 
       {subtitle && (
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="mt-3 text-sm sm:text-base text-gray-600 leading-relaxed font-sans"
-        >
+        <p className="text-xs sm:text-sm text-gray-500 font-sans leading-relaxed mt-2.5 max-w-xl">
           {subtitle}
-        </motion.p>
+        </p>
       )}
     </div>
   );

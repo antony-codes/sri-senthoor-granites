@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import mongoose from 'mongoose';
 import { Product } from '../models/Product';
+import { AuthRequest } from '../middlewares/auth';
+import { logAuditEvent } from '../utils/auditLogger';
 
 const buildIdQuery = (id: string) => {
   if (mongoose.Types.ObjectId.isValid(id)) {
@@ -436,7 +438,7 @@ export const getProductBySlug = async (req: Request, res: Response) => {
   }
 };
 
-export const createProduct = async (req: Request, res: Response) => {
+export const createProduct = async (req: AuthRequest, res: Response) => {
   try {
     const prodData = req.body;
     const slug = prodData.slug || prodData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
@@ -450,52 +452,129 @@ export const createProduct = async (req: Request, res: Response) => {
       displayOrder: prodData.displayOrder || memoryProducts.length + 1,
     };
 
+    let created: any;
     try {
-      const created = await Product.create(newProduct);
-      return res.status(201).json({ success: true, data: created });
+      created = await Product.create(newProduct);
     } catch {
       memoryProducts.unshift(newProduct);
-      return res.status(201).json({ success: true, data: newProduct });
+      created = newProduct;
     }
+
+    // Audit Log Entry
+    const actorName = req.user?.name || 'Arshath (Founder)';
+    const priceVal = created.offerPrice || created.price;
+    const priceStr = priceVal ? ` (Price: ₹${priceVal})` : '';
+
+    await logAuditEvent({
+      reqUser: req.user,
+      action: `${actorName} added product "${created.title}"${priceStr}`,
+      entityType: 'product',
+      entityId: created._id?.toString() || created.id,
+      details: { title: created.title, price: created.price, offerPrice: created.offerPrice, category: created.category },
+    });
+
+    return res.status(201).json({ success: true, data: created });
   } catch (error: any) {
     return res.status(500).json({ success: false, message: error.message });
   }
 };
 
-export const updateProduct = async (req: Request, res: Response) => {
+export const updateProduct = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
+    const updateBody = req.body;
     const query = buildIdQuery(id);
+
+    let prevProduct: any = null;
+    let updatedProduct: any = null;
+
     try {
-      const updated = await Product.findOneAndUpdate(query, req.body, { new: true });
-      if (updated) return res.json({ success: true, data: updated });
+      prevProduct = await Product.findOne(query);
+      if (prevProduct) {
+        updatedProduct = await Product.findOneAndUpdate(query, updateBody, { new: true });
+      }
     } catch {
       // Memory fallback
     }
 
-    const idx = memoryProducts.findIndex(p => p.id === id || p._id === id);
-    if (idx !== -1) {
-      memoryProducts[idx] = { ...memoryProducts[idx], ...req.body };
-      return res.json({ success: true, data: memoryProducts[idx] });
+    if (!updatedProduct) {
+      const idx = memoryProducts.findIndex(p => p.id === id || p._id === id);
+      if (idx !== -1) {
+        prevProduct = { ...memoryProducts[idx] };
+        memoryProducts[idx] = { ...memoryProducts[idx], ...updateBody };
+        updatedProduct = memoryProducts[idx];
+      }
     }
 
-    return res.status(404).json({ success: false, message: 'Product not found' });
+    if (!updatedProduct) {
+      return res.status(404).json({ success: false, message: 'Product not found' });
+    }
+
+    const actorName = req.user?.name || 'Arshath (Founder)';
+    const title = updatedProduct.title || 'Product';
+
+    // Price change tracking
+    const oldPrice = prevProduct ? (prevProduct.offerPrice || prevProduct.price) : null;
+    const newPrice = updatedProduct ? (updatedProduct.offerPrice || updatedProduct.price) : null;
+
+    let actionText = `${actorName} updated product "${title}"`;
+    if (oldPrice !== null && newPrice !== null && oldPrice !== newPrice) {
+      actionText = `${actorName} changed ${title} price from ₹${oldPrice} to ₹${newPrice}`;
+    } else if (prevProduct && prevProduct.status !== updatedProduct.status) {
+      actionText = `${actorName} changed ${title} status from ${prevProduct.status.toUpperCase()} to ${updatedProduct.status.toUpperCase()}`;
+    }
+
+    await logAuditEvent({
+      reqUser: req.user,
+      action: actionText,
+      entityType: 'product',
+      entityId: updatedProduct._id?.toString() || updatedProduct.id,
+      details: {
+        title,
+        previousPrice: oldPrice,
+        newPrice: newPrice,
+        previousStatus: prevProduct?.status,
+        newStatus: updatedProduct?.status,
+      },
+    });
+
+    return res.json({ success: true, data: updatedProduct });
   } catch (error: any) {
     return res.status(500).json({ success: false, message: error.message });
   }
 };
 
-export const deleteProduct = async (req: Request, res: Response) => {
+export const deleteProduct = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
     const query = buildIdQuery(id);
+    let targetTitle = id;
+
     try {
-      await Product.findOneAndDelete(query);
+      const prod = await Product.findOne(query);
+      if (prod) {
+        targetTitle = prod.title;
+        await prod.deleteOne();
+      }
     } catch {
       // Memory fallback
     }
 
-    memoryProducts = memoryProducts.filter(p => p.id !== id && p._id !== id);
+    const memProd = memoryProducts.find(p => p.id === id || p._id === id);
+    if (memProd) {
+      targetTitle = memProd.title;
+      memoryProducts = memoryProducts.filter(p => p.id !== id && p._id !== id);
+    }
+
+    const actorName = req.user?.name || 'Arshath (Founder)';
+    await logAuditEvent({
+      reqUser: req.user,
+      action: `${actorName} deleted product "${targetTitle}"`,
+      entityType: 'product',
+      entityId: id,
+      details: { title: targetTitle },
+    });
+
     return res.json({ success: true, message: 'Product deleted' });
   } catch (error: any) {
     return res.status(500).json({ success: false, message: error.message });

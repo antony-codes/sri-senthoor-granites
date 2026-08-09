@@ -8,7 +8,7 @@
     --text-muted: #4b5563;
     --border-color: rgba(0, 0, 0, 0.08);
     --glass-bg: rgba(255, 255, 255, 0.85);
-    --accent-gold: #c5a059;
+    --accent-gold: #111827;
   }
 
   body {
@@ -31,14 +31,13 @@
 }
 
 .glass-panel-hover:hover {
-  border-color: rgba(197, 160, 89, 0.5);
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.12), 0 0 15px rgba(197, 160, 89, 0.15);
+  border-color: rgba(0, 0, 0, 0.4);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.12);
 }
 
 .text-gold-gradient {
-  background: linear-gradient(135deg, #D4AF37 0%, #C5A059 50%, #996515 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #111827;
+  -webkit-text-fill-color: #111827;
 }
 
 .text-silver-gradient {
@@ -48,8 +47,8 @@
 }
 
 .border-gold-glow {
-  border: 1px solid rgba(197, 160, 89, 0.3);
-  box-shadow: 0 0 20px rgba(197, 160, 89, 0.15);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
 }
 
 /* Custom Scrollbar */
@@ -64,7 +63,7 @@
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #c5a059;
+  background: #374151;
 }
 
 /* Hide scrollbar for clean horizontal scrollers */

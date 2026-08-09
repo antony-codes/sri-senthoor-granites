@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Square, Lock, Mail, ArrowRight, ShieldCheck, Eye, EyeOff, Sparkles } from 'lucide-react';
+import { Square, Lock, Mail, ArrowRight, ShieldCheck, Eye, EyeOff, Sparkles, KeyRound } from 'lucide-react';
 import { loginAdmin } from '@/services/api';
 import { COMPANY_INFO } from '@/constants/company';
 
 interface DashboardLoginProps {
   onLoginSuccess: () => void;
+  onForgotPassword: () => void;
 }
 
-export const DashboardLogin: React.FC<DashboardLoginProps> = ({ onLoginSuccess }) => {
+export const DashboardLogin: React.FC<DashboardLoginProps> = ({ onLoginSuccess, onForgotPassword }) => {
   const [email, setEmail] = useState('admin@srisenthoorgranites.com');
   const [password, setPassword] = useState('Admin@123456');
   const [showPassword, setShowPassword] = useState(false);
@@ -36,7 +37,7 @@ export const DashboardLogin: React.FC<DashboardLoginProps> = ({ onLoginSuccess }
   };
 
   return (
-    <div className="min-h-screen w-full flex bg-white text-gray-900 font-sans overflow-hidden selection:bg-accent-gold selection:text-white">
+    <div className="min-h-screen w-full flex bg-white text-gray-900 font-sans overflow-hidden selection:bg-black selection:text-white">
       {/* 1. Left Column - Luxury Stone Showcase Banner */}
       <div className="hidden lg:flex lg:w-1/2 relative flex-col justify-between p-12 overflow-hidden bg-black text-white">
         <img
@@ -52,7 +53,7 @@ export const DashboardLogin: React.FC<DashboardLoginProps> = ({ onLoginSuccess }
             <Square className="w-6 h-6 fill-current text-white stroke-none" />
             <div className="flex flex-col">
               <span className="font-serif text-xl font-bold tracking-tight text-white">
-                SriSenthoor<span className="font-light italic text-accent-gold">Granites</span>
+                SriSenthoor<span className="font-light italic text-gray-400">Granites</span>
               </span>
               <span className="text-[10px] uppercase tracking-widest text-gray-300 font-semibold">
                 Owner Management Portal
@@ -67,7 +68,7 @@ export const DashboardLogin: React.FC<DashboardLoginProps> = ({ onLoginSuccess }
 
         {/* Center Slogan & Quote */}
         <div className="relative z-10 max-w-lg space-y-6 my-auto">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-accent-gold/20 border border-accent-gold/40 text-accent-gold text-xs font-bold uppercase tracking-widest">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/20 text-white text-xs font-bold uppercase tracking-widest">
             <Sparkles className="w-3.5 h-3.5" />
             <span>Management Suite</span>
           </div>
@@ -115,7 +116,7 @@ export const DashboardLogin: React.FC<DashboardLoginProps> = ({ onLoginSuccess }
             </div>
             <h1 className="font-serif text-3xl font-bold text-gray-900 tracking-tight">Admin Sign In</h1>
             <p className="text-xs text-gray-600 font-sans">
-              Enter your founder credentials to manage products, categories, and customer lead inquiries.
+              Enter your founder credentials to manage products, categories, users, and audit logs.
             </p>
           </div>
 
@@ -136,7 +137,7 @@ export const DashboardLogin: React.FC<DashboardLoginProps> = ({ onLoginSuccess }
             {/* Email Field */}
             <div className="space-y-1.5">
               <label className="text-xs uppercase tracking-wider text-gray-700 font-bold flex items-center gap-1.5">
-                <Mail className="w-3.5 h-3.5 text-accent-gold" /> Email Address
+                <Mail className="w-3.5 h-3.5 text-black" /> Email Address
               </label>
               <input
                 type="email"
@@ -152,8 +153,15 @@ export const DashboardLogin: React.FC<DashboardLoginProps> = ({ onLoginSuccess }
             <div className="space-y-1.5">
               <div className="flex justify-between items-center">
                 <label className="text-xs uppercase tracking-wider text-gray-700 font-bold flex items-center gap-1.5">
-                  <Lock className="w-3.5 h-3.5 text-accent-gold" /> Password
+                  <Lock className="w-3.5 h-3.5 text-black" /> Password
                 </label>
+                <button
+                  type="button"
+                  onClick={onForgotPassword}
+                  className="text-xs text-gray-500 hover:text-black font-semibold hover:underline cursor-pointer"
+                >
+                  Forgot Password?
+                </button>
               </div>
               <div className="relative">
                 <input
@@ -180,8 +188,8 @@ export const DashboardLogin: React.FC<DashboardLoginProps> = ({ onLoginSuccess }
               className="p-3 rounded-xl bg-gray-50 border border-gray-200 hover:border-black cursor-pointer transition-all flex items-center justify-between text-xs group"
             >
               <div className="flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-accent-gold" />
-                <span className="text-gray-700 font-medium">Fill Default Credentials</span>
+                <ShieldCheck className="w-4 h-4 text-black" />
+                <span className="text-gray-700 font-medium">Fill Super Admin Credentials</span>
               </div>
               <span className="text-[10px] uppercase font-bold text-black group-hover:underline">Use Demo</span>
             </div>

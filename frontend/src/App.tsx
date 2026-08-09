@@ -16,31 +16,80 @@ import { Footer } from '@/features/footer/Footer';
 // Dashboard Imports
 import { DashboardLayout } from '@/features/dashboard/DashboardLayout';
 import { DashboardLogin } from '@/features/dashboard/DashboardLogin';
+import { DashboardForgotPassword } from '@/features/dashboard/DashboardForgotPassword';
+import { DashboardResetPassword } from '@/features/dashboard/DashboardResetPassword';
 import { getAuthToken } from '@/services/api';
 
 export const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => !!getAuthToken());
+  const [authMode, setAuthMode] = useState<'login' | 'forgot' | 'reset'>(() => {
+    if (window.location.pathname.includes('/reset-password') || window.location.search.includes('token=')) {
+      return 'reset';
+    }
+    if (window.location.pathname.includes('/forgot-password')) {
+      return 'forgot';
+    }
+    return 'login';
+  });
 
   useEffect(() => {
     const handleLocationChange = () => {
-      setCurrentPath(window.location.pathname);
+      const path = window.location.pathname;
+      setCurrentPath(path);
       setIsAuthenticated(!!getAuthToken());
+      if (path.includes('/reset-password') || window.location.search.includes('token=')) {
+        setAuthMode('reset');
+      } else if (path.includes('/forgot-password')) {
+        setAuthMode('forgot');
+      } else {
+        setAuthMode('login');
+      }
     };
 
     window.addEventListener('popstate', handleLocationChange);
     return () => window.removeEventListener('popstate', handleLocationChange);
   }, []);
 
-  // Dashboard View Handler (Wrapped with selection styling)
+  const navigateToPath = (path: string) => {
+    window.history.pushState({}, '', path);
+    setCurrentPath(path.split('?')[0]);
+    if (path.includes('reset-password')) {
+      setAuthMode('reset');
+    } else if (path.includes('forgot-password')) {
+      setAuthMode('forgot');
+    } else {
+      setAuthMode('login');
+    }
+  };
+
+  // Dashboard View Handler
   if (currentPath.startsWith('/dashboard')) {
-    return (
-      <div className="min-h-screen selection:bg-black selection:text-amber-400">
-        {!isAuthenticated ? (
-          <DashboardLogin onLoginSuccess={() => setIsAuthenticated(true)} />
-        ) : (
+    if (isAuthenticated && authMode === 'login') {
+      return (
+        <div className="min-h-screen selection:bg-black selection:text-white">
           <DashboardLayout onLogout={() => setIsAuthenticated(false)} />
+        </div>
+      );
+    }
+
+    return (
+      <div className="min-h-screen selection:bg-black selection:text-white">
+        {authMode === 'forgot' ? (
+          <DashboardForgotPassword
+            onBackToLogin={() => navigateToPath('/dashboard')}
+            onNavigateReset={(url) => navigateToPath(url)}
+          />
+        ) : authMode === 'reset' ? (
+          <DashboardResetPassword
+            onSuccessRedirect={() => navigateToPath('/dashboard')}
+          />
+        ) : (
+          <DashboardLogin
+            onLoginSuccess={() => setIsAuthenticated(true)}
+            onForgotPassword={() => navigateToPath('/dashboard/forgot-password')}
+          />
         )}
       </div>
     );
@@ -68,7 +117,7 @@ export const App: React.FC = () => {
         </AnimatePresence>
 
         {/* Main Public Website */}
-        <div className="min-h-screen flex flex-col bg-white text-gray-900 selection:bg-black selection:text-amber-400">
+        <div className="min-h-screen flex flex-col bg-white text-gray-900 selection:bg-black selection:text-white">
           <Navbar />
           <main className="flex-grow">
             <Hero />

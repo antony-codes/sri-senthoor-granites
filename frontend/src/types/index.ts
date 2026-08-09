@@ -71,11 +71,31 @@ export interface IInquiry {
   updatedAt?: string;
 }
 
+export type UserRole = 'super_admin' | 'admin' | 'staff';
+
 export interface IUser {
   _id?: string;
   id?: string;
   name: string;
   email: string;
-  role: 'admin' | 'manager';
+  role: UserRole;
+  permissions?: string[];
+  isActive?: boolean;
+  lastLogin?: string;
   createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface IAuditLog {
+  _id?: string;
+  userName: string;
+  userEmail: string;
+  userId?: string;
+  userRole?: string;
+  action: string;
+  entityType: 'product' | 'category' | 'gallery' | 'testimonial' | 'inquiry' | 'user' | 'system';
+  entityId?: string;
+  details?: Record<string, any>;
+  ipAddress?: string;
+  createdAt: string;
 }

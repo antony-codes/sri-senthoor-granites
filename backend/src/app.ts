@@ -10,6 +10,8 @@ import productRoutes from './routes/productRoutes';
 import inquiryRoutes from './routes/inquiryRoutes';
 import uploadRoutes from './routes/uploadRoutes';
 import testimonialRoutes from './routes/testimonialRoutes';
+import userRoutes from './routes/userRoutes';
+import auditRoutes from './routes/auditRoutes';
 
 const app: Application = express();
 
@@ -33,6 +35,8 @@ app.use('/api/products', productRoutes);
 app.use('/api/inquiries', inquiryRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/testimonials', testimonialRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/audit-logs', auditRoutes);
 
 // Health Check
 app.get('/api/health', (_req, res) => {

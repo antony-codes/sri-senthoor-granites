@@ -5,7 +5,7 @@ import { COMPANY_INFO } from '@/constants/company';
 
 const HERO_SLIDES = [
   {
-    badge: 'IMPORTED MARBLE SLABS · STATUARIO IMPERIAL ITALIAN MARBLE',
+    // badge: 'IMPORTED MARBLE SLABS · STATUARIO IMPERIAL ITALIAN MARBLE',
     titleLine1: 'Senthoor',
     titleLine2: 'Granites',
     leftSpec: 'SURFACE INTELLIGENCE · CLASS A CERTIFIED',
@@ -13,7 +13,7 @@ const HERO_SLIDES = [
     bgImage: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=2000&q=80',
   },
   {
-    badge: 'PREMIUM GANGSAW GRANITE SLABS · DIRECT QUARRY SELECTION',
+    // badge: 'PREMIUM GANGSAW GRANITE SLABS · DIRECT QUARRY SELECTION',
     titleLine1: 'Exclusive',
     titleLine2: 'Granites',
     leftSpec: 'MIRROR POLISHED · SCRATCH & HEAT RESISTANT',
@@ -21,7 +21,7 @@ const HERO_SLIDES = [
     bgImage: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2000&q=80',
   },
   {
-    badge: 'ULTRA-LARGE FORMAT PORCELAIN · VITRIFIED SLABS',
+    // badge: 'ULTRA-LARGE FORMAT PORCELAIN · VITRIFIED SLABS',
     titleLine1: 'Vitrified',
     titleLine2: 'Tiles',
     leftSpec: 'SEAMLESS RECTIFIED EDGES · ZERO ABSORPTION',
@@ -29,10 +29,10 @@ const HERO_SLIDES = [
     bgImage: 'https://images.unsplash.com/photo-1620626011761-996317b8d101?auto=format&fit=crop&w=2000&q=80',
   },
   {
-    badge: 'LUXURY BATHWARE & SANITARY FITTINGS',
+    // badge: 'LUXURY BATHWARE & SANITARY FITTINGS',
     titleLine1: 'Bath &',
     titleLine2: 'Sanitary',
-    leftSpec: 'PVD GOLD & MATTE BLACK FINISHES',
+    leftSpec: 'PVD FINISHES & MATTE BLACK FINISHES',
     rightSpec: 'THERMOSTATIC FLOW TECHNOLOGY',
     bgImage: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=2000&q=80',
   },
@@ -75,7 +75,7 @@ export const Hero: React.FC = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col gap-12">
-        {/* 1. Large Central Hero Banner Showcase Card (Exact Reference Matching) */}
+        {/* 1. Large Central Hero Banner Showcase Card (Exact Original Composition) */}
         <div className="relative w-full rounded-[28px] sm:rounded-[36px] overflow-hidden shadow-2xl bg-black min-h-[460px] sm:min-h-[540px] md:min-h-[600px] flex flex-col justify-between p-6 sm:p-10 text-white">
           {/* Animated Background Image Slide */}
           <AnimatePresence mode="wait">
@@ -97,17 +97,17 @@ export const Hero: React.FC = () => {
           </AnimatePresence>
 
           {/* Top Floating Badge */}
-          <div className="relative z-10 flex justify-center">
+          {/* <div className="relative z-10 flex justify-center">
             <motion.div
               key={`badge-${currentSlide}`}
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/70 backdrop-blur-md border border-white/20 text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-white shadow-lg"
             >
-              <Sparkles className="w-3 h-3 text-yellow-300" />
+              <Sparkles className="w-3 h-3 text-white" />
               <span>{slide.badge}</span>
             </motion.div>
-          </div>
+          </div> */}
 
           {/* Center Giant Display Typography */}
           <div className="relative z-10 flex flex-col items-center justify-center my-auto text-center py-6">
@@ -134,10 +134,10 @@ export const Hero: React.FC = () => {
           <div className="relative z-10 flex flex-col gap-4">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-[10px] sm:text-xs tracking-[0.2em] font-semibold text-gray-300 uppercase">
               <span className="flex items-center gap-1.5">
-                <span className="text-yellow-400">✦</span> {slide.leftSpec}
+                <span className="text-white">✦</span> {slide.leftSpec}
               </span>
               <span className="hidden sm:flex items-center gap-1.5">
-                {slide.rightSpec} <span className="text-yellow-400">✦</span>
+                {slide.rightSpec} <span className="text-white">✦</span>
               </span>
             </div>
 
@@ -146,7 +146,7 @@ export const Hero: React.FC = () => {
               <button
                 onClick={prevSlide}
                 aria-label="Previous Slide"
-                className="w-8 h-8 rounded-full bg-black/60 border border-white/20 flex items-center justify-center text-white hover:bg-white hover:text-black transition-all"
+                className="w-8 h-8 rounded-full bg-black/60 border border-white/20 flex items-center justify-center text-white hover:bg-white hover:text-black transition-all cursor-pointer"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
@@ -157,7 +157,7 @@ export const Hero: React.FC = () => {
                   <button
                     key={idx}
                     onClick={() => setCurrentSlide(idx)}
-                    className={`transition-all duration-300 rounded-full ${
+                    className={`transition-all duration-300 rounded-full cursor-pointer ${
                       currentSlide === idx
                         ? 'w-6 h-2 bg-white'
                         : 'w-2 h-2 bg-white/40 hover:bg-white/70'
@@ -169,7 +169,7 @@ export const Hero: React.FC = () => {
               <button
                 onClick={nextSlide}
                 aria-label="Next Slide"
-                className="w-8 h-8 rounded-full bg-black/60 border border-white/20 flex items-center justify-center text-white hover:bg-white hover:text-black transition-all"
+                className="w-8 h-8 rounded-full bg-black/60 border border-white/20 flex items-center justify-center text-white hover:bg-white hover:text-black transition-all cursor-pointer"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
@@ -177,7 +177,7 @@ export const Hero: React.FC = () => {
           </div>
         </div>
 
-        {/* 2. Sub-Hero 2-Column Layout (Matching Reference Screenshot Copy & Buttons) */}
+        {/* 2. Sub-Hero 2-Column Layout */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center pt-4">
           {/* Left Column Text Copy */}
           <div className="md:col-span-8">
@@ -191,7 +191,7 @@ export const Hero: React.FC = () => {
             {/* Top Solid Button */}
             <button
               onClick={scrollToContact}
-              className="w-full sm:w-64 px-6 py-4 bg-black text-white font-bold text-xs uppercase tracking-widest rounded-md hover:bg-gray-800 transition-all flex items-center justify-center gap-3 shadow-md"
+              className="w-full sm:w-64 px-6 py-4 bg-black text-white font-bold text-xs uppercase tracking-widest rounded-md hover:bg-gray-800 transition-all flex items-center justify-center gap-3 shadow-md cursor-pointer"
             >
               <span>REQUEST A QUOTE</span>
               <ArrowRight className="w-4 h-4" />
@@ -200,9 +200,9 @@ export const Hero: React.FC = () => {
             {/* Bottom Outline Button */}
             <button
               onClick={scrollToProducts}
-              className="w-full sm:w-64 px-6 py-4 bg-white text-black border border-gray-300 font-bold text-xs uppercase tracking-widest rounded-md hover:bg-gray-100 transition-all text-center"
+              className="w-full sm:w-64 px-6 py-4 bg-white border border-gray-300 text-gray-900 font-bold text-xs uppercase tracking-widest rounded-md hover:border-black transition-all flex items-center justify-center gap-3 cursor-pointer"
             >
-              EXPLORE COLLECTION
+              <span>EXPLORE PRODUCTS</span>
             </button>
           </div>
         </div>

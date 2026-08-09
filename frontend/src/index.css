@@ -5,9 +5,9 @@
   --text-h: #111827;
   --bg: #ffffff;
   --border: #e5e7eb;
-  --accent: #c5a059;
-  --accent-bg: rgba(197, 160, 89, 0.1);
-  --accent-border: rgba(197, 160, 89, 0.4);
+  --accent: #111827;
+  --accent-bg: rgba(17, 24, 39, 0.05);
+  --accent-border: rgba(17, 24, 39, 0.2);
 
   color-scheme: light;
   color: var(--text);
@@ -18,14 +18,14 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Universal High-Contrast Selection Override */
+/* Universal High-Contrast Monochrome Selection Override */
 ::selection,
 *::selection,
 ::-moz-selection,
 *::-moz-selection {
   background-color: #000000 !important;
-  color: #fbbf24 !important;
-  -webkit-text-fill-color: #fbbf24 !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
 }
 
 body {
@@ -50,5 +50,5 @@ body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #6b7280;
+  background: #374151;
 }

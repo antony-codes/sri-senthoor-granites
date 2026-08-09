@@ -1,4 +1,4 @@
-import { ICategory, IProduct, IInquiry, IUser } from '@/types';
+import { ICategory, IProduct, IInquiry, IUser, IAuditLog } from '@/types';
 import { PRODUCT_CATEGORIES as STATIC_CATEGORIES } from '@/constants/company';
 
 const API_BASE = '/api';
@@ -52,7 +52,14 @@ export const loginAdmin = async (email: string, password: string): Promise<{ tok
   } catch (err: any) {
     // Fallback static validation if backend is launching
     if (email === 'admin@srisenthoorgranites.com' && password === 'Admin@123456') {
-      const mockUser: IUser = { id: 'admin-1', name: 'Arshath (Founder)', email, role: 'admin' };
+      const mockUser: IUser = {
+        id: 'admin-1',
+        name: 'Arshath (Founder)',
+        email,
+        role: 'super_admin',
+        permissions: ['all'],
+        isActive: true,
+      };
       const mockToken = 'mock-jwt-token-sri-senthoor-granites';
       setAuthToken(mockToken);
       localStorage.setItem('ssg_admin_user', JSON.stringify(mockUser));
@@ -60,6 +67,155 @@ export const loginAdmin = async (email: string, password: string): Promise<{ tok
     }
     throw new Error(err.message || 'Authentication error');
   }
+};
+
+export const forgotPasswordApi = async (email: string): Promise<{ message: string; resetUrl?: string }> => {
+  const res = await fetch(`${API_BASE}/auth/forgot-password`, {
+    method: 'POST',
+    headers: getHeaders(),
+    body: JSON.stringify({ email }),
+  });
+  const data = await res.json();
+  if (!res.ok || !data.success) {
+    throw new Error(data.message || 'Failed to process forgot password request');
+  }
+  return data;
+};
+
+export const resetPasswordApi = async (token: string, password: string): Promise<{ message: string }> => {
+  const res = await fetch(`${API_BASE}/auth/reset-password`, {
+    method: 'POST',
+    headers: getHeaders(),
+    body: JSON.stringify({ token, password }),
+  });
+  const data = await res.json();
+  if (!res.ok || !data.success) {
+    throw new Error(data.message || 'Failed to reset password');
+  }
+  return data;
+};
+
+// --- USERS & ACCESS API ---
+export const fetchUsersApi = async (search = '', role = 'all', status = 'all'): Promise<IUser[]> => {
+  try {
+    const query = new URLSearchParams();
+    if (search) query.append('search', search);
+    if (role && role !== 'all') query.append('role', role);
+    if (status && status !== 'all') query.append('status', status);
+
+    const res = await fetch(`${API_BASE}/users?${query.toString()}`, {
+      headers: getHeaders(),
+    });
+    const data = await res.json();
+    if (data.success && Array.isArray(data.data)) {
+      return data.data;
+    }
+  } catch {
+    // Ignore
+  }
+  return [];
+};
+
+export const createUserApi = async (userData: {
+  name: string;
+  email: string;
+  password: string;
+  role: string;
+  permissions?: string[];
+}): Promise<IUser> => {
+  const res = await fetch(`${API_BASE}/users`, {
+    method: 'POST',
+    headers: getHeaders(),
+    body: JSON.stringify(userData),
+  });
+  const data = await res.json();
+  if (!data.success) throw new Error(data.message || 'Failed to create user');
+  return data.data;
+};
+
+export const updateUserApi = async (id: string, userData: Partial<IUser>): Promise<IUser> => {
+  const res = await fetch(`${API_BASE}/users/${id}`, {
+    method: 'PUT',
+    headers: getHeaders(),
+    body: JSON.stringify(userData),
+  });
+  const data = await res.json();
+  if (!data.success) throw new Error(data.message || 'Failed to update user');
+  return data.data;
+};
+
+export const updateUserPermissionsApi = async (id: string, permissions: string[]): Promise<IUser> => {
+  const res = await fetch(`${API_BASE}/users/${id}/permissions`, {
+    method: 'PUT',
+    headers: getHeaders(),
+    body: JSON.stringify({ permissions }),
+  });
+  const data = await res.json();
+  if (!data.success) throw new Error(data.message || 'Failed to update permissions');
+  return data.data;
+};
+
+export const toggleUserActiveApi = async (id: string, isActive: boolean): Promise<IUser> => {
+  const res = await fetch(`${API_BASE}/users/${id}/toggle-active`, {
+    method: 'PUT',
+    headers: getHeaders(),
+    body: JSON.stringify({ isActive }),
+  });
+  const data = await res.json();
+  if (!data.success) throw new Error(data.message || 'Failed to update user active status');
+  return data.data;
+};
+
+export const resetUserPasswordApi = async (id: string, newPassword: string): Promise<void> => {
+  const res = await fetch(`${API_BASE}/users/${id}/reset-password`, {
+    method: 'POST',
+    headers: getHeaders(),
+    body: JSON.stringify({ newPassword }),
+  });
+  const data = await res.json();
+  if (!data.success) throw new Error(data.message || 'Failed to reset password');
+};
+
+export const deleteUserApi = async (id: string): Promise<void> => {
+  const res = await fetch(`${API_BASE}/users/${id}`, {
+    method: 'DELETE',
+    headers: getHeaders(),
+  });
+  const data = await res.json();
+  if (!data.success) throw new Error(data.message || 'Failed to delete user');
+};
+
+// --- AUDIT LOGS API ---
+export const fetchAuditLogsApi = async (
+  search = '',
+  entityType = 'all',
+  user = 'all',
+  page = 1,
+  limit = 50
+): Promise<{ data: IAuditLog[]; totalCount: number; totalPages: number }> => {
+  try {
+    const query = new URLSearchParams();
+    if (search) query.append('search', search);
+    if (entityType && entityType !== 'all') query.append('entityType', entityType);
+    if (user && user !== 'all') query.append('user', user);
+    query.append('page', String(page));
+    query.append('limit', String(limit));
+
+    const res = await fetch(`${API_BASE}/audit-logs?${query.toString()}`, {
+      headers: getHeaders(),
+    });
+    const data = await res.json();
+    if (data.success && Array.isArray(data.data)) {
+      return {
+        data: data.data,
+        totalCount: data.totalCount || data.data.length,
+        totalPages: data.totalPages || 1,
+      };
+    }
+  } catch {
+    // Ignore
+  }
+  return { data: [], totalCount: 0, totalPages: 1 };
 };
 
 // --- CATEGORIES API ---

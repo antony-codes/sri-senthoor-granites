@@ -23,7 +23,7 @@ export const Navbar: React.FC = () => {
       setIsScrolled(window.scrollY > 30);
 
       const sections = NAV_LINKS.map((link) => link.href.substring(1));
-      const scrollPos = window.scrollY + 200;
+      const scrollPos = window.scrollY + 180;
 
       for (const sectionId of sections) {
         const el = document.getElementById(sectionId);
@@ -57,25 +57,25 @@ export const Navbar: React.FC = () => {
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           isScrolled
-            ? 'py-3.5 bg-white/90 backdrop-blur-md border-b border-black/5 shadow-sm'
-            : 'py-6 bg-transparent'
+            ? 'py-3 bg-white/95 backdrop-blur-md border-b border-gray-200/80 shadow-xs'
+            : 'py-4.5 bg-white/80 backdrop-blur-sm border-b border-gray-100'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-          {/* Logo - Matching Reference Image */}
+          {/* Logo */}
           <a
             href="#hero"
             onClick={(e) => handleNavClick(e, '#hero')}
             className="flex items-center gap-2 group focus:outline-none"
           >
-            <Square className="w-5 h-5 fill-current text-black stroke-none" />
-            <span className="font-serif text-xl sm:text-2xl font-bold tracking-tight text-black">
-              SriSenthoor<span className="font-light italic text-gray-700">Granites</span>
+            <Square className="w-4 h-4 fill-current text-black stroke-none" />
+            <span className="font-serif text-lg sm:text-xl font-bold tracking-tight text-black">
+              SriSenthoor<span className="font-light italic text-gray-600">Granites</span>
             </span>
           </a>
 
-          {/* Desktop Links - Bullet point indicator matching image */}
-          <nav className="hidden lg:flex items-center gap-7">
+          {/* Desktop Nav Links */}
+          <nav className="hidden lg:flex items-center gap-6">
             {NAV_LINKS.map((link) => {
               const isActive = activeSection === link.href.substring(1);
               return (
@@ -83,7 +83,7 @@ export const Navbar: React.FC = () => {
                   key={link.name}
                   href={link.href}
                   onClick={(e) => handleNavClick(e, link.href)}
-                  className={`text-xs font-bold tracking-widest transition-colors duration-200 flex items-center gap-1.5 ${
+                  className={`text-[11px] font-bold tracking-wider transition-colors flex items-center gap-1.5 ${
                     isActive
                       ? 'text-black font-extrabold'
                       : 'text-gray-500 hover:text-black'
@@ -96,31 +96,30 @@ export const Navbar: React.FC = () => {
             })}
           </nav>
 
-          {/* Right Action Control */}
+          {/* Call CTA Button */}
           <div className="hidden lg:flex items-center gap-3">
-            {/* CALL NOW Black Pill Button - Exact Mockup Matching */}
             <a
               href={`tel:${COMPANY_INFO.rawPhones[1]}`}
-              className="px-6 py-2.5 bg-black text-white font-semibold text-xs uppercase tracking-widest rounded-md hover:bg-gray-800 transition-all shadow-sm flex items-center gap-2"
+              className="px-4 py-2 bg-black text-white font-semibold text-[11px] uppercase tracking-wider rounded-xl hover:bg-gray-800 transition-all shadow-sm flex items-center gap-1.5"
             >
-              <Phone className="w-3.5 h-3.5 fill-current" />
-              <span>CALL NOW</span>
+              <Phone className="w-3 h-3 fill-current" />
+              <span>Call Now</span>
             </a>
           </div>
 
-          {/* Mobile Buttons */}
+          {/* Mobile Menu Button */}
           <div className="flex lg:hidden items-center gap-2">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 text-black"
+              className="p-1.5 text-black cursor-pointer"
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
       </header>
 
-      {/* Mobile Drawer Navigation */}
+      {/* Mobile Menu Drawer */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
@@ -128,16 +127,16 @@ export const Navbar: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: '-100%' }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-40 bg-white lg:hidden flex flex-col justify-between pt-24 pb-8 px-6"
+            className="fixed inset-0 z-40 bg-white lg:hidden flex flex-col justify-between pt-20 pb-8 px-6"
           >
-            <div className="flex flex-col gap-5">
-              <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-3">
                 {NAV_LINKS.map((link) => (
                   <a
                     key={link.name}
                     href={link.href}
                     onClick={(e) => handleNavClick(e, link.href)}
-                    className="font-serif text-2xl font-bold text-black hover:text-gray-600 transition-colors"
+                    className="font-serif text-xl font-bold text-black hover:text-gray-600 transition-colors"
                   >
                     {link.name}
                   </a>
@@ -145,12 +144,12 @@ export const Navbar: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex flex-col gap-3 pt-6 border-t border-gray-200">
+            <div className="flex flex-col gap-3 pt-4 border-t border-gray-200">
               <a
                 href={`tel:${COMPANY_INFO.rawPhones[1]}`}
-                className="w-full py-3.5 bg-black text-white text-center font-bold text-xs uppercase tracking-widest rounded-md"
+                className="w-full py-3 bg-black text-white text-center font-bold text-xs uppercase tracking-wider rounded-xl"
               >
-                CALL NOW (+91 {COMPANY_INFO.rawPhones[1]})
+                Call Now (+91 {COMPANY_INFO.rawPhones[1]})
               </a>
             </div>
           </motion.div>

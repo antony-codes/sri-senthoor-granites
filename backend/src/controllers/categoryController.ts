@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import mongoose from 'mongoose';
 import { Category } from '../models/Category';
+import { AuthRequest } from '../middlewares/auth';
+import { logAuditEvent } from '../utils/auditLogger';
 
 const buildIdQuery = (id: string) => {
   if (mongoose.Types.ObjectId.isValid(id)) {
@@ -88,13 +90,14 @@ export const getCategories = async (req: Request, res: Response) => {
   }
 };
 
-export const createCategory = async (req: Request, res: Response) => {
+export const createCategory = async (req: AuthRequest, res: Response) => {
   try {
     const { id, title, subtitle, description, icon, image, displayOrder, isActive } = req.body;
     const catId = id || title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-    
+    let newCat: any;
+
     try {
-      const newCat = await Category.create({
+      newCat = await Category.create({
         id: catId,
         title,
         subtitle,
@@ -105,9 +108,8 @@ export const createCategory = async (req: Request, res: Response) => {
         isActive: isActive !== false,
       });
       memoryCategories.push((newCat.toObject ? newCat.toObject() : newCat) as any);
-      return res.status(201).json({ success: true, data: newCat });
     } catch {
-      const newCat = {
+      newCat = {
         id: catId,
         title,
         subtitle,
@@ -118,53 +120,103 @@ export const createCategory = async (req: Request, res: Response) => {
         isActive: isActive !== false,
       };
       memoryCategories.push(newCat);
-      return res.status(201).json({ success: true, data: newCat });
     }
+
+    const actorName = req.user?.name || 'Arshath (Founder)';
+    await logAuditEvent({
+      reqUser: req.user,
+      action: `${actorName} created category "${title}"`,
+      entityType: 'category',
+      entityId: catId,
+      details: { title, subtitle, isActive: newCat.isActive },
+    });
+
+    return res.status(201).json({ success: true, data: newCat });
   } catch (error: any) {
     return res.status(500).json({ success: false, message: error.message });
   }
 };
 
-export const updateCategory = async (req: Request, res: Response) => {
+export const updateCategory = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
-    
-    // Memory fallback update
+    let prevActiveState: boolean | undefined;
+
     const memoryIdx = memoryCategories.findIndex(c => c.id === id || (c as any)._id === id);
     if (memoryIdx !== -1) {
+      prevActiveState = memoryCategories[memoryIdx].isActive;
       memoryCategories[memoryIdx] = { ...memoryCategories[memoryIdx], ...req.body };
     }
 
+    let updated: any;
     try {
-      const updated = await Category.findOneAndUpdate(
+      const existing = await Category.findOne(buildIdQuery(id));
+      if (existing) prevActiveState = existing.isActive;
+
+      updated = await Category.findOneAndUpdate(
         buildIdQuery(id),
         { $set: req.body },
         { new: true, upsert: true, setDefaultsOnInsert: true }
       );
-      if (updated) return res.json({ success: true, data: updated });
     } catch {
       // Fallback
     }
 
-    if (memoryIdx !== -1) {
-      return res.json({ success: true, data: memoryCategories[memoryIdx] });
+    const resultDoc = updated || (memoryIdx !== -1 ? memoryCategories[memoryIdx] : null);
+    if (!resultDoc) {
+      return res.status(404).json({ success: false, message: 'Category not found' });
     }
 
-    return res.status(404).json({ success: false, message: 'Category not found' });
+    const actorName = req.user?.name || 'Arshath (Founder)';
+    const title = resultDoc.title || id;
+
+    let actionMsg = `${actorName} updated details for category "${title}"`;
+    if (typeof req.body.isActive === 'boolean' && prevActiveState !== req.body.isActive) {
+      actionMsg = `${actorName} updated category "${title}" status to ${req.body.isActive ? 'ACTIVE' : 'DISABLED'}`;
+    }
+
+    await logAuditEvent({
+      reqUser: req.user,
+      action: actionMsg,
+      entityType: 'category',
+      entityId: id,
+      details: { title, isActive: resultDoc.isActive, previousActive: prevActiveState },
+    });
+
+    return res.json({ success: true, data: resultDoc });
   } catch (error: any) {
     return res.status(500).json({ success: false, message: error.message });
   }
 };
 
-export const deleteCategory = async (req: Request, res: Response) => {
+export const deleteCategory = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
+    let targetTitle = id;
+
+    const memCat = memoryCategories.find(c => c.id === id || (c as any)._id === id);
+    if (memCat) targetTitle = memCat.title;
+
     try {
-      await Category.findOneAndDelete(buildIdQuery(id));
+      const cat = await Category.findOne(buildIdQuery(id));
+      if (cat) {
+        targetTitle = cat.title;
+        await cat.deleteOne();
+      }
     } catch {
       // Fallback
     }
     memoryCategories = memoryCategories.filter(c => c.id !== id && (c as any)._id !== id);
+
+    const actorName = req.user?.name || 'Arshath (Founder)';
+    await logAuditEvent({
+      reqUser: req.user,
+      action: `${actorName} deleted category "${targetTitle}"`,
+      entityType: 'category',
+      entityId: id,
+      details: { title: targetTitle },
+    });
+
     return res.json({ success: true, message: 'Category removed' });
   } catch (error: any) {
     return res.status(500).json({ success: false, message: error.message });

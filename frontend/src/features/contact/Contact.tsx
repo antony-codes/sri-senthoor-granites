@@ -53,12 +53,11 @@ export const Contact: React.FC = () => {
         message: data.message,
       });
 
-      // Trigger festive celebratory gold confetti
       confetti({
         particleCount: 80,
         spread: 70,
         origin: { y: 0.6 },
-        colors: ['#C5A059', '#F3E5AB', '#FFFFFF'],
+        colors: ['#000000', '#374151', '#6B7280'],
       });
 
       setIsSubmitted(true);
@@ -72,14 +71,13 @@ export const Contact: React.FC = () => {
     <section id="contact" className="py-14 sm:py-20 relative bg-white text-gray-900 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <SectionHeader
-          badge="Direct Inquiries & Showroom Visit"
           title="Begin Your Architectural Journey With"
           highlightTitle="Sri Senthoor Granites"
           subtitle="Speak directly with founder Arshath or our expert natural stone consultants. Request customized slab quotes, physical samples, or site visits."
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-          {/* Left Side - Showroom Info & Direct Phone Links with Slide-In Entrance */}
+          {/* Left Side - Showroom Info & Direct Phone Links */}
           <motion.div
             initial={{ opacity: 0, x: -40 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -87,22 +85,22 @@ export const Contact: React.FC = () => {
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
             className="lg:col-span-5 flex flex-col gap-6 will-change-transform"
           >
-            <GlassCard hoverEffect={false} className="p-8 border-accent-gold/30">
+            <GlassCard hoverEffect={false} className="p-8 border-gray-200">
               <h3 className="font-serif text-2xl font-bold text-gray-900 mb-6">Showroom Headquarters</h3>
 
               <div className="space-y-6">
                 {/* Phones */}
                 <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-accent-gold/10 border border-accent-gold/30 flex items-center justify-center text-accent-gold shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center text-black shrink-0">
                     <Phone className="w-5 h-5" />
                   </div>
                   <div>
                     <span className="text-xs uppercase tracking-widest text-gray-500 block font-semibold">Direct Phone Lines</span>
                     <div className="flex flex-col mt-1">
-                      <a href={`tel:${COMPANY_INFO.rawPhones[1]}`} className="text-lg font-bold text-gray-900 hover:text-accent-gold transition-colors">
+                      <a href={`tel:${COMPANY_INFO.rawPhones[1]}`} className="text-lg font-bold text-gray-900 hover:text-black transition-colors">
                         +91 {COMPANY_INFO.rawPhones[1]}
                       </a>
-                      <a href={`tel:${COMPANY_INFO.rawPhones[0]}`} className="text-sm font-semibold text-gray-700 hover:text-accent-gold transition-colors">
+                      <a href={`tel:${COMPANY_INFO.rawPhones[0]}`} className="text-sm font-semibold text-gray-700 hover:text-black transition-colors">
                         +91 {COMPANY_INFO.rawPhones[0]}
                       </a>
                     </div>
@@ -111,7 +109,7 @@ export const Contact: React.FC = () => {
 
                 {/* Address */}
                 <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-accent-gold/10 border border-accent-gold/30 flex items-center justify-center text-accent-gold shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center text-black shrink-0">
                     <MapPin className="w-5 h-5" />
                   </div>
                   <div>
@@ -123,7 +121,7 @@ export const Contact: React.FC = () => {
                       href={COMPANY_INFO.address.mapUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-block mt-2 text-xs uppercase tracking-widest text-accent-gold font-bold hover:underline"
+                      className="inline-block mt-2 text-xs uppercase tracking-widest text-black font-bold hover:underline"
                     >
                       Open Google Maps Location →
                     </a>
@@ -132,7 +130,7 @@ export const Contact: React.FC = () => {
 
                 {/* Hours */}
                 <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-accent-gold/10 border border-accent-gold/30 flex items-center justify-center text-accent-gold shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center text-black shrink-0">
                     <Clock className="w-5 h-5" />
                   </div>
                   <div>
@@ -159,7 +157,7 @@ export const Contact: React.FC = () => {
             </div>
           </motion.div>
 
-          {/* Right Side - Interactive Zod Validated Contact Form with Scale & Fade Up */}
+          {/* Right Side - Interactive Contact Form */}
           <motion.div
             initial={{ opacity: 0, y: 40, scale: 0.98 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
@@ -167,14 +165,14 @@ export const Contact: React.FC = () => {
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
             className="lg:col-span-7 will-change-transform"
           >
-            <GlassCard hoverEffect={false} className="p-8 sm:p-10 border-accent-gold/30 relative">
+            <GlassCard hoverEffect={false} className="p-8 sm:p-10 border-gray-200 relative">
               {isSubmitted ? (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   className="py-12 flex flex-col items-center text-center space-y-4"
                 >
-                  <div className="w-16 h-16 rounded-full bg-accent-gold/20 border border-accent-gold flex items-center justify-center text-accent-gold shadow-[0_0_30px_rgba(197,160,89,0.3)]">
+                  <div className="w-16 h-16 rounded-full bg-black text-white flex items-center justify-center shadow-lg">
                     <CheckCircle2 className="w-8 h-8" />
                   </div>
                   <h3 className="font-serif text-3xl font-bold text-gray-900">Inquiry Received</h3>
@@ -198,32 +196,28 @@ export const Contact: React.FC = () => {
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    {/* Name */}
                     <div>
                       <label className="text-xs uppercase tracking-widest text-gray-700 font-semibold mb-2 flex items-center gap-1.5">
-                        <User className="w-3.5 h-3.5 text-accent-gold" /> Full Name *
+                        <User className="w-3.5 h-3.5 text-black" /> Full Name *
                       </label>
                       <input
                         {...register('name')}
-                        type="text"
-                        placeholder="e.g. Architect Rajesh Swaminathan"
-                        className="w-full px-4 py-3 rounded-xl glass-panel bg-gray-50 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-accent-gold transition-colors text-sm border border-gray-200"
+                        placeholder="Arun Kumar"
+                        className="w-full px-4 py-3 rounded-xl glass-panel bg-gray-50 text-gray-900 focus:outline-none focus:border-black transition-colors text-sm border border-gray-200"
                       />
                       {errors.name && (
                         <span className="text-xs text-red-500 mt-1 block">{errors.name.message}</span>
                       )}
                     </div>
 
-                    {/* Phone */}
                     <div>
                       <label className="text-xs uppercase tracking-widest text-gray-700 font-semibold mb-2 flex items-center gap-1.5">
-                        <Phone className="w-3.5 h-3.5 text-accent-gold" /> Mobile Number *
+                        <Phone className="w-3.5 h-3.5 text-black" /> Mobile Number *
                       </label>
                       <input
                         {...register('phone')}
-                        type="tel"
-                        placeholder="e.g. 7200629846"
-                        className="w-full px-4 py-3 rounded-xl glass-panel bg-gray-50 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-accent-gold transition-colors text-sm border border-gray-200"
+                        placeholder="98765 43210"
+                        className="w-full px-4 py-3 rounded-xl glass-panel bg-gray-50 text-gray-900 focus:outline-none focus:border-black transition-colors text-sm border border-gray-200"
                       />
                       {errors.phone && (
                         <span className="text-xs text-red-500 mt-1 block">{errors.phone.message}</span>
@@ -232,30 +226,27 @@ export const Contact: React.FC = () => {
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    {/* Email */}
                     <div>
                       <label className="text-xs uppercase tracking-widest text-gray-700 font-semibold mb-2 flex items-center gap-1.5">
-                        <Mail className="w-3.5 h-3.5 text-accent-gold" /> Email Address (Optional)
+                        <Mail className="w-3.5 h-3.5 text-black" /> Email Address
                       </label>
                       <input
                         {...register('email')}
-                        type="email"
-                        placeholder="e.g. client@domain.com"
-                        className="w-full px-4 py-3 rounded-xl glass-panel bg-gray-50 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-accent-gold transition-colors text-sm border border-gray-200"
+                        placeholder="arun@example.com"
+                        className="w-full px-4 py-3 rounded-xl glass-panel bg-gray-50 text-gray-900 focus:outline-none focus:border-black transition-colors text-sm border border-gray-200"
                       />
                       {errors.email && (
                         <span className="text-xs text-red-500 mt-1 block">{errors.email.message}</span>
                       )}
                     </div>
 
-                    {/* Product Category */}
                     <div>
                       <label className="text-xs uppercase tracking-widest text-gray-700 font-semibold mb-2 flex items-center gap-1.5">
-                        <Layers className="w-3.5 h-3.5 text-accent-gold" /> Product Category *
+                        <Layers className="w-3.5 h-3.5 text-black" /> Product Category *
                       </label>
                       <select
                         {...register('productCategory')}
-                        className="w-full px-4 py-3 rounded-xl glass-panel bg-gray-50 text-gray-900 focus:outline-none focus:border-accent-gold transition-colors text-sm border border-gray-200"
+                        className="w-full px-4 py-3 rounded-xl glass-panel bg-gray-50 text-gray-900 focus:outline-none focus:border-black transition-colors text-sm border border-gray-200"
                       >
                         {(categories.length > 0 ? categories : PRODUCT_CATEGORIES).map((p) => (
                           <option key={p.id} value={p.title} className="bg-white text-gray-900">
@@ -266,31 +257,29 @@ export const Contact: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Message */}
                   <div>
                     <label className="text-xs uppercase tracking-widest text-gray-700 font-semibold mb-2 flex items-center gap-1.5">
-                      <MessageSquare className="w-3.5 h-3.5 text-accent-gold" /> Project Requirements *
+                      <MessageSquare className="w-3.5 h-3.5 text-black" /> Project Requirements *
                     </label>
                     <textarea
                       {...register('message')}
                       rows={4}
-                      placeholder="Mention estimated square footage, slab finish preferences, or project timeline..."
-                      className="w-full px-4 py-3 rounded-xl glass-panel bg-gray-50 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-accent-gold transition-colors text-sm border border-gray-200"
+                      placeholder="Specify required granite slab thickness (e.g. 18mm), tile dimensions, or project sq.ft..."
+                      className="w-full px-4 py-3 rounded-xl glass-panel bg-gray-50 text-gray-900 focus:outline-none focus:border-black transition-colors text-sm border border-gray-200 resize-none"
                     />
                     {errors.message && (
                       <span className="text-xs text-red-500 mt-1 block">{errors.message.message}</span>
                     )}
                   </div>
 
-                  {/* Submit Button */}
                   <MagneticButton
+                    type="submit"
                     variant="primary"
                     size="lg"
-                    type="submit"
                     disabled={isSubmitting}
-                    className="w-full gap-2"
+                    className="w-full bg-black text-white hover:bg-gray-800"
                   >
-                    <span>{isSubmitting ? 'Sending Request...' : 'Submit Quotation Request'}</span>
+                    <span>{isSubmitting ? 'Submitting...' : 'Send Inquiry Quote'}</span>
                     <Send className="w-4 h-4" />
                   </MagneticButton>
                 </form>
