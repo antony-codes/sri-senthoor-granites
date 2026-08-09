@@ -378,7 +378,11 @@ export const getSubCategories = async (req: Request, res: Response) => {
 
 export const getProducts = async (req: Request, res: Response) => {
   try {
-    const { category, subCategory, search, featured } = req.query;
+    const { category, subCategory, search, featured, status, sort, page, limit } = req.query;
+    const pageNum = parseInt(page as string, 10) || 1;
+    const limitNum = parseInt(limit as string, 10) || (page ? 10 : 1000);
+    const skip = (pageNum - 1) * limitNum;
+
     let query: any = {};
 
     if (category && category !== 'all') {
@@ -387,33 +391,84 @@ export const getProducts = async (req: Request, res: Response) => {
     if (subCategory && subCategory !== 'all') {
       query.subCategory = subCategory;
     }
+    if (status && status !== 'all') {
+      query.status = status;
+    }
     if (featured === 'true') {
       query.isFeatured = true;
     }
+    if (search) {
+      const s = (search as string).toLowerCase().trim();
+      query.$or = [
+        { title: { $regex: s, $options: 'i' } },
+        { description: { $regex: s, $options: 'i' } },
+        { subCategory: { $regex: s, $options: 'i' } },
+      ];
+    }
+
+    let sortObj: any = { displayOrder: 1, createdAt: -1 };
+    if (sort === 'price_asc') sortObj = { price: 1 };
+    if (sort === 'price_desc') sortObj = { price: -1 };
+    if (sort === 'title_asc') sortObj = { title: 1 };
+    if (sort === 'title_desc') sortObj = { title: -1 };
 
     try {
-      let products = await Product.find(query).sort({ displayOrder: 1, createdAt: -1 });
-      if (search) {
-        const s = (search as string).toLowerCase();
-        products = products.filter(p => p.title.toLowerCase().includes(s) || p.description.toLowerCase().includes(s));
+      const totalCount = await Product.countDocuments(query);
+      const dbProducts = await Product.find(query)
+        .sort(sortObj)
+        .skip(skip)
+        .limit(limitNum);
+
+      if (dbProducts && dbProducts.length > 0) {
+        return res.json({
+          success: true,
+          count: dbProducts.length,
+          totalCount,
+          page: pageNum,
+          totalPages: Math.ceil(totalCount / limitNum) || 1,
+          limit: limitNum,
+          data: dbProducts,
+        });
       }
-      return res.json({ success: true, count: products.length, data: products });
     } catch {
       // Memory fallback
     }
 
     let filtered = [...memoryProducts];
     if (category && category !== 'all') {
-      filtered = filtered.filter(p => p.category === category);
+      filtered = filtered.filter((p) => p.category === category);
     }
     if (subCategory && subCategory !== 'all') {
-      filtered = filtered.filter(p => p.subCategory === subCategory);
+      filtered = filtered.filter((p) => p.subCategory === subCategory);
+    }
+    if (status && status !== 'all') {
+      filtered = filtered.filter((p) => p.status === status);
+    }
+    if (featured === 'true') {
+      filtered = filtered.filter((p) => p.isFeatured);
     }
     if (search) {
-      const s = (search as string).toLowerCase();
-      filtered = filtered.filter(p => p.title.toLowerCase().includes(s) || p.description.toLowerCase().includes(s));
+      const s = (search as string).toLowerCase().trim();
+      filtered = filtered.filter(
+        (p) =>
+          p.title.toLowerCase().includes(s) ||
+          p.description.toLowerCase().includes(s) ||
+          (p.subCategory && p.subCategory.toLowerCase().includes(s))
+      );
     }
-    return res.json({ success: true, count: filtered.length, data: filtered });
+
+    const totalCount = filtered.length;
+    const paginatedMemory = filtered.slice(skip, skip + limitNum);
+
+    return res.json({
+      success: true,
+      count: paginatedMemory.length,
+      totalCount,
+      page: pageNum,
+      totalPages: Math.ceil(totalCount / limitNum) || 1,
+      limit: limitNum,
+      data: paginatedMemory,
+    });
   } catch (error: any) {
     return res.status(500).json({ success: false, message: error.message });
   }

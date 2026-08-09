@@ -24,6 +24,10 @@ export let inMemoryUsers = [
       'audit:read',
     ],
     isActive: true,
+    avatar: '',
+    phone: '+91 98765 43210',
+    designation: 'Founder & Managing Director',
+    bio: 'Founder and managing director overseeing Sri Senthoor Granites quarry operations, marble import, and showroom architecture.',
     lastLogin: new Date(),
     createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
   },
@@ -43,6 +47,10 @@ export let inMemoryUsers = [
       'audit:read',
     ],
     isActive: true,
+    avatar: '',
+    phone: '+91 98765 11223',
+    designation: 'Showroom Operations Lead',
+    bio: 'Oversees inventory, granite pricing displays, and customer quotation workflow.',
     lastLogin: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
     createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000),
   },
@@ -54,21 +62,220 @@ export let inMemoryUsers = [
     role: 'staff',
     permissions: ['inquiries:manage', 'products:read'],
     isActive: true,
+    avatar: '',
+    phone: '+91 98765 99887',
+    designation: 'Sales Representative',
+    bio: 'Handles phone inquiries, direct showroom walk-in consultations, and estimate follow-ups.',
     lastLogin: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
     createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
   },
 ];
 
+// GET /api/users/profile/me
+export const getMyProfile = async (req: AuthRequest, res: Response) => {
+  try {
+    const userId = req.user?.id || req.user?._id;
+    if (!userId) {
+      return res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
+
+    let userDoc: any = null;
+    try {
+      userDoc = await User.findById(userId).select('-passwordHash');
+    } catch {
+      // Memory fallback
+    }
+
+    if (!userDoc) {
+      userDoc = inMemoryUsers.find((u) => u._id === userId || u.id === userId) || req.user;
+    }
+
+    return res.status(200).json({ success: true, data: userDoc });
+  } catch (error: any) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// PUT /api/users/profile/me
+export const updateMyProfile = async (req: AuthRequest, res: Response) => {
+  try {
+    const userId = req.user?.id || req.user?._id;
+    if (!userId) {
+      return res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
+
+    const { name, phone, designation, bio, avatar } = req.body;
+    let updatedUser: any;
+
+    try {
+      const user = await User.findById(userId);
+      if (user) {
+        if (name) user.name = name;
+        if (typeof phone === 'string') user.phone = phone;
+        if (typeof designation === 'string') user.designation = designation;
+        if (typeof bio === 'string') user.bio = bio;
+        if (typeof avatar === 'string') user.avatar = avatar;
+        await user.save();
+        updatedUser = user;
+      }
+    } catch {
+      // Memory fallback
+    }
+
+    if (!updatedUser) {
+      const memIdx = inMemoryUsers.findIndex((u) => u._id === userId || u.id === userId);
+      if (memIdx !== -1) {
+        inMemoryUsers[memIdx] = {
+          ...inMemoryUsers[memIdx],
+          name: name || inMemoryUsers[memIdx].name,
+          phone: typeof phone === 'string' ? phone : (inMemoryUsers[memIdx].phone || ''),
+          designation: typeof designation === 'string' ? designation : (inMemoryUsers[memIdx].designation || ''),
+          bio: typeof bio === 'string' ? bio : (inMemoryUsers[memIdx].bio || ''),
+          avatar: typeof avatar === 'string' ? avatar : (inMemoryUsers[memIdx].avatar || ''),
+        };
+        updatedUser = inMemoryUsers[memIdx];
+      } else {
+        updatedUser = {
+          ...req.user,
+          name: name || req.user?.name,
+          phone,
+          designation,
+          bio,
+          avatar,
+        };
+      }
+    }
+
+    const actorName = updatedUser?.name || 'User';
+    await logAuditEvent({
+      reqUser: updatedUser,
+      action: `${actorName} updated their profile details`,
+      entityType: 'user',
+      entityId: userId,
+    });
+
+    const responseData = { ...(updatedUser.toObject ? updatedUser.toObject() : updatedUser) };
+    delete responseData.passwordHash;
+
+    return res.status(200).json({ success: true, data: responseData });
+  } catch (error: any) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// POST /api/users/profile/avatar
+export const uploadAvatar = async (req: AuthRequest, res: Response) => {
+  try {
+    const userId = req.user?.id || req.user?._id;
+    if (!userId) {
+      return res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
+
+    const { avatar } = req.body;
+    if (!avatar) {
+      return res.status(400).json({ success: false, message: 'Avatar image payload is required' });
+    }
+
+    let updatedUser: any;
+    try {
+      const user = await User.findById(userId);
+      if (user) {
+        user.avatar = avatar;
+        await user.save();
+        updatedUser = user;
+      }
+    } catch {
+      // Memory fallback
+    }
+
+    if (!updatedUser) {
+      const memIdx = inMemoryUsers.findIndex((u) => u._id === userId || u.id === userId);
+      if (memIdx !== -1) {
+        inMemoryUsers[memIdx].avatar = avatar;
+        updatedUser = inMemoryUsers[memIdx];
+      }
+    }
+
+    await logAuditEvent({
+      reqUser: req.user,
+      action: `${req.user?.name} uploaded a new profile image`,
+      entityType: 'user',
+      entityId: userId,
+    });
+
+    return res.status(200).json({ success: true, avatar, data: updatedUser });
+  } catch (error: any) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// DELETE /api/users/profile/avatar
+export const removeAvatar = async (req: AuthRequest, res: Response) => {
+  try {
+    const userId = req.user?.id || req.user?._id;
+    if (!userId) {
+      return res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
+
+    let updatedUser: any;
+    try {
+      const user = await User.findById(userId);
+      if (user) {
+        user.avatar = '';
+        await user.save();
+        updatedUser = user;
+      }
+    } catch {
+      // Memory fallback
+    }
+
+    if (!updatedUser) {
+      const memIdx = inMemoryUsers.findIndex((u) => u._id === userId || u.id === userId);
+      if (memIdx !== -1) {
+        inMemoryUsers[memIdx].avatar = '';
+        updatedUser = inMemoryUsers[memIdx];
+      }
+    }
+
+    await logAuditEvent({
+      reqUser: req.user,
+      action: `${req.user?.name} removed their profile image`,
+      entityType: 'user',
+      entityId: userId,
+    });
+
+    return res.status(200).json({ success: true, message: 'Avatar removed successfully', data: updatedUser });
+  } catch (error: any) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 // GET /api/users
 export const getUsers = async (req: AuthRequest, res: Response) => {
   try {
-    const { search, role, status } = req.query;
+    const { search, role, status, page, limit } = req.query;
+    const pageNum = parseInt(page as string, 10) || 1;
+    const limitNum = parseInt(limit as string, 10) || (page ? 10 : 1000);
+    const skip = (pageNum - 1) * limitNum;
+
     let usersList: any[] = [];
 
     try {
-      usersList = await User.find().select('-passwordHash').sort({ createdAt: -1 });
-      if (usersList.length === 0) {
-        usersList = inMemoryUsers;
+      const dbUsers = await User.find().select('-passwordHash').sort({ createdAt: -1 });
+      usersList = dbUsers.map((u) => {
+        const obj = u.toObject ? u.toObject() : u;
+        return {
+          ...obj,
+          id: obj._id ? obj._id.toString() : obj.id,
+        };
+      });
+
+      // Ensure default admin & team members are present in the list if not yet seeded into MongoDB
+      const dbEmails = new Set(usersList.map((u) => u.email.toLowerCase()));
+      for (const memUser of inMemoryUsers) {
+        if (!dbEmails.has(memUser.email.toLowerCase())) {
+          usersList.push(memUser);
+        }
       }
     } catch {
       usersList = inMemoryUsers;
@@ -78,7 +285,10 @@ export const getUsers = async (req: AuthRequest, res: Response) => {
     if (search) {
       const q = String(search).toLowerCase();
       usersList = usersList.filter(
-        (u) => u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q)
+        (u) =>
+          (u.name && u.name.toLowerCase().includes(q)) ||
+          (u.email && u.email.toLowerCase().includes(q)) ||
+          (u.designation && u.designation.toLowerCase().includes(q))
       );
     }
 
@@ -91,7 +301,18 @@ export const getUsers = async (req: AuthRequest, res: Response) => {
       usersList = usersList.filter((u) => u.isActive === isActiveBool);
     }
 
-    return res.status(200).json({ success: true, count: usersList.length, data: usersList });
+    const totalCount = usersList.length;
+    const paginatedUsers = usersList.slice(skip, skip + limitNum);
+
+    return res.status(200).json({
+      success: true,
+      count: paginatedUsers.length,
+      totalCount,
+      page: pageNum,
+      totalPages: Math.ceil(totalCount / limitNum) || 1,
+      limit: limitNum,
+      data: paginatedUsers,
+    });
   } catch (error: any) {
     return res.status(500).json({ success: false, message: error.message });
   }
@@ -100,7 +321,7 @@ export const getUsers = async (req: AuthRequest, res: Response) => {
 // POST /api/users
 export const createUser = async (req: AuthRequest, res: Response) => {
   try {
-    const { name, email, password, role, permissions } = req.body;
+    const { name, email, password, role, permissions, phone, designation, bio } = req.body;
 
     if (!name || !email || !password) {
       return res.status(400).json({ success: false, message: 'Name, email, and password are required' });
@@ -124,6 +345,9 @@ export const createUser = async (req: AuthRequest, res: Response) => {
         passwordHash,
         role: assignedRole,
         permissions: assignedPermissions,
+        phone: phone || '',
+        designation: designation || '',
+        bio: bio || '',
         isActive: true,
       });
     } catch {
@@ -135,6 +359,9 @@ export const createUser = async (req: AuthRequest, res: Response) => {
         email: email.toLowerCase(),
         role: assignedRole,
         permissions: assignedPermissions,
+        phone: phone || '',
+        designation: designation || '',
+        bio: bio || '',
         isActive: true,
         createdAt: new Date(),
       };
@@ -164,7 +391,7 @@ export const createUser = async (req: AuthRequest, res: Response) => {
 export const updateUser = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
-    const { name, email, role } = req.body;
+    const { name, email, role, phone, designation, bio, avatar } = req.body;
 
     let updatedUser: any;
     let oldRole = '';
@@ -181,6 +408,10 @@ export const updateUser = async (req: AuthRequest, res: Response) => {
             name: name || inMemoryUsers[memIdx].name,
             email: email || inMemoryUsers[memIdx].email,
             role: role || inMemoryUsers[memIdx].role,
+            phone: typeof phone === 'string' ? phone : (inMemoryUsers[memIdx].phone || ''),
+            designation: typeof designation === 'string' ? designation : (inMemoryUsers[memIdx].designation || ''),
+            bio: typeof bio === 'string' ? bio : (inMemoryUsers[memIdx].bio || ''),
+            avatar: typeof avatar === 'string' ? avatar : (inMemoryUsers[memIdx].avatar || ''),
           };
           updatedUser = inMemoryUsers[memIdx];
         } else {
@@ -191,6 +422,10 @@ export const updateUser = async (req: AuthRequest, res: Response) => {
         user.name = name || user.name;
         user.email = email ? email.toLowerCase() : user.email;
         user.role = role || user.role;
+        if (typeof phone === 'string') user.phone = phone;
+        if (typeof designation === 'string') user.designation = designation;
+        if (typeof bio === 'string') user.bio = bio;
+        if (typeof avatar === 'string') user.avatar = avatar;
         await user.save();
         updatedUser = user;
       }
@@ -203,6 +438,10 @@ export const updateUser = async (req: AuthRequest, res: Response) => {
           name: name || inMemoryUsers[memIdx].name,
           email: email || inMemoryUsers[memIdx].email,
           role: role || inMemoryUsers[memIdx].role,
+          phone: typeof phone === 'string' ? phone : (inMemoryUsers[memIdx].phone || ''),
+          designation: typeof designation === 'string' ? designation : (inMemoryUsers[memIdx].designation || ''),
+          bio: typeof bio === 'string' ? bio : (inMemoryUsers[memIdx].bio || ''),
+          avatar: typeof avatar === 'string' ? avatar : (inMemoryUsers[memIdx].avatar || ''),
         };
         updatedUser = inMemoryUsers[memIdx];
       }

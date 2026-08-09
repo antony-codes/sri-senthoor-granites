@@ -60,19 +60,10 @@ export const DashboardLogin: React.FC<DashboardLoginProps> = ({ onLoginSuccess, 
               </span>
             </div>
           </div>
-
-          <span className="px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[10px] uppercase tracking-widest text-gray-200 font-semibold">
-            Est. {COMPANY_INFO.established} • Trichy
-          </span>
         </div>
 
         {/* Center Slogan & Quote */}
         <div className="relative z-10 max-w-lg space-y-6 my-auto">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/20 text-white text-xs font-bold uppercase tracking-widest">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Management Suite</span>
-          </div>
-
           <h2 className="font-serif text-4xl sm:text-5xl font-bold leading-tight text-white">
             "{COMPANY_INFO.slogan}"
           </h2>
@@ -80,23 +71,6 @@ export const DashboardLogin: React.FC<DashboardLoginProps> = ({ onLoginSuccess, 
           <p className="text-sm text-gray-300 leading-relaxed font-sans font-light">
             Manage natural quarry granites, large-format vitrified slabs, authentic Cuddapah Kadappa stone, sanitaryware, and bath fitting pricing in real-time.
           </p>
-
-          <div className="pt-4 border-t border-white/15 grid grid-cols-2 gap-4 text-xs">
-            <div>
-              <span className="block text-gray-400 uppercase tracking-wider text-[10px] font-semibold">Quarry Direct</span>
-              <span className="font-semibold text-white mt-0.5 block">Mirror Polish Slabs</span>
-            </div>
-            <div>
-              <span className="block text-gray-400 uppercase tracking-wider text-[10px] font-semibold">Quality Assurance</span>
-              <span className="font-semibold text-white mt-0.5 block">Direct Management</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom Footer Credits */}
-        <div className="relative z-10 flex items-center justify-between text-xs text-gray-400 border-t border-white/15 pt-6">
-          <span>© {new Date().getFullYear()} {COMPANY_INFO.name}</span>
-          <span className="text-[11px] uppercase tracking-widest text-gray-300">Founder: {COMPANY_INFO.founder}</span>
         </div>
       </div>
 

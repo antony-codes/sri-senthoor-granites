@@ -1,12 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2, X, AlertTriangle, Power } from 'lucide-react';
 import { ICategory } from '@/types';
-import { fetchCategories, createCategoryApi, updateCategoryApi, deleteCategoryApi } from '@/services/api';
+import { fetchCategoriesPaginated, createCategoryApi, updateCategoryApi, deleteCategoryApi } from '@/services/api';
 import { Toast, ToastMessage } from '@/components/common/Toast';
+
+import { Pagination } from '@/components/common/Pagination';
 
 export const CategoryManagement: React.FC = () => {
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Pagination State
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [totalCount, setTotalCount] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
 
   // Toast State
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
@@ -42,8 +50,10 @@ export const CategoryManagement: React.FC = () => {
   const loadCategories = async () => {
     setLoading(true);
     try {
-      const data = await fetchCategories(true);
-      setCategories(data);
+      const res = await fetchCategoriesPaginated(true, '', 'all', page, limit);
+      setCategories(res.data);
+      setTotalCount(res.totalCount);
+      setTotalPages(res.totalPages);
     } catch (err: any) {
       addToast('error', 'Failed to load categories', err.message);
     } finally {
@@ -53,7 +63,7 @@ export const CategoryManagement: React.FC = () => {
 
   useEffect(() => {
     loadCategories();
-  }, []);
+  }, [page, limit]);
 
   const handleOpenCreate = () => {
     setEditingCategory(null);
@@ -159,7 +169,7 @@ export const CategoryManagement: React.FC = () => {
             <table className="w-full text-left text-sm text-gray-700 font-sans">
               <thead className="bg-gray-50 text-xs font-bold uppercase tracking-wider text-gray-500 border-b border-gray-200">
                 <tr>
-                  <th className="px-6 py-4">Order</th>
+                  <th className="px-4 py-4 w-12 text-center">#</th>
                   <th className="px-6 py-4">Category Name</th>
                   <th className="px-6 py-4">Subtitle</th>
                   <th className="px-6 py-4">Visibility Status</th>
@@ -171,7 +181,7 @@ export const CategoryManagement: React.FC = () => {
                   const isActive = cat.isActive !== false;
                   return (
                     <tr key={cat.id || idx} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 font-mono text-xs font-semibold text-gray-500">#{cat.displayOrder || idx + 1}</td>
+                      <td className="px-4 py-4 text-center font-bold text-xs text-gray-400">{(page - 1) * limit + idx + 1}</td>
                       <td className="px-6 py-4 font-serif font-bold text-gray-900">{cat.title}</td>
                       <td className="px-6 py-4 text-xs text-gray-500">{cat.subtitle || '—'}</td>
                       
@@ -205,6 +215,17 @@ export const CategoryManagement: React.FC = () => {
               </tbody>
             </table>
           </div>
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            totalCount={totalCount}
+            limit={limit}
+            onPageChange={setPage}
+            onLimitChange={(l) => {
+              setLimit(l);
+              setPage(1);
+            }}
+          />
         </div>
       )}
 

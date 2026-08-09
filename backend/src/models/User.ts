@@ -9,6 +9,10 @@ export interface IUserDocument extends Document {
   role: UserRole;
   permissions: string[];
   isActive: boolean;
+  avatar?: string;
+  phone?: string;
+  designation?: string;
+  bio?: string;
   lastLogin?: Date;
   resetPasswordToken?: string;
   resetPasswordExpire?: Date;
@@ -28,6 +32,10 @@ const UserSchema: Schema = new Schema(
     },
     permissions: { type: [String], default: [] },
     isActive: { type: Boolean, default: true },
+    avatar: { type: String, default: '' },
+    phone: { type: String, default: '' },
+    designation: { type: String, default: '' },
+    bio: { type: String, default: '' },
     lastLogin: { type: Date },
     resetPasswordToken: { type: String },
     resetPasswordExpire: { type: Date },

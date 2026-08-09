@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 import { IUser, UserRole } from '@/types';
 import {
-  fetchUsersApi,
+  fetchUsersPaginated,
   createUserApi,
   updateUserApi,
   updateUserPermissionsApi,
@@ -38,12 +38,20 @@ const AVAILABLE_PERMISSIONS = [
   { id: 'audit:read', label: 'View System Audit Logs', category: 'System' },
 ];
 
+import { Pagination } from '@/components/common/Pagination';
+
 export const UserManagement: React.FC = () => {
   const [users, setUsers] = useState<IUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [roleFilter, setRoleFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
+
+  // Pagination State
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [totalCount, setTotalCount] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
 
   // Modals
   const [createModalOpen, setCreateModalOpen] = useState(false);
@@ -68,8 +76,10 @@ export const UserManagement: React.FC = () => {
   const loadUsers = async () => {
     setLoading(true);
     try {
-      const data = await fetchUsersApi(search, roleFilter, statusFilter);
-      setUsers(data);
+      const res = await fetchUsersPaginated(search, roleFilter, statusFilter, page, limit);
+      setUsers(res.data);
+      setTotalCount(res.totalCount);
+      setTotalPages(res.totalPages);
     } catch {
       // Ignore
     } finally {
@@ -79,7 +89,7 @@ export const UserManagement: React.FC = () => {
 
   useEffect(() => {
     loadUsers();
-  }, [search, roleFilter, statusFilter]);
+  }, [search, roleFilter, statusFilter, page, limit]);
 
   // Create User
   const handleCreateUser = async (e: React.FormEvent) => {
@@ -192,7 +202,7 @@ export const UserManagement: React.FC = () => {
       default:
         return (
           <span className="px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase bg-white text-gray-700 border border-gray-200">
-            Staff User
+            Staff
           </span>
         );
     }
@@ -270,6 +280,7 @@ export const UserManagement: React.FC = () => {
             <table className="w-full text-left text-xs text-gray-700">
               <thead className="text-[10px] font-bold uppercase tracking-wider text-gray-400 bg-gray-50 border-b border-gray-200">
                 <tr>
+                  <th className="py-3.5 px-4 w-12 text-center">#</th>
                   <th className="py-3.5 px-6">User Details</th>
                   <th className="py-3.5 px-4">Role</th>
                   <th className="py-3.5 px-4">Account Status</th>
@@ -278,12 +289,13 @@ export const UserManagement: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {users.map((u) => {
+                {users.map((u, idx) => {
                   const targetId = u._id || u.id || '';
                   const initialChar = u.name ? u.name[0].toUpperCase() : 'U';
 
                   return (
                     <tr key={targetId} className="hover:bg-gray-50/80 transition-colors">
+                      <td className="py-4 px-4 text-center font-bold text-xs text-gray-400">{(page - 1) * limit + idx + 1}</td>
                       <td className="py-4 px-6">
                         <div className="flex items-center gap-3">
                           <div className="w-9 h-9 rounded-full bg-black text-white flex items-center justify-center font-serif font-bold text-xs shrink-0 shadow-sm">
@@ -387,6 +399,17 @@ export const UserManagement: React.FC = () => {
             </table>
           </div>
         )}
+        <Pagination
+          currentPage={page}
+          totalPages={totalPages}
+          totalCount={totalCount}
+          limit={limit}
+          onPageChange={setPage}
+          onLimitChange={(l) => {
+            setLimit(l);
+            setPage(1);
+          }}
+        />
       </div>
 
       {/* 1. CREATE USER MODAL */}

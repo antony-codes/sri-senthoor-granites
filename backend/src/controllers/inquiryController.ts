@@ -46,13 +46,74 @@ export const createInquiry = async (req: Request, res: Response) => {
 
 export const getInquiries = async (req: Request, res: Response) => {
   try {
+    const { search, status, page, limit } = req.query;
+    const pageNum = parseInt(page as string, 10) || 1;
+    const limitNum = parseInt(limit as string, 10) || (page ? 10 : 1000);
+    const skip = (pageNum - 1) * limitNum;
+
+    let query: any = {};
+    if (status && status !== 'all') {
+      query.status = status;
+    }
+    if (search) {
+      const s = (search as string).toLowerCase().trim();
+      query.$or = [
+        { name: { $regex: s, $options: 'i' } },
+        { phone: { $regex: s, $options: 'i' } },
+        { email: { $regex: s, $options: 'i' } },
+        { productCategory: { $regex: s, $options: 'i' } },
+      ];
+    }
+
     try {
-      const inquiries = await Inquiry.find().sort({ createdAt: -1 });
-      if (inquiries.length > 0) return res.json({ success: true, data: inquiries });
+      const totalCount = await Inquiry.countDocuments(query);
+      const dbInquiries = await Inquiry.find(query)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limitNum);
+
+      if (dbInquiries && dbInquiries.length > 0) {
+        return res.json({
+          success: true,
+          count: dbInquiries.length,
+          totalCount,
+          page: pageNum,
+          totalPages: Math.ceil(totalCount / limitNum) || 1,
+          limit: limitNum,
+          data: dbInquiries,
+        });
+      }
     } catch {
       // Memory fallback
     }
-    return res.json({ success: true, data: memoryInquiries });
+
+    let filtered = [...memoryInquiries];
+    if (status && status !== 'all') {
+      filtered = filtered.filter((i) => (i.status || 'new') === status);
+    }
+    if (search) {
+      const s = (search as string).toLowerCase().trim();
+      filtered = filtered.filter(
+        (i) =>
+          i.name.toLowerCase().includes(s) ||
+          i.phone.toLowerCase().includes(s) ||
+          (i.email && i.email.toLowerCase().includes(s)) ||
+          i.productCategory.toLowerCase().includes(s)
+      );
+    }
+
+    const totalCount = filtered.length;
+    const paginatedMemory = filtered.slice(skip, skip + limitNum);
+
+    return res.json({
+      success: true,
+      count: paginatedMemory.length,
+      totalCount,
+      page: pageNum,
+      totalPages: Math.ceil(totalCount / limitNum) || 1,
+      limit: limitNum,
+      data: paginatedMemory,
+    });
   } catch (error: any) {
     return res.status(500).json({ success: false, message: error.message });
   }

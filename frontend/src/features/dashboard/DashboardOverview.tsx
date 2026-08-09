@@ -159,6 +159,7 @@ export const DashboardOverview: React.FC<{ onNavigate: (tab: string) => void }> 
               <table className="w-full text-left text-xs text-gray-700">
                 <thead className="text-[10px] font-bold uppercase tracking-wider text-gray-400 border-b border-gray-200 pb-2">
                   <tr>
+                    <th className="pb-3 w-8 text-center">#</th>
                     <th className="pb-3">Customer Name</th>
                     <th className="pb-3">Mobile Number</th>
                     <th className="pb-3">Category</th>
@@ -168,6 +169,7 @@ export const DashboardOverview: React.FC<{ onNavigate: (tab: string) => void }> 
                 <tbody className="divide-y divide-gray-200">
                   {recentLeads.map((lead, idx) => (
                     <tr key={lead._id || lead.id || idx} className="hover:bg-gray-50 transition-colors">
+                      <td className="py-3 text-center font-bold text-gray-400">{idx + 1}</td>
                       <td className="py-3 font-semibold text-gray-900">{lead.name}</td>
                       <td className="py-3 font-mono">{lead.phone}</td>
                       <td className="py-3 uppercase tracking-wider text-black font-bold">{lead.productCategory}</td>

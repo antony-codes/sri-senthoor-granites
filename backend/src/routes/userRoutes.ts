@@ -7,13 +7,25 @@ import {
   toggleUserActive,
   resetUserPassword,
   deleteUser,
+  getMyProfile,
+  updateMyProfile,
+  uploadAvatar,
+  removeAvatar,
 } from '../controllers/userController';
 import { protect, requirePermission } from '../middlewares/auth';
 
 const router = Router();
 
-// Protect all user endpoints and require 'users:manage' permission
+// 1. Protect all user routes
 router.use(protect);
+
+// 2. Self-service profile routes (Available to any logged-in user)
+router.get('/profile/me', getMyProfile);
+router.put('/profile/me', updateMyProfile);
+router.post('/profile/avatar', uploadAvatar);
+router.delete('/profile/avatar', removeAvatar);
+
+// 3. User Administration routes (Requires 'users:manage' permission)
 router.use(requirePermission('users:manage'));
 
 router.get('/', getUsers);

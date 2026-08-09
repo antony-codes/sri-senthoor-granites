@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2, Search, X, AlertTriangle, Power } from 'lucide-react';
 import { IProduct, ICategory } from '@/types';
-import { fetchProducts, fetchCategories, createProductApi, updateProductApi, deleteProductApi } from '@/services/api';
+import { fetchProductsPaginated, fetchCategories, createProductApi, updateProductApi, deleteProductApi } from '@/services/api';
 import { Toast, ToastMessage } from '@/components/common/Toast';
+
+import { Pagination } from '@/components/common/Pagination';
 
 export const ProductManagement: React.FC = () => {
   const [products, setProducts] = useState<IProduct[]>([]);
@@ -10,6 +12,12 @@ export const ProductManagement: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
+  
+  // Pagination State
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [totalCount, setTotalCount] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
   
   // Toast State
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
@@ -53,11 +61,13 @@ export const ProductManagement: React.FC = () => {
   const loadData = async () => {
     setLoading(true);
     try {
-      const [prodData, catData] = await Promise.all([
-        fetchProducts(selectedCategory, 'all', searchQuery),
+      const [prodRes, catData] = await Promise.all([
+        fetchProductsPaginated(selectedCategory, 'all', searchQuery, 'all', 'newest', page, limit),
         fetchCategories(true),
       ]);
-      setProducts(prodData);
+      setProducts(prodRes.data);
+      setTotalCount(prodRes.totalCount);
+      setTotalPages(prodRes.totalPages);
       setCategories(catData);
     } catch (err: any) {
       addToast('error', 'Failed to load catalog', err.message);
@@ -68,7 +78,7 @@ export const ProductManagement: React.FC = () => {
 
   useEffect(() => {
     loadData();
-  }, [selectedCategory, searchQuery]);
+  }, [selectedCategory, searchQuery, page, limit]);
 
   const handleOpenCreate = () => {
     setEditingProduct(null);
@@ -242,6 +252,7 @@ export const ProductManagement: React.FC = () => {
             <table className="w-full text-left text-sm text-gray-700">
               <thead className="bg-gray-50 text-xs font-bold uppercase tracking-wider text-gray-500 border-b border-gray-200">
                 <tr>
+                  <th className="px-4 py-4 w-12 text-center">#</th>
                   <th className="px-6 py-4">Image</th>
                   <th className="px-6 py-4">Product Title</th>
                   <th className="px-6 py-4">Category & Sub-Type</th>
@@ -257,6 +268,7 @@ export const ProductManagement: React.FC = () => {
 
                   return (
                     <tr key={prodId || idx} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-4 py-4 text-center font-bold text-xs text-gray-400">{(page - 1) * limit + idx + 1}</td>
                       <td className="px-6 py-4">
                         <img src={p.image} alt={p.title} className="w-12 h-12 rounded-xl object-cover border border-gray-200" />
                       </td>
@@ -310,6 +322,17 @@ export const ProductManagement: React.FC = () => {
               </tbody>
             </table>
           </div>
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            totalCount={totalCount}
+            limit={limit}
+            onPageChange={setPage}
+            onLimitChange={(l) => {
+              setLimit(l);
+              setPage(1);
+            }}
+          />
         </div>
       )}
 

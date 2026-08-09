@@ -3,6 +3,14 @@ import { PRODUCT_CATEGORIES as STATIC_CATEGORIES } from '@/constants/company';
 
 const API_BASE = '/api';
 
+export interface IPaginatedResponse<T> {
+  data: T[];
+  totalCount: number;
+  totalPages: number;
+  page: number;
+  limit: number;
+}
+
 export const getAuthToken = (): string | null => {
   return localStorage.getItem('ssg_admin_token');
 };
@@ -50,7 +58,6 @@ export const loginAdmin = async (email: string, password: string): Promise<{ tok
     localStorage.setItem('ssg_admin_user', JSON.stringify(data.user));
     return data;
   } catch (err: any) {
-    // Fallback static validation if backend is launching
     if (email === 'admin@srisenthoorgranites.com' && password === 'Admin@123456') {
       const mockUser: IUser = {
         id: 'admin-1',
@@ -95,25 +102,112 @@ export const resetPasswordApi = async (token: string, password: string): Promise
   return data;
 };
 
+// --- USER PROFILE API ---
+export const fetchMyProfileApi = async (): Promise<IUser> => {
+  try {
+    const res = await fetch(`${API_BASE}/users/profile/me`, {
+      headers: getHeaders(),
+    });
+    const data = await res.json();
+    if (data.success && data.data) {
+      localStorage.setItem('ssg_admin_user', JSON.stringify(data.data));
+      return data.data;
+    }
+  } catch {
+    // Ignore
+  }
+  return getStoredUser() || { name: 'Admin', email: '', role: 'super_admin' };
+};
+
+export const updateMyProfileApi = async (profileData: {
+  name?: string;
+  phone?: string;
+  designation?: string;
+  bio?: string;
+  avatar?: string;
+}): Promise<IUser> => {
+  const res = await fetch(`${API_BASE}/users/profile/me`, {
+    method: 'PUT',
+    headers: getHeaders(),
+    body: JSON.stringify(profileData),
+  });
+  const data = await res.json();
+  if (!res.ok || !data.success) {
+    throw new Error(data.message || 'Failed to update profile');
+  }
+  localStorage.setItem('ssg_admin_user', JSON.stringify(data.data));
+  return data.data;
+};
+
+export const uploadAvatarApi = async (avatarBase64: string): Promise<IUser> => {
+  const res = await fetch(`${API_BASE}/users/profile/avatar`, {
+    method: 'POST',
+    headers: getHeaders(),
+    body: JSON.stringify({ avatar: avatarBase64 }),
+  });
+  const data = await res.json();
+  if (!res.ok || !data.success) {
+    throw new Error(data.message || 'Failed to upload avatar image');
+  }
+  if (data.data) {
+    localStorage.setItem('ssg_admin_user', JSON.stringify(data.data));
+  }
+  return data.data;
+};
+
+export const removeAvatarApi = async (): Promise<IUser> => {
+  const res = await fetch(`${API_BASE}/users/profile/avatar`, {
+    method: 'DELETE',
+    headers: getHeaders(),
+  });
+  const data = await res.json();
+  if (!res.ok || !data.success) {
+    throw new Error(data.message || 'Failed to remove avatar image');
+  }
+  if (data.data) {
+    localStorage.setItem('ssg_admin_user', JSON.stringify(data.data));
+  }
+  return data.data;
+};
+
 // --- USERS & ACCESS API ---
 export const fetchUsersApi = async (search = '', role = 'all', status = 'all'): Promise<IUser[]> => {
+  const paginated = await fetchUsersPaginated(search, role, status, 1, 1000);
+  return paginated.data;
+};
+
+export const fetchUsersPaginated = async (
+  search = '',
+  role = 'all',
+  status = 'all',
+  page = 1,
+  limit = 10
+): Promise<IPaginatedResponse<IUser>> => {
   try {
     const query = new URLSearchParams();
     if (search) query.append('search', search);
     if (role && role !== 'all') query.append('role', role);
     if (status && status !== 'all') query.append('status', status);
+    query.append('page', String(page));
+    query.append('limit', String(limit));
 
     const res = await fetch(`${API_BASE}/users?${query.toString()}`, {
       headers: getHeaders(),
     });
     const data = await res.json();
     if (data.success && Array.isArray(data.data)) {
-      return data.data;
+      return {
+        data: data.data,
+        totalCount: data.totalCount ?? data.data.length,
+        totalPages: data.totalPages ?? 1,
+        page: data.page ?? page,
+        limit: data.limit ?? limit,
+      };
     }
   } catch {
     // Ignore
   }
-  return [];
+  return { data: [], totalCount: 0, totalPages: 1, page: 1, limit };
 };
 
 export const createUserApi = async (userData: {
@@ -191,8 +285,8 @@ export const fetchAuditLogsApi = async (
   entityType = 'all',
   user = 'all',
   page = 1,
-  limit = 50
-): Promise<{ data: IAuditLog[]; totalCount: number; totalPages: number }> => {
+  limit = 10
+): Promise<IPaginatedResponse<IAuditLog>> => {
   try {
     const query = new URLSearchParams();
     if (search) query.append('search', search);
@@ -208,36 +302,54 @@ export const fetchAuditLogsApi = async (
     if (data.success && Array.isArray(data.data)) {
       return {
         data: data.data,
-        totalCount: data.totalCount || data.data.length,
-        totalPages: data.totalPages || 1,
+        totalCount: data.totalCount ?? data.data.length,
+        totalPages: data.totalPages ?? 1,
+        page: data.page ?? page,
+        limit: data.limit ?? limit,
       };
     }
   } catch {
     // Ignore
   }
-  return { data: [], totalCount: 0, totalPages: 1 };
+  return { data: [], totalCount: 0, totalPages: 1, page: 1, limit };
 };
 
 // --- CATEGORIES API ---
 export const fetchCategories = async (includeDisabled = false): Promise<ICategory[]> => {
-  let categories: ICategory[] = [];
+  const res = await fetchCategoriesPaginated(includeDisabled, '', 'all', 1, 1000);
+  return res.data;
+};
+
+export const fetchCategoriesPaginated = async (
+  includeDisabled = false,
+  search = '',
+  status = 'all',
+  page = 1,
+  limit = 10
+): Promise<IPaginatedResponse<ICategory>> => {
   try {
-    const url = includeDisabled ? `${API_BASE}/categories?includeDisabled=true` : `${API_BASE}/categories`;
-    const res = await fetch(url);
+    const query = new URLSearchParams();
+    if (includeDisabled) query.append('includeDisabled', 'true');
+    if (search) query.append('search', search);
+    if (status && status !== 'all') query.append('status', status);
+    query.append('page', String(page));
+    query.append('limit', String(limit));
+
+    const res = await fetch(`${API_BASE}/categories?${query.toString()}`);
     const data = await res.json();
     if (data.success && Array.isArray(data.data)) {
-      categories = data.data;
-    } else {
-      categories = STATIC_CATEGORIES as any;
+      return {
+        data: data.data,
+        totalCount: data.totalCount ?? data.data.length,
+        totalPages: data.totalPages ?? 1,
+        page: data.page ?? page,
+        limit: data.limit ?? limit,
+      };
     }
   } catch {
-    categories = STATIC_CATEGORIES as any;
+    // Ignore
   }
-
-  if (!includeDisabled) {
-    return categories.filter((c) => c.isActive !== false);
-  }
-  return categories;
+  return { data: STATIC_CATEGORIES as any, totalCount: STATIC_CATEGORIES.length, totalPages: 1, page: 1, limit };
 };
 
 export const createCategoryApi = async (categoryData: Partial<ICategory>): Promise<ICategory> => {
@@ -302,22 +414,49 @@ export const fetchTestimonials = async (includeDisabled = false): Promise<any[]>
   return [];
 };
 
-export const fetchProducts = async (category = 'all', subCategory = 'all', search = ''): Promise<IProduct[]> => {
+export const fetchProducts = async (
+  category = 'all',
+  subCategory = 'all',
+  search = ''
+): Promise<IProduct[]> => {
+  const res = await fetchProductsPaginated(category, subCategory, search, 'all', 'newest', 1, 1000);
+  return res.data;
+};
+
+export const fetchProductsPaginated = async (
+  category = 'all',
+  subCategory = 'all',
+  search = '',
+  status = 'all',
+  sort = 'newest',
+  page = 1,
+  limit = 10
+): Promise<IPaginatedResponse<IProduct>> => {
   try {
     const query = new URLSearchParams();
     if (category && category !== 'all') query.append('category', category);
     if (subCategory && subCategory !== 'all') query.append('subCategory', subCategory);
     if (search) query.append('search', search);
+    if (status && status !== 'all') query.append('status', status);
+    if (sort) query.append('sort', sort);
+    query.append('page', String(page));
+    query.append('limit', String(limit));
 
     const res = await fetch(`${API_BASE}/products?${query.toString()}`);
     const data = await res.json();
-    if (data.success && Array.isArray(data.data) && data.data.length > 0) {
-      return data.data;
+    if (data.success && Array.isArray(data.data)) {
+      return {
+        data: data.data,
+        totalCount: data.totalCount ?? data.data.length,
+        totalPages: data.totalPages ?? 1,
+        page: data.page ?? page,
+        limit: data.limit ?? limit,
+      };
     }
   } catch {
     // Fallback
   }
-  return [];
+  return { data: [], totalCount: 0, totalPages: 1, page: 1, limit };
 };
 
 export const createProductApi = async (productData: Partial<IProduct>): Promise<IProduct> => {
@@ -352,6 +491,43 @@ export const deleteProductApi = async (id: string): Promise<void> => {
 };
 
 // --- INQUIRIES API ---
+export const fetchInquiriesApi = async (search = '', status = 'all'): Promise<IInquiry[]> => {
+  const res = await fetchInquiriesPaginated(search, status, 1, 1000);
+  return res.data;
+};
+
+export const fetchInquiriesPaginated = async (
+  search = '',
+  status = 'all',
+  page = 1,
+  limit = 10
+): Promise<IPaginatedResponse<IInquiry>> => {
+  try {
+    const query = new URLSearchParams();
+    if (search) query.append('search', search);
+    if (status && status !== 'all') query.append('status', status);
+    query.append('page', String(page));
+    query.append('limit', String(limit));
+
+    const res = await fetch(`${API_BASE}/inquiries?${query.toString()}`, {
+      headers: getHeaders(),
+    });
+    const data = await res.json();
+    if (data.success && Array.isArray(data.data)) {
+      return {
+        data: data.data,
+        totalCount: data.totalCount ?? data.data.length,
+        totalPages: data.totalPages ?? 1,
+        page: data.page ?? page,
+        limit: data.limit ?? limit,
+      };
+    }
+  } catch {
+    // Ignore
+  }
+  return { data: [], totalCount: 0, totalPages: 1, page: 1, limit };
+};
+
 export const submitInquiryApi = async (inquiryData: {
   name: string;
   phone: string;
@@ -369,24 +545,9 @@ export const submitInquiryApi = async (inquiryData: {
   return data.data;
 };
 
-export const fetchInquiriesApi = async (): Promise<IInquiry[]> => {
-  try {
-    const res = await fetch(`${API_BASE}/inquiries`, {
-      headers: getHeaders(),
-    });
-    const data = await res.json();
-    if (data.success && Array.isArray(data.data)) {
-      return data.data;
-    }
-  } catch {
-    // Fallback
-  }
-  return [];
-};
-
 export const updateInquiryStatusApi = async (id: string, status: string): Promise<IInquiry> => {
   const res = await fetch(`${API_BASE}/inquiries/${id}/status`, {
-    method: 'PATCH',
+    method: 'PUT',
     headers: getHeaders(),
     body: JSON.stringify({ status }),
   });

@@ -81,6 +81,10 @@ export interface IUser {
   role: UserRole;
   permissions?: string[];
   isActive?: boolean;
+  avatar?: string;
+  phone?: string;
+  designation?: string;
+  bio?: string;
   lastLogin?: string;
   createdAt?: string;
   updatedAt?: string;

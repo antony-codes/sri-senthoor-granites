@@ -66,25 +66,82 @@ let memoryCategories = [
 
 export const getCategories = async (req: Request, res: Response) => {
   try {
-    const { includeDisabled } = req.query;
-    const isIncludeDisabled = includeDisabled === 'true';
+    const { includeDisabled, search, status, page, limit } = req.query;
+    const pageNum = parseInt(page as string, 10) || 1;
+    const limitNum = parseInt(limit as string, 10) || (page ? 10 : 1000);
+    const skip = (pageNum - 1) * limitNum;
+
     let queryFilter: any = {};
-    if (!isIncludeDisabled) {
-      queryFilter.isActive = { $ne: false };
+
+    if (includeDisabled !== 'true' && status !== 'disabled') {
+      if (status === 'active') {
+        queryFilter.isActive = true;
+      } else if (status !== 'all') {
+        queryFilter.isActive = { $ne: false };
+      }
+    } else if (status === 'disabled') {
+      queryFilter.isActive = false;
+    }
+
+    if (search) {
+      const s = (search as string).toLowerCase().trim();
+      queryFilter.$or = [
+        { title: { $regex: s, $options: 'i' } },
+        { subtitle: { $regex: s, $options: 'i' } },
+        { description: { $regex: s, $options: 'i' } },
+      ];
     }
 
     try {
-      const dbCategories = await Category.find(queryFilter).sort({ displayOrder: 1 });
-      const count = await Category.countDocuments();
-      if (count > 0) {
-        return res.json({ success: true, data: dbCategories });
+      const totalCount = await Category.countDocuments(queryFilter);
+      const dbCategories = await Category.find(queryFilter)
+        .sort({ displayOrder: 1, createdAt: -1 })
+        .skip(skip)
+        .limit(limitNum);
+
+      if (dbCategories && dbCategories.length > 0) {
+        return res.json({
+          success: true,
+          count: dbCategories.length,
+          totalCount,
+          page: pageNum,
+          totalPages: Math.ceil(totalCount / limitNum) || 1,
+          limit: limitNum,
+          data: dbCategories,
+        });
       }
     } catch {
       // Fallthrough to memory fallback
     }
 
-    let memoryList = isIncludeDisabled ? memoryCategories : memoryCategories.filter(c => c.isActive !== false);
-    return res.json({ success: true, data: memoryList });
+    let filtered = [...memoryCategories];
+    if (includeDisabled !== 'true' && status !== 'disabled' && status !== 'all') {
+      filtered = filtered.filter((c) => c.isActive !== false);
+    } else if (status === 'disabled') {
+      filtered = filtered.filter((c) => c.isActive === false);
+    }
+    if (search) {
+      const s = (search as string).toLowerCase().trim();
+      filtered = filtered.filter(
+        (c) =>
+          c.title.toLowerCase().includes(s) ||
+          c.subtitle.toLowerCase().includes(s) ||
+          c.description.toLowerCase().includes(s)
+      );
+    }
+
+    const totalCount = filtered.length;
+    const paginatedMemory = filtered.slice(skip, skip + limitNum);
+
+    return res.json({
+      success: true,
+      count: paginatedMemory.length,
+      totalCount,
+      page: pageNum,
+      totalPages: Math.ceil(totalCount / limitNum) || 1,
+      limit: limitNum,
+      data: paginatedMemory,
+    });
   } catch (error: any) {
     return res.status(500).json({ success: false, message: error.message });
   }

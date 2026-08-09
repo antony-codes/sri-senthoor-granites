@@ -27,19 +27,80 @@ async function seedInitialData() {
     const { Category } = await import('../models/Category');
     const { Product } = await import('../models/Product');
 
-    // 1. Seed Admin User
-    const adminCount = await User.countDocuments();
-    if (adminCount === 0) {
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash('Admin@123456', salt);
-      await User.create({
+    // 1. Seed Users for ALL Roles (Super Admin, Admin, Staff)
+    const sampleUsers = [
+      {
         name: 'Arshath (Founder)',
         email: 'admin@srisenthoorgranites.com',
-        passwordHash: hashedPassword,
+        role: 'super_admin',
+        permissions: [
+          'users:manage',
+          'products:manage',
+          'products:price_update',
+          'categories:manage',
+          'gallery:manage',
+          'testimonials:manage',
+          'inquiries:manage',
+          'settings:manage',
+          'audit:read',
+        ],
+        phone: '+91 98765 43210',
+        designation: 'Founder & Managing Director',
+        bio: 'Founder and managing director overseeing Sri Senthoor Granites quarry operations, marble import, and showroom architecture.',
+        isActive: true,
+      },
+      {
+        name: 'Showroom Admin',
+        email: 'showroom@srisenthoorgranites.com',
         role: 'admin',
-      });
-      console.log(`[DB Seed] Default admin created: admin@srisenthoorgranites.com / Admin@123456`);
+        permissions: [
+          'products:manage',
+          'products:price_update',
+          'categories:manage',
+          'gallery:manage',
+          'testimonials:manage',
+          'inquiries:manage',
+          'audit:read',
+        ],
+        phone: '+91 98765 11223',
+        designation: 'Showroom Operations Lead',
+        bio: 'Oversees inventory, granite pricing displays, and customer quotation workflow.',
+        isActive: true,
+      },
+      {
+        name: 'Karthik Raja',
+        email: 'karthik@srisenthoorgranites.com',
+        role: 'staff',
+        permissions: ['inquiries:manage', 'products:read'],
+        phone: '+91 98765 99887',
+        designation: 'Senior Sales Representative',
+        bio: 'Handles phone inquiries, direct showroom walk-in consultations, and estimate follow-ups.',
+        isActive: true,
+      },
+      {
+        name: 'Priya Sundaram',
+        email: 'priya@srisenthoorgranites.com',
+        role: 'staff',
+        permissions: ['products:read', 'gallery:manage'],
+        phone: '+91 98765 44332',
+        designation: 'Architectural Design Advisor',
+        bio: 'Specializes in CAD elevation layouts, kitchen countertop matching, and custom Cuddapah stone detailing.',
+        isActive: true,
+      },
+    ];
+
+    const defaultPassHash = await bcrypt.hash('Admin@123456', 10);
+    const staffPassHash = await bcrypt.hash('Staff@123456', 10);
+
+    for (const u of sampleUsers) {
+      const passHash = u.role === 'staff' ? staffPassHash : defaultPassHash;
+      await User.findOneAndUpdate(
+        { email: u.email.toLowerCase() },
+        { ...u, passwordHash: passHash },
+        { upsert: true, new: true }
+      );
     }
+    console.log(`[DB Seed] Users for all roles (Super Admin, Admin, Staff) seeded into MongoDB.`);
 
     // 2. Seed Categories with Banner Images
     const sampleCategories = [
