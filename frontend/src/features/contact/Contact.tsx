@@ -71,19 +71,19 @@ export const Contact: React.FC = () => {
     <section id="contact" className="py-14 sm:py-20 relative bg-white text-gray-900 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <SectionHeader
-          title="Begin Your Architectural Journey With"
-          highlightTitle="Sri Senthoor Granites"
-          subtitle="Speak directly with founder Arshath or our expert natural stone consultants. Request customized slab quotes, physical samples, or site visits."
+          title="Let’s Build Together."
+          // highlightTitle="Sri Senthoor Granites"
+          subtitle="Speak directly with founder Arshath or our stone specialists for personalized recommendations, custom quotations, and project enquiries."
         />
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-15 items-stretch">
           {/* Left Side - Showroom Info & Direct Phone Links */}
           <motion.div
             initial={{ opacity: 0, x: -40 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            className="flex flex-col will-change-transform h-full min-h-[400px]"
+            className="flex flex-col will-change-transform h-full min-h-[200px]"
           >
             {/* Embedded Google Map Frame — stretches to match form height */}
             <div className="rounded-3xl overflow-hidden border border-gray-200 flex-1 min-h-[400px] relative">
@@ -120,7 +120,8 @@ export const Contact: React.FC = () => {
                   </div>
                   <h3 className="font-sans text-3xl font-bold text-gray-900">Inquiry Received</h3>
                   <p className="text-gray-600 font-sans max-w-md">
-                    Thank you for reaching out to Sri Senthoor Granites. Founder Arshath or a senior stone specialist will contact your phone shortly.
+                    Thank you for reaching out to Sri Senthoor Granites.
+Our team will review your requirements and get in touch with you shortly.
                   </p>
                   <MagneticButton
                     variant="outline"
@@ -134,8 +135,8 @@ export const Contact: React.FC = () => {
               ) : (
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                   <div className="flex flex-col">
-                    <h3 className="font-sans text-2xl font-bold text-gray-900">Request Custom Quotation</h3>
-                    <p className="text-xs text-gray-500 mt-1">Fill out the details below to receive direct quarry pricing.</p>
+                    <h3 className="font-sans text-2xl font-bold text-gray-900">Request a Custom Quote</h3>
+                    <p className="text-xs text-gray-500 mt-1">Tell us about your project and we’ll get back to you with the right options and pricing.</p>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -207,7 +208,7 @@ export const Contact: React.FC = () => {
                     <textarea
                       {...register('message')}
                       rows={4}
-                      placeholder="Specify required granite slab thickness (e.g. 18mm), tile dimensions, or project sq.ft..."
+                      placeholder="Tell us about your requirements, such as slab thickness, tile dimensions, quantity, or project size..."
                       className="w-full px-4 py-3 rounded-xl glass-panel bg-gray-50 text-gray-900 focus:outline-none focus:border-black transition-colors text-sm border border-gray-200 resize-none"
                     />
                     {errors.message && (
@@ -222,7 +223,7 @@ export const Contact: React.FC = () => {
                     disabled={isSubmitting}
                     className="w-full bg-black text-white hover:bg-gray-800"
                   >
-                    <span>{isSubmitting ? 'Submitting...' : 'Send Inquiry Quote'}</span>
+                    <span>{isSubmitting ? 'Submitting...' : 'Send Inquiry'}</span>
                     <Send className="w-4 h-4" />
                   </MagneticButton>
                 </form>
