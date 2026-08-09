@@ -15,7 +15,7 @@ export const Footer: React.FC = () => {
           <div className="lg:col-span-4 space-y-3">
             <div className="flex items-center gap-2">
               <Square className="w-4 h-4 fill-current text-black stroke-none" />
-              <span className="font-serif text-lg font-bold tracking-tight text-black">
+              <span className="font-sans text-lg font-bold tracking-tight text-black">
                 SriSenthoor<span className="font-light italic text-gray-600">Granites</span>
               </span>
             </div>
@@ -32,7 +32,7 @@ export const Footer: React.FC = () => {
 
           {/* Col 2: Quick Links */}
           <div className="lg:col-span-3 space-y-3">
-            <h4 className="font-serif text-xs font-bold text-gray-900 uppercase tracking-wider">Collections</h4>
+            <h4 className="font-sans text-xs font-bold text-gray-900 uppercase tracking-wider">Collections</h4>
             <ul className="space-y-1.5 text-xs text-gray-600">
               <li><a href="#products" className="hover:text-black transition-colors">Quarry Granites</a></li>
               <li><a href="#products" className="hover:text-black transition-colors">Vitrified Slabs & Tiles</a></li>
@@ -44,7 +44,7 @@ export const Footer: React.FC = () => {
 
           {/* Col 3: Contact & Location */}
           <div className="lg:col-span-5 space-y-3">
-            <h4 className="font-serif text-xs font-bold text-gray-900 uppercase tracking-wider">Showroom Headquarters</h4>
+            <h4 className="font-sans text-xs font-bold text-gray-900 uppercase tracking-wider">Showroom Headquarters</h4>
             <ul className="space-y-2 text-xs text-gray-600">
               <li className="flex items-start gap-2.5">
                 <MapPin className="w-3.5 h-3.5 text-black shrink-0 mt-0.5" />

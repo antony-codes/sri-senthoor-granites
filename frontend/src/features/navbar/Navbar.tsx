@@ -69,7 +69,7 @@ export const Navbar: React.FC = () => {
             className="flex items-center gap-2 group focus:outline-none"
           >
             <Square className="w-4 h-4 fill-current text-black stroke-none" />
-            <span className="font-serif text-lg sm:text-xl font-bold tracking-tight text-black">
+            <span className="font-sans text-lg sm:text-xl font-bold tracking-tight text-black">
               SriSenthoor<span className="font-light italic text-gray-600">Granites</span>
             </span>
           </a>
@@ -136,7 +136,7 @@ export const Navbar: React.FC = () => {
                     key={link.name}
                     href={link.href}
                     onClick={(e) => handleNavClick(e, link.href)}
-                    className="font-serif text-xl font-bold text-black hover:text-gray-600 transition-colors"
+                    className="font-sans text-xl font-bold text-black hover:text-gray-600 transition-colors"
                   >
                     {link.name}
                   </a>

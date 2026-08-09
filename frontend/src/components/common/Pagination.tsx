@@ -108,7 +108,7 @@ export const Pagination: React.FC<PaginationProps> = ({
           {getPageNumbers().map((p, idx) => {
             if (p === '...') {
               return (
-                <span key={`dots-${idx}`} className="px-2 py-1 text-gray-400 font-mono">
+                <span key={`dots-${idx}`} className="px-2 py-1 text-gray-400 font-sans">
                   ...
                 </span>
               );

@@ -213,7 +213,7 @@ export const UserManagement: React.FC = () => {
       {/* Title & Top Action Bar */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-200 pb-6">
         <div>
-          <h1 className="font-serif text-3xl font-bold text-gray-900 tracking-tight">Users & Access Management</h1>
+          <h1 className="font-sans text-3xl font-bold text-gray-900 tracking-tight">Users & Access Management</h1>
           <p className="text-xs text-gray-500 mt-1">Manage portal accounts, role-based access, and granular user permissions.</p>
         </div>
 
@@ -298,12 +298,12 @@ export const UserManagement: React.FC = () => {
                       <td className="py-4 px-4 text-center font-bold text-xs text-gray-400">{(page - 1) * limit + idx + 1}</td>
                       <td className="py-4 px-6">
                         <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-full bg-black text-white flex items-center justify-center font-serif font-bold text-xs shrink-0 shadow-sm">
+                          <div className="w-9 h-9 rounded-full bg-black text-white flex items-center justify-center font-sans font-bold text-xs shrink-0 shadow-sm">
                             {initialChar}
                           </div>
                           <div className="flex flex-col">
                             <span className="font-semibold text-gray-900 text-sm">{u.name}</span>
-                            <span className="text-gray-500 font-mono text-[11px]">{u.email}</span>
+                            <span className="text-gray-500 font-sans text-[11px]">{u.email}</span>
                           </div>
                         </div>
                       </td>
@@ -324,7 +324,7 @@ export const UserManagement: React.FC = () => {
                         </button>
                       </td>
 
-                      <td className="py-4 px-4 font-mono text-gray-500 text-[11px]">
+                      <td className="py-4 px-4 font-sans text-gray-500 text-[11px]">
                         {u.lastLogin ? (
                           <span className="flex items-center gap-1">
                             <Clock className="w-3 h-3 text-gray-400" />
@@ -429,7 +429,7 @@ export const UserManagement: React.FC = () => {
                 <X className="w-4 h-4" />
               </button>
 
-              <h3 className="font-serif text-2xl font-bold text-gray-900 mb-1">Create User Account</h3>
+              <h3 className="font-sans text-2xl font-bold text-gray-900 mb-1">Create User Account</h3>
               <p className="text-xs text-gray-500 mb-6">Invite a team member with role-based dashboard privileges.</p>
 
               {errorMsg && <div className="p-3 mb-4 rounded-xl bg-red-50 text-red-700 text-xs font-semibold">{errorMsg}</div>}
@@ -523,7 +523,7 @@ export const UserManagement: React.FC = () => {
                 <X className="w-4 h-4" />
               </button>
 
-              <h3 className="font-serif text-2xl font-bold text-gray-900 mb-1">Edit User Profile</h3>
+              <h3 className="font-sans text-2xl font-bold text-gray-900 mb-1">Edit User Profile</h3>
               <p className="text-xs text-gray-500 mb-6">Modify user details and change assigned system role.</p>
 
               {errorMsg && <div className="p-3 mb-4 rounded-xl bg-red-50 text-red-700 text-xs font-semibold">{errorMsg}</div>}
@@ -603,7 +603,7 @@ export const UserManagement: React.FC = () => {
                 <X className="w-4 h-4" />
               </button>
 
-              <h3 className="font-serif text-2xl font-bold text-gray-900 mb-1">
+              <h3 className="font-sans text-2xl font-bold text-gray-900 mb-1">
                 Custom Permissions: {permModalUser.name}
               </h3>
               <p className="text-xs text-gray-500 mb-6">
@@ -632,7 +632,7 @@ export const UserManagement: React.FC = () => {
                     >
                       <div className="flex flex-col">
                         <span className="text-xs font-bold text-gray-900">{perm.label}</span>
-                        <span className="text-[10px] text-gray-400 uppercase font-mono">{perm.id} • {perm.category}</span>
+                        <span className="text-[10px] text-gray-400 uppercase font-sans">{perm.id} • {perm.category}</span>
                       </div>
 
                       <div
@@ -685,7 +685,7 @@ export const UserManagement: React.FC = () => {
                 <X className="w-4 h-4" />
               </button>
 
-              <h3 className="font-serif text-2xl font-bold text-gray-900 mb-1">Reset Password</h3>
+              <h3 className="font-sans text-2xl font-bold text-gray-900 mb-1">Reset Password</h3>
               <p className="text-xs text-gray-500 mb-6">Enter new password for user <strong>{passwordModalUser.name}</strong>.</p>
 
               {errorMsg && <div className="p-3 mb-4 rounded-xl bg-red-50 text-red-700 text-xs font-semibold">{errorMsg}</div>}

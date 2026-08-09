@@ -100,18 +100,18 @@ export const Testimonials: React.FC = () => {
 
                       <div className="relative pt-0.5">
                         <Quote className="w-3.5 h-3.5 text-black opacity-40 mb-0.5" />
-                        <p className="font-serif text-xs sm:text-sm font-medium text-gray-800 leading-snug line-clamp-3">
+                        <p className="font-sans text-xs sm:text-sm font-medium text-gray-800 leading-snug line-clamp-3">
                           "{item.content}"
                         </p>
                       </div>
                     </div>
 
                     <div className="pt-2.5 border-t border-gray-100 flex items-center gap-2.5 mt-1">
-                      <div className="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center font-serif text-[11px] font-bold shrink-0 shadow-sm">
+                      <div className="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center font-sans text-[11px] font-bold shrink-0 shadow-sm">
                         {initials}
                       </div>
                       <div className="space-y-0.5 overflow-hidden">
-                        <h4 className="font-serif text-xs font-bold text-gray-900 truncate">{item.name}</h4>
+                        <h4 className="font-sans text-xs font-bold text-gray-900 truncate">{item.name}</h4>
                         <span className="text-[10px] font-semibold text-gray-600 block truncate">{item.role}</span>
                       </div>
                     </div>

@@ -25,7 +25,7 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
 
   return (
     <div className={cn('flex flex-col max-w-2xl mb-8 sm:mb-10', alignClass[alignment], className)}>
-      <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold tracking-tight text-gray-900 leading-tight">
+      <h2 className="text-2xl sm:text-3xl md:text-4xl font-sans font-bold tracking-tight text-gray-900 leading-tight">
         {title}{' '}
         {highlightTitle && (
           <span className="text-accent-gold font-normal">{highlightTitle}</span>

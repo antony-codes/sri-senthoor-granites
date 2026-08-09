@@ -120,10 +120,10 @@ export const Hero: React.FC = () => {
                 transition={{ duration: 0.5 }}
                 className="flex flex-col items-center"
               >
-                <h1 className="font-serif text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-bold tracking-tight text-white leading-none">
+                <h1 className="font-sans text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-bold tracking-tight text-white leading-none">
                   {slide.titleLine1}
                 </h1>
-                <h1 className="font-serif text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-bold tracking-tight text-white leading-none mt-1 sm:mt-2">
+                <h1 className="font-sans text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-bold tracking-tight text-white leading-none mt-1 sm:mt-2">
                   {slide.titleLine2}
                 </h1>
               </motion.div>

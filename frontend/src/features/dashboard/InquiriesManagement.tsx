@@ -48,7 +48,7 @@ export const InquiriesManagement: React.FC = () => {
       {/* Title Header */}
       <div className="flex justify-between items-start sm:items-center gap-4 border-b border-gray-200 pb-5">
         <div>
-          <h2 className="font-serif text-2xl font-bold text-gray-900">Customer Lead Inquiries</h2>
+          <h2 className="font-sans text-2xl font-bold text-gray-900">Customer Lead Inquiries</h2>
           <p className="text-xs text-gray-500 mt-1">Review and follow up on quotes requested from the public website.</p>
         </div>
         <button
@@ -117,14 +117,14 @@ export const InquiriesManagement: React.FC = () => {
                   <tr key={inq._id || inq.id || idx} className="hover:bg-gray-50 transition-colors">
                     <td className="py-4 px-4 text-center font-bold text-xs text-gray-400">{(page - 1) * limit + idx + 1}</td>
                     <td className="py-4 px-6">
-                      <span className="font-serif text-sm font-bold text-gray-900 block">{inq.name}</span>
+                      <span className="font-sans text-sm font-bold text-gray-900 block">{inq.name}</span>
                       {inq.email && (
-                        <a href={`mailto:${inq.email}`} className="text-gray-500 text-[11px] font-mono hover:underline">
+                        <a href={`mailto:${inq.email}`} className="text-gray-500 text-[11px] font-sans hover:underline">
                           {inq.email}
                         </a>
                       )}
                     </td>
-                    <td className="py-4 px-4 font-mono font-semibold">
+                    <td className="py-4 px-4 font-sans font-semibold">
                       <a href={`tel:${inq.phone}`} className="text-gray-900 hover:text-black flex items-center gap-1.5">
                         <Phone className="w-3.5 h-3.5 text-gray-400" />
                         <span>{inq.phone}</span>

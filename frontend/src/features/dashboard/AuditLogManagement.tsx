@@ -68,7 +68,7 @@ export const AuditLogManagement: React.FC = () => {
       {/* Title & Description */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-200 pb-6">
         <div>
-          <h1 className="font-serif text-3xl font-bold text-gray-900 tracking-tight">System Audit Logs</h1>
+          <h1 className="font-sans text-3xl font-bold text-gray-900 tracking-tight">System Audit Logs</h1>
           <p className="text-xs text-gray-500 mt-1">Track business operations, price updates, user additions, and system actions.</p>
         </div>
 

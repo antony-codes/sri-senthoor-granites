@@ -54,7 +54,7 @@ export const DashboardForgotPassword: React.FC<DashboardForgotPasswordProps> = (
           <div className="flex items-center gap-3">
             <Square className="w-6 h-6 fill-current text-white stroke-none" />
             <div className="flex flex-col">
-              <span className="font-serif text-xl font-bold tracking-tight text-white">
+              <span className="font-sans text-xl font-bold tracking-tight text-white">
                 SriSenthoor<span className="font-light italic text-gray-400">Granites</span>
               </span>
               <span className="text-[10px] uppercase tracking-widest text-gray-300 font-semibold">
@@ -74,7 +74,7 @@ export const DashboardForgotPassword: React.FC<DashboardForgotPasswordProps> = (
             <span>Secure Password Recovery</span>
           </div>
 
-          <h2 className="font-serif text-4xl sm:text-5xl font-bold leading-tight text-white">
+          <h2 className="font-sans text-4xl sm:text-5xl font-bold leading-tight text-white">
             Recover Access to Your Portal
           </h2>
 
@@ -105,7 +105,7 @@ export const DashboardForgotPassword: React.FC<DashboardForgotPasswordProps> = (
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Back to Login</span>
             </button>
-            <h1 className="font-serif text-3xl font-bold text-gray-900 tracking-tight">Forgot Password?</h1>
+            <h1 className="font-sans text-3xl font-bold text-gray-900 tracking-tight">Forgot Password?</h1>
             <p className="text-xs text-gray-600 font-sans leading-relaxed">
               No worries. Enter your registered email address below to receive a secure reset link.
             </p>
@@ -140,7 +140,7 @@ export const DashboardForgotPassword: React.FC<DashboardForgotPasswordProps> = (
                         onNavigateReset(demoResetUrl);
                       }
                     }}
-                    className="text-xs font-mono font-bold text-black hover:underline block break-all"
+                    className="text-xs font-sans font-bold text-black hover:underline block break-all"
                   >
                     {window.location.origin}{demoResetUrl}
                   </a>

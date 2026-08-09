@@ -73,7 +73,7 @@ export const DashboardResetPassword: React.FC<DashboardResetPasswordProps> = ({ 
           <div className="flex items-center gap-3">
             <Square className="w-6 h-6 fill-current text-white stroke-none" />
             <div className="flex flex-col">
-              <span className="font-serif text-xl font-bold tracking-tight text-white">
+              <span className="font-sans text-xl font-bold tracking-tight text-white">
                 SriSenthoor<span className="font-light italic text-gray-400">Granites</span>
               </span>
               <span className="text-[10px] uppercase tracking-widest text-gray-300 font-semibold">
@@ -93,7 +93,7 @@ export const DashboardResetPassword: React.FC<DashboardResetPasswordProps> = ({ 
             <span>Set New Password</span>
           </div>
 
-          <h2 className="font-serif text-4xl sm:text-5xl font-bold leading-tight text-white">
+          <h2 className="font-sans text-4xl sm:text-5xl font-bold leading-tight text-white">
             Create Your New Portal Password
           </h2>
 
@@ -117,7 +117,7 @@ export const DashboardResetPassword: React.FC<DashboardResetPasswordProps> = ({ 
           className="max-w-md w-full bg-white p-8 sm:p-10 rounded-3xl border border-gray-200 shadow-xl space-y-6 relative z-10"
         >
           <div className="space-y-2">
-            <h1 className="font-serif text-3xl font-bold text-gray-900 tracking-tight">Set New Password</h1>
+            <h1 className="font-sans text-3xl font-bold text-gray-900 tracking-tight">Set New Password</h1>
             <p className="text-xs text-gray-600 font-sans">
               Enter your new credentials below to complete resetting your account password.
             </p>
@@ -134,7 +134,7 @@ export const DashboardResetPassword: React.FC<DashboardResetPasswordProps> = ({ 
               <div className="w-16 h-16 rounded-full bg-black text-white flex items-center justify-center shadow-lg">
                 <CheckCircle2 className="w-8 h-8 text-white" />
               </div>
-              <h3 className="font-serif text-2xl font-bold text-gray-900">Password Reset Complete!</h3>
+              <h3 className="font-sans text-2xl font-bold text-gray-900">Password Reset Complete!</h3>
               <p className="text-xs text-gray-600 font-sans max-w-sm leading-relaxed">
                 Your password has been updated successfully. You can now sign in with your new credentials.
               </p>

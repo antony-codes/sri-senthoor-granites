@@ -147,7 +147,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                 <User className="w-5 h-5" />
               </div>
               <div>
-                <h2 className="font-serif text-xl font-bold text-gray-900 leading-snug">User Profile Settings</h2>
+                <h2 className="font-sans text-xl font-bold text-gray-900 leading-snug">User Profile Settings</h2>
                 <p className="text-xs text-gray-500">Manage your personal account details, designation, and avatar.</p>
               </div>
             </div>
@@ -178,7 +178,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
             {/* Profile Avatar Card Header */}
             <div className="p-6 rounded-2xl bg-gray-50 border border-gray-200 flex flex-col sm:flex-row items-center gap-6">
               <div className="relative group shrink-0">
-                <div className="w-24 h-24 rounded-full bg-black text-white flex items-center justify-center font-serif text-3xl font-bold overflow-hidden shadow-md border-2 border-white">
+                <div className="w-24 h-24 rounded-full bg-black text-white flex items-center justify-center font-sans text-3xl font-bold overflow-hidden shadow-md border-2 border-white">
                   {avatar ? (
                     <img src={avatar} alt={name} className="w-full h-full object-cover" />
                   ) : (
@@ -206,12 +206,12 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
 
               <div className="space-y-2 text-center sm:text-left flex-1">
                 <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-                  <h3 className="font-serif text-xl font-bold text-gray-900">{name || 'Admin User'}</h3>
+                  <h3 className="font-sans text-xl font-bold text-gray-900">{name || 'Admin User'}</h3>
                   <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-black text-white">
                     {getRoleLabel(currentUser.role)}
                   </span>
                 </div>
-                <p className="text-xs text-gray-500 font-mono">{email}</p>
+                <p className="text-xs text-gray-500 font-sans">{email}</p>
 
                 <div className="pt-2 flex flex-wrap items-center justify-center sm:justify-start gap-2">
                   <button
@@ -263,7 +263,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                     type="email"
                     value={email}
                     disabled
-                    className="w-full px-4 py-3 rounded-xl bg-gray-100 border border-gray-200 text-gray-500 text-xs font-mono cursor-not-allowed"
+                    className="w-full px-4 py-3 rounded-xl bg-gray-100 border border-gray-200 text-gray-500 text-xs font-sans cursor-not-allowed"
                   />
                 </div>
 

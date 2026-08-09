@@ -53,7 +53,7 @@ export const DashboardOverview: React.FC<{ onNavigate: (tab: string) => void }> 
       {/* Top Welcome Title & Quick Actions */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-200 pb-6">
         <div>
-          <h1 className="font-serif text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">Business Overview</h1>
+          <h1 className="font-sans text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">Business Overview</h1>
           <p className="text-xs text-gray-500 mt-1">Live analytics, access management, and system activity logs.</p>
         </div>
       </div>
@@ -73,7 +73,7 @@ export const DashboardOverview: React.FC<{ onNavigate: (tab: string) => void }> 
             </div>
           </div>
           <div className="mt-6 flex items-baseline justify-between">
-            <span className="font-serif text-4xl font-extrabold text-gray-900">{counts.products}</span>
+            <span className="font-sans text-4xl font-extrabold text-gray-900">{counts.products}</span>
             <span className="text-xs text-green-700 font-semibold flex items-center gap-1">
               <TrendingUp className="w-3.5 h-3.5" /> Active
             </span>
@@ -93,7 +93,7 @@ export const DashboardOverview: React.FC<{ onNavigate: (tab: string) => void }> 
             </div>
           </div>
           <div className="mt-6 flex items-baseline justify-between">
-            <span className="font-serif text-4xl font-extrabold text-gray-900">{counts.categories}</span>
+            <span className="font-sans text-4xl font-extrabold text-gray-900">{counts.categories}</span>
             <span className="text-xs text-black font-bold">100% Active</span>
           </div>
         </motion.div>
@@ -111,7 +111,7 @@ export const DashboardOverview: React.FC<{ onNavigate: (tab: string) => void }> 
             </div>
           </div>
           <div className="mt-6 flex items-baseline justify-between">
-            <span className="font-serif text-4xl font-extrabold text-gray-900">{counts.users}</span>
+            <span className="font-sans text-4xl font-extrabold text-gray-900">{counts.users}</span>
           </div>
         </motion.div>
 
@@ -128,7 +128,7 @@ export const DashboardOverview: React.FC<{ onNavigate: (tab: string) => void }> 
             </div>
           </div>
           <div className="mt-6 flex items-baseline justify-between">
-            <span className="font-serif text-4xl font-extrabold text-gray-900">{counts.auditLogs}</span>
+            <span className="font-sans text-4xl font-extrabold text-gray-900">{counts.auditLogs}</span>
             <span className="text-xs text-gray-500 font-semibold">Real-Time</span>
           </div>
         </motion.div>
@@ -140,7 +140,7 @@ export const DashboardOverview: React.FC<{ onNavigate: (tab: string) => void }> 
         <div className="lg:col-span-7 bg-white rounded-3xl border border-gray-200 p-6 sm:p-8 space-y-6 shadow-sm">
           <div className="flex justify-between items-center border-b border-gray-200 pb-4">
             <div>
-              <h3 className="font-serif text-xl font-bold text-gray-900">Recent Customer Lead Quotes</h3>
+              <h3 className="font-sans text-xl font-bold text-gray-900">Recent Customer Lead Quotes</h3>
               <p className="text-xs text-gray-500 mt-0.5">Quotations submitted directly from the Sri Senthoor Granites website.</p>
             </div>
             <button
@@ -171,7 +171,7 @@ export const DashboardOverview: React.FC<{ onNavigate: (tab: string) => void }> 
                     <tr key={lead._id || lead.id || idx} className="hover:bg-gray-50 transition-colors">
                       <td className="py-3 text-center font-bold text-gray-400">{idx + 1}</td>
                       <td className="py-3 font-semibold text-gray-900">{lead.name}</td>
-                      <td className="py-3 font-mono">{lead.phone}</td>
+                      <td className="py-3 font-sans">{lead.phone}</td>
                       <td className="py-3 uppercase tracking-wider text-black font-bold">{lead.productCategory}</td>
                       <td className="py-3">
                         <span
@@ -194,7 +194,7 @@ export const DashboardOverview: React.FC<{ onNavigate: (tab: string) => void }> 
         <div className="lg:col-span-5 bg-white rounded-3xl border border-gray-200 p-6 sm:p-8 space-y-6 shadow-sm">
           <div className="flex justify-between items-center border-b border-gray-200 pb-4">
             <div>
-              <h3 className="font-serif text-xl font-bold text-gray-900">Recent Audit Activity</h3>
+              <h3 className="font-sans text-xl font-bold text-gray-900">Recent Audit Activity</h3>
               <p className="text-xs text-gray-500 mt-0.5">Real-time log of product edits, price updates & user management.</p>
             </div>
             <button
@@ -216,7 +216,7 @@ export const DashboardOverview: React.FC<{ onNavigate: (tab: string) => void }> 
                   className="p-3.5 rounded-2xl border border-gray-100 bg-gray-50/70 hover:border-black transition-colors flex flex-col justify-between gap-1"
                 >
                   <span className="font-semibold text-xs text-gray-900">{log.action}</span>
-                  <div className="flex justify-between items-center text-[10px] text-gray-500 font-mono pt-1 border-t border-gray-200/50">
+                  <div className="flex justify-between items-center text-[10px] text-gray-500 font-sans pt-1 border-t border-gray-200/50">
                     <span>By: {log.userName}</span>
                     <span className="flex items-center gap-1">
                       <Clock className="w-3 h-3 text-gray-400" />

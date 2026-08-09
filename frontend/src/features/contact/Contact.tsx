@@ -86,7 +86,7 @@ export const Contact: React.FC = () => {
             className="lg:col-span-5 flex flex-col gap-6 will-change-transform"
           >
             <GlassCard hoverEffect={false} className="p-8 border-gray-200">
-              <h3 className="font-serif text-2xl font-bold text-gray-900 mb-6">Showroom Headquarters</h3>
+              <h3 className="font-sans text-2xl font-bold text-gray-900 mb-6">Showroom Headquarters</h3>
 
               <div className="space-y-6">
                 {/* Phones */}
@@ -175,7 +175,7 @@ export const Contact: React.FC = () => {
                   <div className="w-16 h-16 rounded-full bg-black text-white flex items-center justify-center shadow-lg">
                     <CheckCircle2 className="w-8 h-8" />
                   </div>
-                  <h3 className="font-serif text-3xl font-bold text-gray-900">Inquiry Received</h3>
+                  <h3 className="font-sans text-3xl font-bold text-gray-900">Inquiry Received</h3>
                   <p className="text-gray-600 font-sans max-w-md">
                     Thank you for reaching out to Sri Senthoor Granites. Founder Arshath or a senior stone specialist will contact your phone shortly.
                   </p>
@@ -191,7 +191,7 @@ export const Contact: React.FC = () => {
               ) : (
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                   <div className="flex flex-col">
-                    <h3 className="font-serif text-2xl font-bold text-gray-900">Request Custom Quotation</h3>
+                    <h3 className="font-sans text-2xl font-bold text-gray-900">Request Custom Quotation</h3>
                     <p className="text-xs text-gray-500 mt-1">Fill out the details below to receive direct quarry pricing.</p>
                   </div>
 

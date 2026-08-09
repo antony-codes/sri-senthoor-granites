@@ -74,8 +74,8 @@ export const LuxuryLoader: React.FC<LuxuryLoaderProps> = ({ onComplete }) => {
 
           {/* Centered Monogram & Counter */}
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-            <span className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-white">SSG</span>
-            <span className="font-mono text-xs text-gray-300 font-light tracking-widest mt-0.5">
+            <span className="font-sans text-2xl sm:text-3xl font-bold tracking-tight text-white">SSG</span>
+            <span className="font-sans text-xs text-gray-300 font-light tracking-widest mt-0.5">
               {progress}%
             </span>
           </div>
@@ -83,7 +83,7 @@ export const LuxuryLoader: React.FC<LuxuryLoaderProps> = ({ onComplete }) => {
 
         {/* Title */}
         <div className="text-center space-y-1">
-          <h2 className="font-serif text-lg sm:text-xl font-bold uppercase tracking-widest text-white">
+          <h2 className="font-sans text-lg sm:text-xl font-bold uppercase tracking-widest text-white">
             Sri Senthoor <span className="font-light italic text-gray-400">Granites</span>
           </h2>
           <span className="text-[10px] uppercase tracking-[0.3em] text-gray-500 font-semibold block">

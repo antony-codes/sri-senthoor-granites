@@ -159,7 +159,7 @@ export const Gallery: React.FC = () => {
                   <span className="text-[10px] uppercase tracking-wider text-gray-300 font-bold block">
                     {item.subtitle}
                   </span>
-                  <h3 className="font-serif text-lg font-bold text-white leading-snug">{item.title}</h3>
+                  <h3 className="font-sans text-lg font-bold text-white leading-snug">{item.title}</h3>
                 </div>
               </motion.div>
             ))}
@@ -192,7 +192,7 @@ export const Gallery: React.FC = () => {
               />
 
               <div className="mt-3 text-center text-white space-y-0.5 font-sans">
-                <h3 className="font-serif text-xl font-bold">{filteredItems[lightboxIndex].title}</h3>
+                <h3 className="font-sans text-xl font-bold">{filteredItems[lightboxIndex].title}</h3>
                 <p className="text-xs text-gray-300">{filteredItems[lightboxIndex].subtitle}</p>
               </div>
 

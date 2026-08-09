@@ -52,7 +52,7 @@ export const DashboardLogin: React.FC<DashboardLoginProps> = ({ onLoginSuccess, 
           <div className="flex items-center gap-3">
             <Square className="w-6 h-6 fill-current text-white stroke-none" />
             <div className="flex flex-col">
-              <span className="font-serif text-xl font-bold tracking-tight text-white">
+              <span className="font-sans text-xl font-bold tracking-tight text-white">
                 SriSenthoor<span className="font-light italic text-gray-400">Granites</span>
               </span>
               <span className="text-[10px] uppercase tracking-widest text-gray-300 font-semibold">
@@ -64,7 +64,7 @@ export const DashboardLogin: React.FC<DashboardLoginProps> = ({ onLoginSuccess, 
 
         {/* Center Slogan & Quote */}
         <div className="relative z-10 max-w-lg space-y-6 my-auto">
-          <h2 className="font-serif text-4xl sm:text-5xl font-bold leading-tight text-white">
+          <h2 className="font-sans text-4xl sm:text-5xl font-bold leading-tight text-white">
             "{COMPANY_INFO.slogan}"
           </h2>
 
@@ -86,9 +86,9 @@ export const DashboardLogin: React.FC<DashboardLoginProps> = ({ onLoginSuccess, 
           <div className="space-y-2">
             <div className="lg:hidden flex items-center gap-2.5 mb-4">
               <Square className="w-6 h-6 fill-current text-black stroke-none" />
-              <span className="font-serif text-xl font-bold tracking-tight text-black">SriSenthoorGranites</span>
+              <span className="font-sans text-xl font-bold tracking-tight text-black">SriSenthoorGranites</span>
             </div>
-            <h1 className="font-serif text-3xl font-bold text-gray-900 tracking-tight">Admin Sign In</h1>
+            <h1 className="font-sans text-3xl font-bold text-gray-900 tracking-tight">Admin Sign In</h1>
             <p className="text-xs text-gray-600 font-sans">
               Enter your founder credentials to manage products, categories, users, and audit logs.
             </p>

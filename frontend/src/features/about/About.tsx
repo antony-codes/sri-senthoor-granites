@@ -51,7 +51,7 @@ export const About: React.FC = () => {
                 <span className="text-[10px] uppercase tracking-wider text-gray-300 font-bold block mb-0.5">
                   Leadership
                 </span>
-                <h3 className="font-serif text-xl font-bold text-white">{COMPANY_INFO.founder}</h3>
+                <h3 className="font-sans text-xl font-bold text-white">{COMPANY_INFO.founder}</h3>
                 <p className="text-xs text-gray-300 font-sans">Founder & Managing Director</p>
                 <p className="text-xs text-gray-200 italic mt-2.5 border-t border-white/20 pt-2 font-sans leading-relaxed">
                   "Every granite vein tells millions of years of earth history. We bring that permanence into your sanctuary."
@@ -80,7 +80,7 @@ export const About: React.FC = () => {
                   <div className="w-8 h-8 rounded-xl bg-black text-white flex items-center justify-center mb-2.5 shadow-sm">
                     {pillar.icon}
                   </div>
-                  <h4 className="font-serif text-base font-bold text-gray-900">
+                  <h4 className="font-sans text-base font-bold text-gray-900">
                     {pillar.title}
                   </h4>
                   <p className="text-xs text-gray-500 mt-1 leading-relaxed">{pillar.desc}</p>
@@ -94,10 +94,10 @@ export const About: React.FC = () => {
         <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4 bg-black text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-gray-800 text-center">
           {COMPANY_STATS.map((stat) => (
             <div key={stat.label} className="flex flex-col items-center">
-              <span className="font-serif text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+              <span className="font-sans text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
                 {stat.value}
               </span>
-              <span className="text-[11px] uppercase tracking-wider text-gray-400 mt-1 font-mono font-medium">
+              <span className="text-[11px] uppercase tracking-wider text-gray-400 mt-1 font-sans font-medium">
                 {stat.label}
               </span>
             </div>

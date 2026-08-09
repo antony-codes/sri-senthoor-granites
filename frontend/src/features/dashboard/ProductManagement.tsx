@@ -192,7 +192,7 @@ export const ProductManagement: React.FC = () => {
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-200 pb-5">
         <div>
-          <h2 className="font-serif text-2xl font-bold text-gray-900">Product Catalog Management</h2>
+          <h2 className="font-sans text-2xl font-bold text-gray-900">Product Catalog Management</h2>
           <p className="text-xs text-gray-500 mt-1">Add, edit, toggle visibility, or delete products displayed on the public website catalog.</p>
         </div>
         <button
@@ -273,7 +273,7 @@ export const ProductManagement: React.FC = () => {
                         <img src={p.image} alt={p.title} className="w-12 h-12 rounded-xl object-cover border border-gray-200" />
                       </td>
                       <td className="px-6 py-4">
-                        <span className="font-serif font-bold text-gray-900 block">{p.title}</span>
+                        <span className="font-sans font-bold text-gray-900 block">{p.title}</span>
                         <span className="text-xs text-gray-500">{p.subtitle || p.finish}</span>
                       </td>
                       <td className="px-6 py-4">
@@ -286,7 +286,7 @@ export const ProductManagement: React.FC = () => {
                           </span>
                         )}
                       </td>
-                      <td className="px-6 py-4 text-xs font-mono font-semibold">
+                      <td className="px-6 py-4 text-xs font-sans font-semibold">
                         {p.offerPrice ? (
                           <span>₹{p.offerPrice} <span className="line-through text-gray-400">₹{p.price}</span> /{p.unit}</span>
                         ) : (
@@ -341,7 +341,7 @@ export const ProductManagement: React.FC = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
           <div className="bg-white border border-gray-200 rounded-3xl max-w-2xl w-full p-6 sm:p-8 space-y-6 shadow-2xl max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center border-b border-gray-200 pb-4">
-              <h3 className="font-serif text-xl font-bold text-gray-900">
+              <h3 className="font-sans text-xl font-bold text-gray-900">
                 {editingProduct ? 'Edit Product' : 'Add New Product'}
               </h3>
               <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-black cursor-pointer">
@@ -492,7 +492,7 @@ export const ProductManagement: React.FC = () => {
             </div>
 
             <div className="space-y-2">
-              <h3 className="font-serif text-xl font-bold text-gray-900">Delete Product?</h3>
+              <h3 className="font-sans text-xl font-bold text-gray-900">Delete Product?</h3>
               <p className="text-xs text-gray-600 font-sans leading-relaxed">
                 Are you sure you want to permanently delete <strong className="text-gray-900">"{deleteTarget.title}"</strong>? This product will be removed from both the database and public catalog.
               </p>

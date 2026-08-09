@@ -140,7 +140,7 @@ export const Products: React.FC = () => {
 
                     <div className="relative z-10 flex items-center justify-between">
                       <div className="flex items-center gap-2.5">
-                        <span className="font-mono text-[11px] font-bold text-white bg-black/70 px-2.5 py-0.5 rounded-full border border-white/20">
+                        <span className="font-sans text-[11px] font-bold text-white bg-black/70 px-2.5 py-0.5 rounded-full border border-white/20">
                           {formattedIndex}
                         </span>
                         <span className="text-[10px] uppercase tracking-wider font-bold text-gray-300 hidden sm:inline">
@@ -154,7 +154,7 @@ export const Products: React.FC = () => {
                     </div>
 
                     <div className="relative z-10 space-y-2 pt-8">
-                      <h3 className={`font-serif font-bold text-white group-hover:text-gray-200 transition-colors ${
+                      <h3 className={`font-sans font-bold text-white group-hover:text-gray-200 transition-colors ${
                         isHero ? 'text-2xl sm:text-4xl' : 'text-xl sm:text-2xl'
                       }`}>
                         {cat.title}
@@ -184,7 +184,7 @@ export const Products: React.FC = () => {
                 <span className="text-[10px] uppercase font-bold tracking-wider text-gray-700 block">
                   Category: {currentCategoryObj?.title || activeCategory}
                 </span>
-                <h2 className="font-serif text-2xl font-bold text-gray-900 mt-0.5">
+                <h2 className="font-sans text-2xl font-bold text-gray-900 mt-0.5">
                   {currentCategoryObj?.subtitle || `${currentCategoryObj?.title} Products`}
                 </h2>
               </div>
@@ -273,13 +273,13 @@ export const Products: React.FC = () => {
                           <span className="text-[10px] uppercase tracking-wider text-gray-600 font-bold block truncate">
                             {product.subCategory || product.category}
                           </span>
-                          <h3 className="font-serif text-base font-bold text-gray-900 line-clamp-1">
+                          <h3 className="font-sans text-base font-bold text-gray-900 line-clamp-1">
                             {product.title}
                           </h3>
                         </div>
 
                         <div className="pt-2 border-t border-gray-100 flex items-center justify-between gap-2">
-                          <div className="font-mono text-xs font-bold text-gray-900">
+                          <div className="font-sans text-xs font-bold text-gray-900">
                             ₹{product.offerPrice || product.price || 'Market Rate'}
                             <span className="text-[10px] text-gray-500 font-normal"> /{product.unit || 'sq.ft'}</span>
                           </div>
@@ -341,12 +341,12 @@ export const Products: React.FC = () => {
                     <span className="text-[10px] uppercase tracking-wider text-gray-300 font-bold">
                       {selectedProduct.subtitle || selectedProduct.subCategory}
                     </span>
-                    <h2 className="font-serif text-2xl font-bold text-white">{selectedProduct.title}</h2>
+                    <h2 className="font-sans text-2xl font-bold text-white">{selectedProduct.title}</h2>
                   </div>
 
                   <div className="bg-black/80 px-3.5 py-1.5 rounded-xl border border-white/20 text-right">
                     <span className="text-[9px] text-gray-300 uppercase block font-semibold">Price</span>
-                    <span className="font-mono text-base font-bold text-white">
+                    <span className="font-sans text-base font-bold text-white">
                       ₹{selectedProduct.offerPrice || selectedProduct.price} <span className="text-[10px] font-normal text-white">/{selectedProduct.unit || 'sq.ft'}</span>
                     </span>
                   </div>

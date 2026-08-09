@@ -58,7 +58,7 @@ export const WhyChooseUs: React.FC = () => {
               <div className="space-y-4">
                 <div className="flex items-center justify-between border-b border-gray-100 pb-3">
                   <div className="flex items-center gap-2.5">
-                    <span className="font-mono text-[11px] font-bold text-black bg-gray-100 px-2.5 py-0.5 rounded-full">
+                    <span className="font-sans text-[11px] font-bold text-black bg-gray-100 px-2.5 py-0.5 rounded-full">
                       {reason.number}
                     </span>
                     <span className="text-[10px] uppercase font-bold tracking-wider text-gray-700">
@@ -71,7 +71,7 @@ export const WhyChooseUs: React.FC = () => {
                 </div>
 
                 <div className="space-y-1">
-                  <h3 className="font-serif text-lg font-bold text-gray-900">
+                  <h3 className="font-sans text-lg font-bold text-gray-900">
                     {reason.title}
                   </h3>
                   <p className="text-xs text-gray-500 font-sans leading-relaxed">

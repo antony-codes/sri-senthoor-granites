@@ -128,7 +128,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ onLogout }) =>
             <div className="flex items-center gap-3">
               <Square className="w-6 h-6 fill-current text-black stroke-none" />
               <div className="flex flex-col">
-                <span className="font-serif text-lg font-bold tracking-tight text-black leading-tight">
+                <span className="font-sans text-lg font-bold tracking-tight text-black leading-tight">
                   SriSenthoor
                 </span>
                 <span className="text-[9px] uppercase tracking-widest text-black font-extrabold">
@@ -241,7 +241,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ onLogout }) =>
                 onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
                 className="flex items-center gap-2.5 p-1.5 sm:px-3 sm:py-1.5 rounded-2xl border border-gray-200 hover:border-black bg-white transition-all shadow-sm cursor-pointer group"
               >
-                <div className="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center font-serif font-bold text-xs shrink-0 overflow-hidden border border-gray-300">
+                <div className="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center font-sans font-bold text-xs shrink-0 overflow-hidden border border-gray-300">
                   {user?.avatar ? (
                     <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
                   ) : (
@@ -277,7 +277,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ onLogout }) =>
                   >
                     {/* User Header Details */}
                     <div className="p-3 bg-gray-50 rounded-xl border border-gray-100 flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center font-serif font-bold text-sm shrink-0 overflow-hidden shadow-sm">
+                      <div className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center font-sans font-bold text-sm shrink-0 overflow-hidden shadow-sm">
                         {user?.avatar ? (
                           <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
                         ) : (
@@ -286,7 +286,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ onLogout }) =>
                       </div>
                       <div className="flex flex-col truncate">
                         <span className="text-xs font-bold text-gray-900 truncate">{user?.name}</span>
-                        <span className="text-[10px] text-gray-500 font-mono truncate">{user?.email}</span>
+                        <span className="text-[10px] text-gray-500 font-sans truncate">{user?.email}</span>
                         <span className="mt-1 inline-flex w-fit px-2 py-0.5 rounded text-[9px] font-extrabold uppercase bg-black text-white">
                           {getRoleLabel(userRole)}
                         </span>

@@ -150,7 +150,7 @@ export const CategoryManagement: React.FC = () => {
 
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-200 pb-5">
         <div>
-          <h2 className="font-serif text-2xl font-bold text-gray-900">Category Management</h2>
+          <h2 className="font-sans text-2xl font-bold text-gray-900">Category Management</h2>
           <p className="text-xs text-gray-500 mt-1 font-sans">Manage architectural product categories and toggle visibility on the website navigation.</p>
         </div>
         <button
@@ -182,7 +182,7 @@ export const CategoryManagement: React.FC = () => {
                   return (
                     <tr key={cat.id || idx} className="hover:bg-gray-50 transition-colors">
                       <td className="px-4 py-4 text-center font-bold text-xs text-gray-400">{(page - 1) * limit + idx + 1}</td>
-                      <td className="px-6 py-4 font-serif font-bold text-gray-900">{cat.title}</td>
+                      <td className="px-6 py-4 font-sans font-bold text-gray-900">{cat.title}</td>
                       <td className="px-6 py-4 text-xs text-gray-500">{cat.subtitle || '—'}</td>
                       
                       {/* Active / Inactive Toggle Pill */}
@@ -234,7 +234,7 @@ export const CategoryManagement: React.FC = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
           <div className="bg-white border border-gray-200 rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-6 shadow-2xl">
             <div className="flex justify-between items-center border-b border-gray-200 pb-4">
-              <h3 className="font-serif text-xl font-bold text-gray-900">
+              <h3 className="font-sans text-xl font-bold text-gray-900">
                 {editingCategory ? 'Edit Category' : 'Create New Category'}
               </h3>
               <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-black cursor-pointer">
@@ -329,7 +329,7 @@ export const CategoryManagement: React.FC = () => {
             </div>
 
             <div className="space-y-2">
-              <h3 className="font-serif text-xl font-bold text-gray-900">Delete Category?</h3>
+              <h3 className="font-sans text-xl font-bold text-gray-900">Delete Category?</h3>
               <p className="text-xs text-gray-600 font-sans leading-relaxed">
                 Are you sure you want to delete category <strong className="text-gray-900">"{deleteTarget.title}"</strong>? Products linked to this category may lose their category grouping.
               </p>
