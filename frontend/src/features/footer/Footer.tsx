@@ -49,31 +49,47 @@ export const Footer: React.FC = () => {
             </ul>
           </div>
 
-          {/* Col 3: Contact & Location */}
-          <div className="lg:col-span-5 space-y-3">
-            <h4 className="font-sans text-xs font-bold text-gray-900 uppercase tracking-wider">Showroom Headquarters</h4>
-            <ul className="space-y-2 text-xs text-gray-600">
-              <li className="flex items-start gap-2.5">
-                <MapPin className="w-3.5 h-3.5 text-black shrink-0 mt-0.5" />
-                <span>{COMPANY_INFO.address.full}</span>
-              </li>
-              <li className="flex items-center gap-2.5">
-                <Phone className="w-3.5 h-3.5 text-black shrink-0" />
-                <div className="flex gap-2 font-semibold text-gray-800">
-                  <a href={`tel:${COMPANY_INFO.rawPhones[1]}`} className="hover:text-black transition-colors">
-                    +91 {COMPANY_INFO.rawPhones[1]}
-                  </a>
-                  <span>/</span>
-                  <a href={`tel:${COMPANY_INFO.rawPhones[0]}`} className="hover:text-black transition-colors">
-                    +91 {COMPANY_INFO.rawPhones[0]}
-                  </a>
-                </div>
-              </li>
-              <li className="flex items-start gap-2.5">
-                <Clock className="w-3.5 h-3.5 text-black shrink-0 mt-0.5" />
-                <span>{COMPANY_INFO.workingHours}</span>
-              </li>
-            </ul>
+          {/* Col 3: Contact & Location with Transparent LottieFiles Paperplane Animation */}
+          <div className="lg:col-span-5 space-y-3 relative">
+            <h4 className="font-sans text-xs font-bold text-gray-900 uppercase tracking-wider">
+              Showroom Headquarters
+            </h4>
+
+            <div className="flex flex-col sm:flex-row items-start gap-4">
+              {/* Showroom Address List */}
+              <ul className="space-y-2 text-xs text-gray-600 flex-1">
+                <li className="flex items-start gap-2.5">
+                  <MapPin className="w-3.5 h-3.5 text-black shrink-0 mt-0.5" />
+                  <span>{COMPANY_INFO.address.full}</span>
+                </li>
+                <li className="flex items-center gap-2.5">
+                  <Phone className="w-3.5 h-3.5 text-black shrink-0" />
+                  <div className="flex gap-2 font-semibold text-gray-800">
+                    <a href={`tel:${COMPANY_INFO.rawPhones[1]}`} className="hover:text-black transition-colors">
+                      +91 {COMPANY_INFO.rawPhones[1]}
+                    </a>
+                    <span>/</span>
+                    <a href={`tel:${COMPANY_INFO.rawPhones[0]}`} className="hover:text-black transition-colors">
+                      +91 {COMPANY_INFO.rawPhones[0]}
+                    </a>
+                  </div>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <Clock className="w-3.5 h-3.5 text-black shrink-0 mt-0.5" />
+                  <span>{COMPANY_INFO.workingHours}</span>
+                </li>
+              </ul>
+
+              {/* Seamless Transparent LottieFiles Paperplane Animation (No Card Container) */}
+              <div className="w-[140px] h-[95px] overflow-hidden bg-transparent shrink-0 flex items-center justify-center pointer-events-none">
+                <iframe
+                  src="https://embed.lottiefiles.com/animation/9844"
+                  title="Loading 40 | Paperplane Lottie Animation"
+                  className="w-[180px] h-[180px] border-0 pointer-events-none bg-transparent"
+                  loading="eager"
+                />
+              </div>
+            </div>
           </div>
         </div>
 

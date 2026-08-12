@@ -26,51 +26,29 @@ type ContactFormData = z.infer<typeof contactSchema>;
 export const Contact: React.FC = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [categories, setCategories] = useState<ICategory[]>([]);
-  const [isLargeScreen, setIsLargeScreen] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    fetchCategories().then((cats) => setCategories(cats)).catch(() => { });
-
-    const checkScreen = () => setIsLargeScreen(window.innerWidth >= 1024);
-    checkScreen();
-    window.addEventListener('resize', checkScreen);
-    return () => window.removeEventListener('resize', checkScreen);
+    fetchCategories().then((cats) => setCategories(cats)).catch(() => {});
   }, []);
 
-  // Continuous scroll tracking for the sequential Contact reveal
+  // Smooth Scroll-Based 3D Reveal Animation for Contact Form
   const { scrollYProgress } = useScroll({
     target: sectionRef,
-    offset: ['start 85%', 'end 95%'],
+    offset: ['start 85%', 'end 85%'],
   });
 
   const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 90,
-    damping: 22,
+    stiffness: 55,
+    damping: 24,
     restDelta: 0.001,
   });
 
-  // STAGE 1 (0 -> 0.35): Only Contact Form is visible, centered in the section container
-  // STAGE 2 (0.35 -> 0.70): Contact Form glides left (0%), Map reveals in right column (100% opacity)
-  // STAGE 3 (0.70 -> 1.0): Both stay 100% fixed & settled, continuing to Footer naturally
-
-  const formX = useTransform(
-    smoothProgress,
-    [0, 0.35, 0.7, 1],
-    [isLargeScreen ? '50%' : '0%', isLargeScreen ? '50%' : '0%', '0%', '0%']
-  );
-  const formY = useTransform(smoothProgress, [0, 0.35, 0.7, 1], [45, 0, 0, 0]);
-  const formScale = useTransform(smoothProgress, [0, 0.35, 0.7, 1], [0.86, 1, 1, 1]);
-  const formRotateX = useTransform(smoothProgress, [0, 0.35, 0.7, 1], [10, 0, 0, 0]);
-  const formOpacity = useTransform(smoothProgress, [0, 0.15, 0.35, 1], [0, 1, 1, 1]);
-  const formFilter = useTransform(smoothProgress, [0, 0.35, 0.7, 1], ['blur(10px)', 'blur(0px)', 'blur(0px)', 'blur(0px)']);
-
-  // Map: 100% HIDDEN during Stage 1 (progress 0 -> 0.35), reveals in Stage 2 (0.35 -> 0.70), settles in Stage 3
-  const mapOpacity = useTransform(smoothProgress, [0, 0.35, 0.7, 1], [0, 0, 1, 1]);
-  const mapScale = useTransform(smoothProgress, [0, 0.35, 0.7, 1], [0.88, 0.88, 1, 1]);
-  const mapY = useTransform(smoothProgress, [0, 0.35, 0.7, 1], [40, 40, 0, 0]);
-  const mapFilter = useTransform(smoothProgress, [0, 0.35, 0.7, 1], ['blur(10px)', 'blur(10px)', 'blur(0px)', 'blur(0px)']);
-  const mapPointerEvents = useTransform(smoothProgress, (val) => (val > 0.35 ? 'auto' : 'none'));
+  const formY = useTransform(smoothProgress, [0, 1], [60, 0]);
+  const formScale = useTransform(smoothProgress, [0, 1], [0.92, 1]);
+  const formRotateX = useTransform(smoothProgress, [0, 1], [15, 0]);
+  const formOpacity = useTransform(smoothProgress, [0, 0.4], [0, 1]);
+  const formFilter = useTransform(smoothProgress, [0, 0.6], ['blur(10px)', 'blur(0px)']);
 
   const {
     register,
@@ -114,174 +92,148 @@ export const Contact: React.FC = () => {
       id="contact"
       className="py-14 sm:py-20 relative bg-white text-gray-900 transition-colors overflow-hidden perspective-1000"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <SectionHeader
           title="Let’s Build Together."
           subtitle={`Speak directly with founder ${COMPANY_INFO.founder} or our stone specialists for personalized recommendations, custom quotations, and project enquiries.`}
         />
 
-        {/* 2-Column Grid (Left: Contact Form, Right: Map) */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-stretch relative">
-          {/* Left Column (Col 1) -> Contact Form (Reveals FIRST in section center, then glides into Left Column) */}
-          <motion.div
-            style={{
-              x: formX,
-              y: formY,
-              scale: formScale,
-              rotateX: formRotateX,
-              opacity: formOpacity,
-              filter: formFilter,
-              transformStyle: 'preserve-3d',
-            }}
-            className="will-change-transform h-full transform-gpu z-20"
-          >
-            <GlassCard hoverEffect={false} className="p-8 sm:p-10 border-gray-200 relative shadow-xl hover:shadow-2xl transition-shadow duration-300">
-              {isSubmitted ? (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="py-12 flex flex-col items-center text-center space-y-4"
+        {/* Centered Hero Contact Form with Scroll-Based 3D Reveal */}
+        <motion.div
+          style={{
+            y: formY,
+            scale: formScale,
+            rotateX: formRotateX,
+            opacity: formOpacity,
+            filter: formFilter,
+            transformStyle: 'preserve-3d',
+          }}
+          className="will-change-transform max-w-2xl mx-auto transform-gpu z-20"
+        >
+          <GlassCard hoverEffect={false} className="p-6 sm:p-10 border-gray-200 relative shadow-xl hover:shadow-2xl transition-shadow duration-300 rounded-3xl">
+            {isSubmitted ? (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="py-12 flex flex-col items-center justify-center text-center space-y-4"
+              >
+                <div className="w-16 h-16 rounded-full bg-black text-white flex items-center justify-center shadow-lg">
+                  <CheckCircle2 className="w-8 h-8" />
+                </div>
+                <h3 className="font-sans text-3xl font-bold text-gray-900">Inquiry Received</h3>
+                <p className="text-sm text-gray-600 font-sans max-w-md">
+                  Thank you for reaching out to Sri Senthoor Granites. Our team will review your requirements and get in touch with you shortly.
+                </p>
+                <MagneticButton
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsSubmitted(false)}
+                  className="mt-4 text-xs"
                 >
-                  <div className="w-16 h-16 rounded-full bg-black text-white flex items-center justify-center shadow-lg">
-                    <CheckCircle2 className="w-8 h-8" />
-                  </div>
-                  <h3 className="font-sans text-3xl font-bold text-gray-900">Inquiry Received</h3>
-                  <p className="text-gray-600 font-sans max-w-md">
-                    Thank you for reaching out to Sri Senthoor Granites. Our team will review your requirements and get in touch with you shortly.
-                  </p>
-                  <MagneticButton
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setIsSubmitted(false)}
-                    className="mt-4"
-                  >
-                    Submit Another Inquiry
-                  </MagneticButton>
-                </motion.div>
-              ) : (
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                  <div className="flex flex-col">
-                    <h3 className="font-sans text-2xl font-bold text-gray-900">Request a Custom Quote</h3>
-                    <p className="text-xs text-gray-500 mt-1">Tell us about your project and we’ll get back to you with the right options and pricing.</p>
-                  </div>
+                  Submit Another Inquiry
+                </MagneticButton>
+              </motion.div>
+            ) : (
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 flex flex-col" autoComplete="off">
+                <div className="flex flex-col space-y-1">
+                  <h3 className="font-sans text-xl sm:text-2xl font-bold text-gray-900">Request a Custom Quote</h3>
+                  <p className="text-xs sm:text-sm text-gray-500">Tell us about your project and we’ll get back to you with the right options and pricing.</p>
+                </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div>
-                      <label className="text-xs uppercase tracking-widest text-gray-700 font-semibold mb-2 flex items-center gap-1.5">
-                        <User className="w-3.5 h-3.5 text-black" /> Full Name *
-                      </label>
-                      <input
-                        {...register('name')}
-                        placeholder="Arun Kumar"
-                        className="w-full px-4 py-3 rounded-xl glass-panel bg-gray-50 text-gray-900 focus:outline-none focus:border-black transition-colors text-sm border border-gray-200"
-                      />
-                      {errors.name && (
-                        <span className="text-xs text-red-500 mt-1 block">{errors.name.message}</span>
-                      )}
-                    </div>
-
-                    <div>
-                      <label className="text-xs uppercase tracking-widest text-gray-700 font-semibold mb-2 flex items-center gap-1.5">
-                        <Phone className="w-3.5 h-3.5 text-black" /> Mobile Number *
-                      </label>
-                      <input
-                        {...register('phone')}
-                        placeholder="98765 43210"
-                        className="w-full px-4 py-3 rounded-xl glass-panel bg-gray-50 text-gray-900 focus:outline-none focus:border-black transition-colors text-sm border border-gray-200"
-                      />
-                      {errors.phone && (
-                        <span className="text-xs text-red-500 mt-1 block">{errors.phone.message}</span>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div>
-                      <label className="text-xs uppercase tracking-widest text-gray-700 font-semibold mb-2 flex items-center gap-1.5">
-                        <Mail className="w-3.5 h-3.5 text-black" /> Email Address
-                      </label>
-                      <input
-                        {...register('email')}
-                        placeholder="arun@example.com"
-                        className="w-full px-4 py-3 rounded-xl glass-panel bg-gray-50 text-gray-900 focus:outline-none focus:border-black transition-colors text-sm border border-gray-200"
-                      />
-                      {errors.email && (
-                        <span className="text-xs text-red-500 mt-1 block">{errors.email.message}</span>
-                      )}
-                    </div>
-
-                    <div>
-                      <label className="text-xs uppercase tracking-widest text-gray-700 font-semibold mb-2 flex items-center gap-1.5">
-                        <Layers className="w-3.5 h-3.5 text-black" /> Product Category *
-                      </label>
-                      <select
-                        {...register('productCategory')}
-                        className="w-full px-4 py-3 rounded-xl glass-panel bg-gray-50 text-gray-900 focus:outline-none focus:border-black transition-colors text-sm border border-gray-200"
-                      >
-                        {(categories.length > 0 ? categories : PRODUCT_CATEGORIES).map((p) => (
-                          <option key={p.id} value={p.title} className="bg-white text-gray-900">
-                            {p.title}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="text-xs uppercase tracking-widest text-gray-700 font-semibold mb-2 flex items-center gap-1.5">
-                      <MessageSquare className="w-3.5 h-3.5 text-black" /> Project Requirements *
+                    <label className="text-xs uppercase tracking-wider text-gray-700 font-semibold mb-1.5 flex items-center gap-1.5">
+                      <User className="w-3.5 h-3.5 text-black" /> Full Name *
                     </label>
-                    <textarea
-                      {...register('message')}
-                      rows={4}
-                      placeholder="Tell us about your requirements, such as slab thickness, tile dimensions, quantity, or project size..."
-                      className="w-full px-4 py-3 rounded-xl glass-panel bg-gray-50 text-gray-900 focus:outline-none focus:border-black transition-colors text-sm border border-gray-200 resize-none"
+                    <input
+                      {...register('name')}
+                      placeholder="Arun Kumar"
+                      autoComplete="off"
+                      className="w-full px-4 py-3 rounded-xl glass-panel bg-gray-50 text-gray-900 focus:outline-none focus:border-black transition-colors text-sm border border-gray-200"
                     />
-                    {errors.message && (
-                      <span className="text-xs text-red-500 mt-1 block">{errors.message.message}</span>
+                    {errors.name && (
+                      <span className="text-xs text-red-500 mt-1 block">{errors.name.message}</span>
                     )}
                   </div>
 
-                  <MagneticButton
-                    type="submit"
-                    variant="primary"
-                    size="lg"
-                    disabled={isSubmitting}
-                    className="w-full bg-black text-white hover:bg-gray-800"
-                  >
-                    <span>{isSubmitting ? 'Submitting...' : 'Send Inquiry'}</span>
-                    <Send className="w-4 h-4" />
-                  </MagneticButton>
-                </form>
-              )}
-            </GlassCard>
-          </motion.div>
+                  <div>
+                    <label className="text-xs uppercase tracking-wider text-gray-700 font-semibold mb-1.5 flex items-center gap-1.5">
+                      <Phone className="w-3.5 h-3.5 text-black" /> Mobile Number *
+                    </label>
+                    <input
+                      {...register('phone')}
+                      placeholder="98765 43210"
+                      autoComplete="off"
+                      className="w-full px-4 py-3 rounded-xl glass-panel bg-gray-50 text-gray-900 focus:outline-none focus:border-black transition-colors text-sm border border-gray-200"
+                    />
+                    {errors.phone && (
+                      <span className="text-xs text-red-500 mt-1 block">{errors.phone.message}</span>
+                    )}
+                  </div>
+                </div>
 
-          {/* Right Column (Col 2) -> Map (STRICTLY HIDDEN initially, reveals AFTER Form moves to position) */}
-          <motion.div
-            style={{
-              opacity: mapOpacity,
-              scale: mapScale,
-              y: mapY,
-              filter: mapFilter,
-              pointerEvents: mapPointerEvents as any,
-            }}
-            className="flex flex-col will-change-transform h-full min-h-[400px] transform-gpu z-10"
-          >
-            <div className="rounded-3xl overflow-hidden border border-gray-200 flex-1 min-h-[400px] relative shadow-xl hover:shadow-2xl transition-shadow duration-300">
-              <iframe
-                title="Sri Senthoor Granites Location"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3918.784428414457!2d78.72304!3d10.8278!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3baaf5671d184713%3A0x63351d3434608c02!2sAriyamangalam%2C%20Tiruchirappalli%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
-                width="100%"
-                height="100%"
-                className="absolute inset-0 w-full h-full"
-                style={{ border: 0, filter: 'grayscale(0.4) contrast(1.1)' }}
-                allowFullScreen={false}
-                loading="lazy"
-              />
-            </div>
-          </motion.div>
-        </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs uppercase tracking-wider text-gray-700 font-semibold mb-1.5 flex items-center gap-1.5">
+                      <Mail className="w-3.5 h-3.5 text-black" /> Email Address
+                    </label>
+                    <input
+                      {...register('email')}
+                      placeholder="arun@example.com"
+                      autoComplete="off"
+                      className="w-full px-4 py-3 rounded-xl glass-panel bg-gray-50 text-gray-900 focus:outline-none focus:border-black transition-colors text-sm border border-gray-200"
+                    />
+                    {errors.email && (
+                      <span className="text-xs text-red-500 mt-1 block">{errors.email.message}</span>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="text-xs uppercase tracking-wider text-gray-700 font-semibold mb-1.5 flex items-center gap-1.5">
+                      <Layers className="w-3.5 h-3.5 text-black" /> Product Category *
+                    </label>
+                    <select
+                      {...register('productCategory')}
+                      className="w-full px-4 py-3 rounded-xl glass-panel bg-gray-50 text-gray-900 focus:outline-none focus:border-black transition-colors text-sm border border-gray-200"
+                    >
+                      {(categories.length > 0 ? categories : PRODUCT_CATEGORIES).map((p) => (
+                        <option key={p.id} value={p.title} className="bg-white text-gray-900">
+                          {p.title}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-xs uppercase tracking-wider text-gray-700 font-semibold mb-1.5 flex items-center gap-1.5">
+                    <MessageSquare className="w-3.5 h-3.5 text-black" /> Project Requirements *
+                  </label>
+                  <textarea
+                    {...register('message')}
+                    rows={4}
+                    placeholder="Tell us about your requirements, slab thickness, tile dimensions, or project size..."
+                    className="w-full px-4 py-3 rounded-xl glass-panel bg-gray-50 text-gray-900 focus:outline-none focus:border-black transition-colors text-sm border border-gray-200 resize-none"
+                  />
+                  {errors.message && (
+                    <span className="text-xs text-red-500 mt-1 block">{errors.message.message}</span>
+                  )}
+                </div>
+
+                <MagneticButton
+                  type="submit"
+                  variant="primary"
+                  size="lg"
+                  disabled={isSubmitting}
+                  className="w-full bg-black text-white hover:bg-gray-800 font-extrabold uppercase tracking-widest text-xs py-4 rounded-xl shadow-md cursor-pointer mt-2"
+                >
+                  <span>{isSubmitting ? 'Submitting...' : 'Send Inquiry'}</span>
+                  <Send className="w-4 h-4" />
+                </MagneticButton>
+              </form>
+            )}
+          </GlassCard>
+        </motion.div>
       </div>
     </section>
   );

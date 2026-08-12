@@ -102,19 +102,19 @@ const Stat3DCard: React.FC<Stat3DCardProps> = ({ label, rawValue, index }) => {
       animate={
         isInView
           ? {
-              opacity: 1,
-              y: 0,
-              rotateX: 0,
-              scale: 1,
-              filter: 'blur(0px)',
-            }
+            opacity: 1,
+            y: 0,
+            rotateX: 0,
+            scale: 1,
+            filter: 'blur(0px)',
+          }
           : {
-              opacity: 0,
-              y: 40,
-              rotateX: 20,
-              scale: 0.85,
-              filter: 'blur(10px)',
-            }
+            opacity: 0,
+            y: 40,
+            rotateX: 20,
+            scale: 0.85,
+            filter: 'blur(10px)',
+          }
       }
       transition={{
         duration: 0.8,

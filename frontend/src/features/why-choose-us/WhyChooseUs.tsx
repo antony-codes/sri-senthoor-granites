@@ -56,28 +56,24 @@ const StackingCard: React.FC<CardProps> = ({ reason, index, total, progress }) =
   const endRange = 1;
 
   const scale = useTransform(progress, [startRange, endRange], [1, targetScale]);
-  const opacity = useTransform(progress, [startRange, endRange], [1, 0.8 + index * 0.05]);
+  const opacity = useTransform(progress, [startRange, endRange], [1, 0.85 + index * 0.04]);
 
   return (
-    <div className="sticky top-24 sm:top-28 mb-8 sm:mb-12 flex justify-center">
+    <div className="sticky flex justify-center mb-6 sm:mb-8" style={{ top: `calc(5rem + ${index * 16}px)` }}>
       <motion.div
         style={{
           scale,
           opacity,
-          top: `calc(5.5rem + ${index * 16}px)`,
         }}
-        className="w-full max-w-4xl bg-white border border-gray-200 rounded-3xl p-6 sm:p-10 shadow-xl hover:shadow-2xl transition-all duration-300 relative overflow-hidden group"
+        className="w-full max-w-4xl bg-white/95 backdrop-blur-xl border border-gray-200/90 rounded-3xl p-6 sm:p-8 md:p-10 shadow-2xl hover:shadow-3xl hover:border-gray-300 transition-all duration-300 relative overflow-hidden group"
       >
-        {/* Top Accent Line */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-black" />
-
-        {/* Ambient Subtle Glow Accent */}
-        <div className="absolute -right-16 -bottom-16 w-56 h-56 bg-gray-100 rounded-full blur-3xl opacity-50 pointer-events-none group-hover:opacity-100 transition-opacity" />
+        {/* Ambient Subtle Background Light Glow */}
+        <div className="absolute -right-16 -bottom-16 w-64 h-64 bg-gray-100/70 rounded-full blur-3xl opacity-60 pointer-events-none group-hover:opacity-100 transition-opacity" />
 
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6 sm:gap-8">
           {/* Main Info */}
-          <div className="space-y-4 flex-1">
-            <div className="flex items-center justify-between border-b border-gray-100 pb-4">
+          <div className="space-y-3.5 flex-1">
+            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
               <div className="flex items-center gap-3">
                 <span className="font-sans text-xs sm:text-sm font-extrabold text-black bg-gray-100 px-3 py-1 rounded-full border border-gray-200 shadow-2xs">
                   {reason.number}
@@ -92,7 +88,7 @@ const StackingCard: React.FC<CardProps> = ({ reason, index, total, progress }) =
               </span>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <h3 className="font-sans text-xl sm:text-2xl font-bold text-gray-900 flex items-center gap-2 group-hover:text-black transition-colors">
                 <span>{reason.title}</span>
                 <ArrowUpRight className="w-5 h-5 text-gray-400 group-hover:text-black transition-colors opacity-0 group-hover:opacity-100 transform translate-y-1 group-hover:translate-y-0" />
@@ -103,9 +99,9 @@ const StackingCard: React.FC<CardProps> = ({ reason, index, total, progress }) =
             </div>
 
             {/* Checkpoints */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1.5">
               {reason.points.map((pt) => (
-                <div key={pt} className="flex items-center gap-2 text-xs font-semibold text-gray-800 bg-gray-50/80 p-2.5 rounded-xl border border-gray-100">
+                <div key={pt} className="flex items-center gap-2 text-xs font-semibold text-gray-800 bg-gray-50/90 p-2.5 rounded-xl border border-gray-200/60 shadow-2xs">
                   <CheckCircle2 className="w-4 h-4 text-black shrink-0" />
                   <span className="truncate">{pt}</span>
                 </div>
@@ -127,25 +123,28 @@ const StackingCard: React.FC<CardProps> = ({ reason, index, total, progress }) =
 
 export const WhyChooseUs: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // Trigger scroll progress smoothly while heading remains aligned & visible in viewport
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ['start start', 'end end'],
+    offset: ['start 70%', 'end end'],
   });
 
   return (
     <section
       id="why-choose-us"
-      className="py-14 sm:py-20 relative bg-white text-gray-900 font-sans border-t border-gray-100"
+      className="pt-10 sm:pt-12 pb-12 sm:pb-16 relative bg-white text-gray-900 font-sans border-t border-gray-100"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <SectionHeader
           title="The Sri Senthoor"
           highlightTitle="Standard"
           subtitle="Exceptional materials, refined finishes, and a commitment to every detail."
+          className="mb-4 sm:mb-6"
         />
 
-        {/* Smooth Scroll Stacking Cards Deck */}
-        <div ref={containerRef} className="relative pb-16">
+        {/* Smooth Scroll Stacking Cards Deck Container */}
+        <div ref={containerRef} className="relative pt-2 pb-10">
           {REASONS.map((reason, idx) => (
             <StackingCard
               key={reason.number}

@@ -191,11 +191,10 @@ export const Hero: React.FC = () => {
                   <button
                     key={idx}
                     onClick={() => setCurrentSlide(idx)}
-                    className={`transition-all duration-300 rounded-full cursor-pointer ${
-                      currentSlide === idx
+                    className={`transition-all duration-300 rounded-full cursor-pointer ${currentSlide === idx
                         ? 'w-6 h-2 bg-white'
                         : 'w-2 h-2 bg-white/40 hover:bg-white/70'
-                    }`}
+                      }`}
                   />
                 ))}
               </div>
