@@ -547,10 +547,16 @@ export const submitInquiryApi = async (inquiryData: {
 
 export const updateInquiryStatusApi = async (id: string, status: string): Promise<IInquiry> => {
   const res = await fetch(`${API_BASE}/inquiries/${id}/status`, {
-    method: 'PUT',
+    method: 'PATCH',
     headers: getHeaders(),
     body: JSON.stringify({ status }),
   });
+
+  const contentType = res.headers.get('content-type') || '';
+  if (!res.ok || !contentType.includes('application/json')) {
+    throw new Error(`Failed to update inquiry status (${res.status} ${res.statusText})`);
+  }
+
   const data = await res.json();
   if (!data.success) throw new Error(data.message || 'Failed to update inquiry status');
   return data.data;

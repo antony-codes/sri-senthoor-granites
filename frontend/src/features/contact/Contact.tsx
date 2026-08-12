@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { motion } from 'framer-motion';
-import { Phone, MapPin, Clock, Send, CheckCircle2, User, Mail, MessageSquare, Layers } from 'lucide-react';
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
+import { Phone, Send, CheckCircle2, User, Mail, MessageSquare, Layers } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { SectionHeader } from '@/components/common/SectionHeader';
 import { GlassCard } from '@/components/common/GlassCard';
@@ -26,10 +26,51 @@ type ContactFormData = z.infer<typeof contactSchema>;
 export const Contact: React.FC = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [categories, setCategories] = useState<ICategory[]>([]);
+  const [isLargeScreen, setIsLargeScreen] = useState(false);
+  const sectionRef = useRef<HTMLDivElement>(null);
 
-  React.useEffect(() => {
-    fetchCategories().then((cats) => setCategories(cats)).catch(() => {});
+  useEffect(() => {
+    fetchCategories().then((cats) => setCategories(cats)).catch(() => { });
+
+    const checkScreen = () => setIsLargeScreen(window.innerWidth >= 1024);
+    checkScreen();
+    window.addEventListener('resize', checkScreen);
+    return () => window.removeEventListener('resize', checkScreen);
   }, []);
+
+  // Continuous scroll tracking for the sequential Contact reveal
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start 85%', 'end 95%'],
+  });
+
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 90,
+    damping: 22,
+    restDelta: 0.001,
+  });
+
+  // STAGE 1 (0 -> 0.35): Only Contact Form is visible, centered in the section container
+  // STAGE 2 (0.35 -> 0.70): Contact Form glides left (0%), Map reveals in right column (100% opacity)
+  // STAGE 3 (0.70 -> 1.0): Both stay 100% fixed & settled, continuing to Footer naturally
+
+  const formX = useTransform(
+    smoothProgress,
+    [0, 0.35, 0.7, 1],
+    [isLargeScreen ? '50%' : '0%', isLargeScreen ? '50%' : '0%', '0%', '0%']
+  );
+  const formY = useTransform(smoothProgress, [0, 0.35, 0.7, 1], [45, 0, 0, 0]);
+  const formScale = useTransform(smoothProgress, [0, 0.35, 0.7, 1], [0.86, 1, 1, 1]);
+  const formRotateX = useTransform(smoothProgress, [0, 0.35, 0.7, 1], [10, 0, 0, 0]);
+  const formOpacity = useTransform(smoothProgress, [0, 0.15, 0.35, 1], [0, 1, 1, 1]);
+  const formFilter = useTransform(smoothProgress, [0, 0.35, 0.7, 1], ['blur(10px)', 'blur(0px)', 'blur(0px)', 'blur(0px)']);
+
+  // Map: 100% HIDDEN during Stage 1 (progress 0 -> 0.35), reveals in Stage 2 (0.35 -> 0.70), settles in Stage 3
+  const mapOpacity = useTransform(smoothProgress, [0, 0.35, 0.7, 1], [0, 0, 1, 1]);
+  const mapScale = useTransform(smoothProgress, [0, 0.35, 0.7, 1], [0.88, 0.88, 1, 1]);
+  const mapY = useTransform(smoothProgress, [0, 0.35, 0.7, 1], [40, 40, 0, 0]);
+  const mapFilter = useTransform(smoothProgress, [0, 0.35, 0.7, 1], ['blur(10px)', 'blur(10px)', 'blur(0px)', 'blur(0px)']);
+  const mapPointerEvents = useTransform(smoothProgress, (val) => (val > 0.35 ? 'auto' : 'none'));
 
   const {
     register,
@@ -68,47 +109,33 @@ export const Contact: React.FC = () => {
   };
 
   return (
-    <section id="contact" className="py-14 sm:py-20 relative bg-white text-gray-900 transition-colors">
+    <section
+      ref={sectionRef}
+      id="contact"
+      className="py-14 sm:py-20 relative bg-white text-gray-900 transition-colors overflow-hidden perspective-1000"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <SectionHeader
           title="Let’s Build Together."
-          // highlightTitle="Sri Senthoor Granites"
-          subtitle="Speak directly with founder Arshath or our stone specialists for personalized recommendations, custom quotations, and project enquiries."
+          subtitle={`Speak directly with founder ${COMPANY_INFO.founder} or our stone specialists for personalized recommendations, custom quotations, and project enquiries.`}
         />
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-15 items-stretch">
-          {/* Left Side - Showroom Info & Direct Phone Links */}
+        {/* 2-Column Grid (Left: Contact Form, Right: Map) */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-stretch relative">
+          {/* Left Column (Col 1) -> Contact Form (Reveals FIRST in section center, then glides into Left Column) */}
           <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            className="flex flex-col will-change-transform h-full min-h-[200px]"
+            style={{
+              x: formX,
+              y: formY,
+              scale: formScale,
+              rotateX: formRotateX,
+              opacity: formOpacity,
+              filter: formFilter,
+              transformStyle: 'preserve-3d',
+            }}
+            className="will-change-transform h-full transform-gpu z-20"
           >
-            {/* Embedded Google Map Frame — stretches to match form height */}
-            <div className="rounded-3xl overflow-hidden border border-gray-200 flex-1 min-h-[400px] relative">
-              <iframe
-                title="Sri Senthoor Granites Location"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3918.784428414457!2d78.72304!3d10.8278!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3baaf5671d184713%3A0x63351d3434608c02!2sAriyamangalam%2C%20Tiruchirappalli%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
-                width="100%"
-                height="100%"
-                className="absolute inset-0 w-full h-full"
-                style={{ border: 0, filter: 'grayscale(0.4) contrast(1.1)' }}
-                allowFullScreen={false}
-                loading="lazy"
-              />
-            </div>
-          </motion.div>
-
-          {/* Right Side - Interactive Contact Form */}
-          <motion.div
-            initial={{ opacity: 0, y: 40, scale: 0.98 }}
-            whileInView={{ opacity: 1, y: 0, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
-            className="will-change-transform h-full"
-          >
-            <GlassCard hoverEffect={false} className="p-8 sm:p-10 border-gray-200 relative">
+            <GlassCard hoverEffect={false} className="p-8 sm:p-10 border-gray-200 relative shadow-xl hover:shadow-2xl transition-shadow duration-300">
               {isSubmitted ? (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
@@ -120,8 +147,7 @@ export const Contact: React.FC = () => {
                   </div>
                   <h3 className="font-sans text-3xl font-bold text-gray-900">Inquiry Received</h3>
                   <p className="text-gray-600 font-sans max-w-md">
-                    Thank you for reaching out to Sri Senthoor Granites.
-Our team will review your requirements and get in touch with you shortly.
+                    Thank you for reaching out to Sri Senthoor Granites. Our team will review your requirements and get in touch with you shortly.
                   </p>
                   <MagneticButton
                     variant="outline"
@@ -229,6 +255,31 @@ Our team will review your requirements and get in touch with you shortly.
                 </form>
               )}
             </GlassCard>
+          </motion.div>
+
+          {/* Right Column (Col 2) -> Map (STRICTLY HIDDEN initially, reveals AFTER Form moves to position) */}
+          <motion.div
+            style={{
+              opacity: mapOpacity,
+              scale: mapScale,
+              y: mapY,
+              filter: mapFilter,
+              pointerEvents: mapPointerEvents as any,
+            }}
+            className="flex flex-col will-change-transform h-full min-h-[400px] transform-gpu z-10"
+          >
+            <div className="rounded-3xl overflow-hidden border border-gray-200 flex-1 min-h-[400px] relative shadow-xl hover:shadow-2xl transition-shadow duration-300">
+              <iframe
+                title="Sri Senthoor Granites Location"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3918.784428414457!2d78.72304!3d10.8278!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3baaf5671d184713%3A0x63351d3434608c02!2sAriyamangalam%2C%20Tiruchirappalli%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+                width="100%"
+                height="100%"
+                className="absolute inset-0 w-full h-full"
+                style={{ border: 0, filter: 'grayscale(0.4) contrast(1.1)' }}
+                allowFullScreen={false}
+                loading="lazy"
+              />
+            </div>
           </motion.div>
         </div>
       </div>

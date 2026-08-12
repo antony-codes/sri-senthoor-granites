@@ -55,9 +55,6 @@ export const DashboardLogin: React.FC<DashboardLoginProps> = ({ onLoginSuccess, 
               <span className="font-sans text-xl font-bold tracking-tight text-white">
                 Sri Senthoor Granites
               </span>
-              <span className="text-[10px] uppercase tracking-widest text-gray-300 font-semibold">
-                Owner Management Portal
-              </span>
             </div>
           </div>
         </div>

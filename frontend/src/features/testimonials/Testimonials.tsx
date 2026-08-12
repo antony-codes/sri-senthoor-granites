@@ -51,7 +51,13 @@ export const Testimonials: React.FC = () => {
       {loading && testimonials.length === 0 ? (
         <div className="py-10 text-center text-xs text-gray-500 font-sans">Loading client endorsements...</div>
       ) : (
-        <div className="relative w-full overflow-hidden py-2">
+        <motion.div
+          initial={{ opacity: 0, y: 35, scale: 0.95, rotateX: 6 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1, rotateX: 0 }}
+          viewport={{ once: true, margin: '-40px' }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="relative w-full overflow-hidden py-2 perspective-1000 transform-gpu"
+        >
           <div className="absolute top-0 bottom-0 left-0 w-12 sm:w-28 bg-gradient-to-r from-white via-white/80 to-transparent z-10 pointer-events-none" />
           <div className="absolute top-0 bottom-0 right-0 w-12 sm:w-28 bg-gradient-to-l from-white via-white/80 to-transparent z-10 pointer-events-none" />
 
@@ -120,7 +126,7 @@ export const Testimonials: React.FC = () => {
               })}
             </motion.div>
           </div>
-        </div>
+        </motion.div>
       )}
     </section>
   );

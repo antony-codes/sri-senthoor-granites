@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence, useScroll, useTransform, useSpring } from 'framer-motion';
 import { Layers, Grid, Square, Bath, Droplets, X, Eye, Check, Filter, ArrowUpRight } from 'lucide-react';
 import { SectionHeader } from '@/components/common/SectionHeader';
 import { IProduct, ICategory } from '@/types';
@@ -29,6 +29,21 @@ export const Products: React.FC = () => {
   const [activeSubCategory, setActiveSubCategory] = useState<string>('all');
   const [selectedProduct, setSelectedProduct] = useState<IProduct | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const sectionRef = useRef<HTMLDivElement>(null);
+
+  // Real-time continuous scroll-driven 3D motion tracking
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start end', 'end start'],
+  });
+
+  const smoothProgress = useSpring(scrollYProgress, { stiffness: 90, damping: 22 });
+
+  // 3D Transforms mapped continuously to scroll position
+  const gridRotateX = useTransform(smoothProgress, [0, 0.4, 0.9], [12, 0, -8]);
+  const gridScale = useTransform(smoothProgress, [0, 0.4, 0.9], [0.92, 1, 0.95]);
+  const gridY = useTransform(smoothProgress, [0, 0.4, 0.9], [50, 0, -25]);
 
   const handleCategorySelect = (catId: string) => {
     setActiveCategory(catId);
@@ -68,7 +83,11 @@ export const Products: React.FC = () => {
   const currentCategoryObj = categories.find((c) => c.id === activeCategory);
 
   return (
-    <section id="products" className="py-12 sm:py-16 relative bg-white text-gray-900 font-sans border-t border-gray-100">
+    <section
+      ref={sectionRef}
+      id="products"
+      className="py-12 sm:py-16 relative bg-white text-gray-900 font-sans border-t border-gray-100 overflow-hidden perspective-1000"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <SectionHeader
           title="Architectural Stone"
@@ -108,9 +127,17 @@ export const Products: React.FC = () => {
           })}
         </div>
 
-        {/* VIEW 1: BENTO SHOWCASE GRID (When activeCategory === 'all') */}
+        {/* VIEW 1: BENTO SHOWCASE GRID (Scroll-Driven 3D Monolith Stage) */}
         {activeCategory === 'all' && (
-          <div className="space-y-10 font-sans">
+          <motion.div
+            style={{
+              rotateX: gridRotateX,
+              scale: gridScale,
+              y: gridY,
+              transformStyle: 'preserve-3d',
+            }}
+            className="space-y-10 font-sans transform-gpu"
+          >
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {categories.map((cat, idx) => {
                 const bgImg = cat.image || CATEGORY_IMAGES[cat.id] || CATEGORY_IMAGES['granites'];
@@ -120,12 +147,14 @@ export const Products: React.FC = () => {
                 return (
                   <motion.div
                     key={cat.id}
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.4, delay: idx * 0.08 }}
-                    whileHover={{ y: -4 }}
+                    initial={{ opacity: 0, y: 35 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6, delay: idx * 0.08 }}
+                    whileHover={{ y: -8, scale: 1.02 }}
+                    style={{ transformStyle: 'preserve-3d' }}
                     onClick={() => handleCategorySelect(cat.id)}
-                    className={`relative rounded-3xl overflow-hidden group cursor-pointer border border-gray-200 hover:border-black transition-all duration-300 shadow-sm hover:shadow-xl bg-black flex flex-col justify-between ${
+                    className={`relative rounded-3xl overflow-hidden group cursor-pointer border border-gray-200 hover:border-black transition-all duration-500 shadow-sm hover:shadow-2xl bg-black flex flex-col justify-between transform-gpu ${
                       isHero
                         ? 'md:col-span-2 lg:col-span-2 min-h-[340px] sm:min-h-[380px] p-6 sm:p-8'
                         : 'min-h-[300px] sm:min-h-[340px] p-6 sm:p-8'
@@ -134,13 +163,13 @@ export const Products: React.FC = () => {
                     <img
                       src={bgImg}
                       alt={cat.title}
-                      className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-75 group-hover:scale-105 transition-all duration-700 ease-out"
+                      className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-75 group-hover:scale-106 transition-all duration-700 ease-out"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
 
-                    <div className="relative z-10 flex items-center justify-between">
+                    <div style={{ transform: 'translateZ(30px)' }} className="relative z-10 flex items-center justify-between">
                       <div className="flex items-center gap-2.5">
-                        <span className="font-sans text-[11px] font-bold text-white bg-black/70 px-2.5 py-0.5 rounded-full border border-white/20">
+                        <span className="font-sans text-[11px] font-bold text-white bg-black/70 px-2.5 py-0.5 rounded-full border border-white/20 shadow-sm">
                           {formattedIndex}
                         </span>
                         <span className="text-[10px] uppercase tracking-wider font-bold text-gray-300 hidden sm:inline">
@@ -148,12 +177,12 @@ export const Products: React.FC = () => {
                         </span>
                       </div>
 
-                      <div className="w-8 h-8 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white group-hover:bg-white group-hover:text-black transition-colors">
+                      <div className="w-8 h-8 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white group-hover:bg-white group-hover:text-black transition-all duration-300">
                         <ArrowUpRight className="w-4 h-4" />
                       </div>
                     </div>
 
-                    <div className="relative z-10 space-y-2 pt-8">
+                    <div style={{ transform: 'translateZ(45px)' }} className="relative z-10 space-y-2 pt-8">
                       <h3 className={`font-sans font-bold text-white group-hover:text-gray-200 transition-colors ${
                         isHero ? 'text-2xl sm:text-4xl' : 'text-xl sm:text-2xl'
                       }`}>
@@ -173,7 +202,7 @@ export const Products: React.FC = () => {
                 );
               })}
             </div>
-          </div>
+          </motion.div>
         )}
 
         {/* VIEW 2: DEDICATED CATEGORY PRODUCT GRID */}
@@ -229,51 +258,61 @@ export const Products: React.FC = () => {
               </div>
             )}
 
-            {/* PRODUCT CARDS GRID */}
+            {/* PRODUCT CARDS GRID (Scroll-Driven 3D Spatial Grid) */}
             {loading ? (
               <div className="py-16 text-center text-xs text-gray-500 font-sans">Loading category products...</div>
             ) : products.length === 0 ? (
               <div className="py-16 text-center text-xs text-gray-500 font-sans">No products available in this category.</div>
             ) : (
-              <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+              <motion.div
+                style={{
+                  rotateX: gridRotateX,
+                  scale: gridScale,
+                  y: gridY,
+                  transformStyle: 'preserve-3d',
+                }}
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 transform-gpu"
+              >
                 <AnimatePresence>
-                  {products.map((product) => (
+                  {products.map((product, pIdx) => (
                     <motion.div
                       key={product.id || product._id}
                       layout
-                      initial={{ opacity: 0, scale: 0.96 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.96 }}
-                      transition={{ duration: 0.25 }}
+                      initial={{ opacity: 0, y: 25, scale: 0.94 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.94 }}
+                      transition={{ duration: 0.45, delay: (pIdx % 4) * 0.05 }}
+                      whileHover={{ y: -8, scale: 1.02 }}
+                      style={{ transformStyle: 'preserve-3d' }}
                       onClick={() => setSelectedProduct(product)}
-                      className="bg-white rounded-2xl overflow-hidden flex flex-col group border border-gray-200 hover:border-black transition-all shadow-sm hover:shadow-md cursor-pointer"
+                      className="bg-white rounded-2xl overflow-hidden flex flex-col group border border-gray-200 hover:border-black transition-all duration-300 shadow-sm hover:shadow-xl cursor-pointer transform-gpu"
                     >
                       <div className="relative h-44 overflow-hidden bg-gray-100 shrink-0">
                         <img
                           src={product.image}
                           alt={product.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          className="w-full h-full object-cover group-hover:scale-106 transition-transform duration-600 ease-out"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-40" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-40 group-hover:opacity-60 transition-opacity" />
 
                         {product.subCategory && (
-                          <div className="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-full text-[9px] uppercase font-bold tracking-wider bg-black/80 text-white backdrop-blur-sm">
+                          <div style={{ transform: 'translateZ(20px)' }} className="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-full text-[9px] uppercase font-bold tracking-wider bg-black/80 text-white backdrop-blur-sm shadow-sm">
                             {product.subCategory}
                           </div>
                         )}
 
-                        <div className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase bg-green-600 text-white flex items-center gap-1">
+                        <div style={{ transform: 'translateZ(20px)' }} className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase bg-green-600 text-white flex items-center gap-1 shadow-sm">
                           <Check className="w-2.5 h-2.5" />
                           <span>In Stock</span>
                         </div>
                       </div>
 
-                      <div className="p-4 flex flex-col flex-grow justify-between space-y-3 font-sans">
+                      <div style={{ transform: 'translateZ(25px)' }} className="p-4 flex flex-col flex-grow justify-between space-y-3 font-sans relative">
                         <div className="space-y-1">
                           <span className="text-[10px] uppercase tracking-wider text-gray-600 font-bold block truncate">
                             {product.subCategory || product.category}
                           </span>
-                          <h3 className="font-sans text-base font-bold text-gray-900 line-clamp-1">
+                          <h3 className="font-sans text-base font-bold text-gray-900 line-clamp-1 group-hover:text-black transition-colors">
                             {product.title}
                           </h3>
                         </div>
@@ -289,7 +328,7 @@ export const Products: React.FC = () => {
                               e.stopPropagation();
                               setSelectedProduct(product);
                             }}
-                            className="px-3 py-1.5 bg-black text-white font-bold text-[10px] uppercase tracking-wider rounded-lg hover:bg-gray-800 transition-all flex items-center gap-1 cursor-pointer"
+                            className="px-3 py-1.5 bg-black text-white font-bold text-[10px] uppercase tracking-wider rounded-lg hover:bg-gray-800 transition-all flex items-center gap-1 cursor-pointer shadow-sm"
                           >
                             <Eye className="w-3 h-3" />
                             <span>Details</span>

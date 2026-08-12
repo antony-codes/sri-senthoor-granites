@@ -87,7 +87,7 @@ export const requirePermission = (permission: string) => {
     }
 
     const userRole = req.user.role || 'staff';
-    
+
     // Super Admin has full unrestricted access
     if (userRole === 'super_admin') {
       return next();

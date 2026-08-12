@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { ArrowUp, Phone, MapPin, Clock, Award, Square, Lock } from 'lucide-react';
 import { COMPANY_INFO } from '@/constants/company';
 
@@ -8,7 +9,13 @@ export const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="relative bg-gray-50 text-gray-800 border-t border-gray-200 pt-12 pb-8 overflow-hidden font-sans">
+    <motion.footer
+      initial={{ opacity: 0, y: 30, rotateX: 4 }}
+      whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
+      viewport={{ once: true, margin: '-20px' }}
+      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+      className="relative bg-gray-50 text-gray-800 border-t border-gray-200 pt-12 pb-8 overflow-hidden font-sans perspective-1000 transform-gpu"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 pb-10 border-b border-gray-200">
           {/* Col 1: Brand Info */}
@@ -90,6 +97,6 @@ export const Footer: React.FC = () => {
           </button>
         </div>
       </div>
-    </footer>
+    </motion.footer>
   );
 };

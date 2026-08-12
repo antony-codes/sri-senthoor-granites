@@ -125,13 +125,17 @@ export const updateInquiryStatus = async (req: Request, res: Response) => {
     const { status } = req.body;
 
     try {
-      const updated = await Inquiry.findByIdAndUpdate(id, { status }, { new: true });
+      const updated = await Inquiry.findOneAndUpdate(
+        { $or: [{ _id: id }, { id }] },
+        { status },
+        { new: true }
+      );
       if (updated) return res.json({ success: true, data: updated });
     } catch {
-      // Fallback
+      // Fallback to memory
     }
 
-    const idx = memoryInquiries.findIndex(i => i._id === id);
+    const idx = memoryInquiries.findIndex((i) => i._id === id || i.id === id);
     if (idx !== -1) {
       memoryInquiries[idx].status = status;
       return res.json({ success: true, data: memoryInquiries[idx] });

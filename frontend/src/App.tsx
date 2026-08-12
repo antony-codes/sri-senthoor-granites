@@ -113,7 +113,15 @@ export const App: React.FC = () => {
 
         {/* Luxury Cinematic Loader */}
         <AnimatePresence mode="wait">
-          {isLoading && <LuxuryLoader key="loader" onComplete={() => setIsLoading(false)} />}
+          {isLoading && (
+            <LuxuryLoader
+              key="loader"
+              onComplete={() => {
+                setIsLoading(false);
+                window.scrollTo(0, 0);
+              }}
+            />
+          )}
         </AnimatePresence>
 
         {/* Main Public Website */}

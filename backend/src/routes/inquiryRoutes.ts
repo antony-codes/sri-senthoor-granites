@@ -7,5 +7,6 @@ const router = Router();
 router.post('/', createInquiry);
 router.get('/', protect, getInquiries);
 router.patch('/:id/status', protect, updateInquiryStatus);
+router.put('/:id/status', protect, updateInquiryStatus);
 
 export default router;
