@@ -16,7 +16,6 @@ import {
   History,
   User,
   ChevronDown,
-  Settings,
   ShieldCheck,
 } from 'lucide-react';
 import { removeAuthToken, getStoredUser, fetchInquiriesApi, fetchMyProfileApi } from '@/services/api';
@@ -27,6 +26,7 @@ import { InquiriesManagement } from './InquiriesManagement';
 import { UserManagement } from './UserManagement';
 import { AuditLogManagement } from './AuditLogManagement';
 import { UserProfileModal } from './UserProfileModal';
+import { NotFound } from '../not-found/NotFound';
 import { IUser } from '@/types';
 
 interface DashboardLayoutProps {
@@ -37,14 +37,15 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ onLogout }) =>
   const location = useLocation();
   const navigate = useNavigate();
 
-  const getActiveTab = (): 'overview' | 'categories' | 'products' | 'inquiries' | 'users' | 'audit' => {
-    const path = location.pathname.toLowerCase();
-    if (path.includes('/products')) return 'products';
-    if (path.includes('/categories')) return 'categories';
-    if (path.includes('/inquiries')) return 'inquiries';
-    if (path.includes('/users')) return 'users';
-    if (path.includes('/audit') || path.includes('/settings')) return 'audit';
-    return 'overview';
+  const getActiveTab = (): 'overview' | 'categories' | 'products' | 'inquiries' | 'users' | 'audit' | 'not_found' => {
+    const path = location.pathname.toLowerCase().replace(/\/$/, '');
+    if (path === '/dashboard') return 'overview';
+    if (path.endsWith('/products')) return 'products';
+    if (path.endsWith('/categories')) return 'categories';
+    if (path.endsWith('/inquiries')) return 'inquiries';
+    if (path.endsWith('/users')) return 'users';
+    if (path.endsWith('/audit') || path.endsWith('/settings')) return 'audit';
+    return 'not_found';
   };
 
   const activeTab = getActiveTab();
@@ -239,7 +240,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ onLogout }) =>
             </button>
             <div>
               <span className="text-xs uppercase font-extrabold tracking-widest text-black block">
-                {activeTab}
+                {activeTab === 'not_found' ? 'Page Not Found' : activeTab}
               </span>
               <span className="text-[11px] text-gray-500 hidden sm:block">
                 Sri Senthoor Granites Control Panel
@@ -335,6 +336,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ onLogout }) =>
           {activeTab === 'inquiries' && <InquiriesManagement />}
           {activeTab === 'users' && <UserManagement />}
           {activeTab === 'audit' && <AuditLogManagement />}
+          {activeTab === 'not_found' && <NotFound />}
         </main>
       </div>
 
