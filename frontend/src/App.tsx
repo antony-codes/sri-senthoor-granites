@@ -73,14 +73,9 @@ const PublicWebsite: React.FC = () => {
   );
 };
 
-// Separate Dedicated Login Route Component (/login)
+// Dedicated Login Route Component (/login) - Public Access
 const LoginRoute: React.FC = () => {
   const navigate = useNavigate();
-  const token = getAuthToken();
-
-  if (token) {
-    return <Navigate to="/dashboard" replace />;
-  }
 
   return (
     <div className="min-h-screen selection:bg-black selection:text-white">
