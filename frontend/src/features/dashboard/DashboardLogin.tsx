@@ -160,9 +160,9 @@ export const DashboardLogin: React.FC<DashboardLoginProps> = ({ onLoginSuccess, 
             >
               <div className="flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-black" />
-                <span className="text-gray-700 font-medium">Fill Super Admin Credentials</span>
+                <span className="text-gray-700 font-medium">Auto-fill Default Admin Credentials</span>
               </div>
-              <span className="text-[10px] uppercase font-bold text-black group-hover:underline">Use Demo</span>
+              <span className="text-[10px] uppercase font-bold text-black group-hover:underline">Fill</span>
             </div>
 
             {/* Submit Button */}

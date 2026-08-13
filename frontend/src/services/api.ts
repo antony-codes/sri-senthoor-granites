@@ -1,7 +1,9 @@
 import { ICategory, IProduct, IInquiry, IUser, IAuditLog } from '@/types';
 import { PRODUCT_CATEGORIES as STATIC_CATEGORIES } from '@/constants/company';
 
-const API_BASE = '/api';
+// const API_BASE = '/api';
+
+const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
 export interface IPaginatedResponse<T> {
   data: T[];
@@ -44,36 +46,18 @@ const getHeaders = (isJson = true) => {
 
 // --- AUTH API ---
 export const loginAdmin = async (email: string, password: string): Promise<{ token: string; user: IUser }> => {
-  try {
-    const res = await fetch(`${API_BASE}/auth/login`, {
-      method: 'POST',
-      headers: getHeaders(),
-      body: JSON.stringify({ email, password }),
-    });
-    const data = await res.json();
-    if (!res.ok || !data.success) {
-      throw new Error(data.message || 'Login failed');
-    }
-    setAuthToken(data.token);
-    localStorage.setItem('ssg_admin_user', JSON.stringify(data.user));
-    return data;
-  } catch (err: any) {
-    if (email === 'admin@srisenthoorgranites.com' && password === 'Admin@123456') {
-      const mockUser: IUser = {
-        id: 'admin-1',
-        name: 'Arshath (Founder)',
-        email,
-        role: 'super_admin',
-        permissions: ['all'],
-        isActive: true,
-      };
-      const mockToken = 'mock-jwt-token-sri-senthoor-granites';
-      setAuthToken(mockToken);
-      localStorage.setItem('ssg_admin_user', JSON.stringify(mockUser));
-      return { token: mockToken, user: mockUser };
-    }
-    throw new Error(err.message || 'Authentication error');
+  const res = await fetch(`${API_BASE}/auth/login`, {
+    method: 'POST',
+    headers: getHeaders(),
+    body: JSON.stringify({ email, password }),
+  });
+  const data = await res.json();
+  if (!res.ok || !data.success) {
+    throw new Error(data.message || 'Invalid admin credentials');
   }
+  setAuthToken(data.token);
+  localStorage.setItem('ssg_admin_user', JSON.stringify(data.user));
+  return data;
 };
 
 export const forgotPasswordApi = async (email: string): Promise<{ message: string; resetUrl?: string }> => {
