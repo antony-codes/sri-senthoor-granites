@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowUp, Phone, MapPin, Clock, Award, Square, Lock } from 'lucide-react';
 import { COMPANY_INFO } from '@/constants/company';
@@ -97,12 +98,12 @@ export const Footer: React.FC = () => {
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-500 font-sans">
           <p>© {new Date().getFullYear()} {COMPANY_INFO.name}. All Rights Reserved.</p>
           
-          <a
-            href="/dashboard"
+          <Link
+            to="/login"
             className="tracking-wider uppercase text-[10px] text-gray-400 hover:text-black transition-colors flex items-center gap-1 font-semibold"
           >
             <Lock className="w-3 h-3 text-black" /> Admin Portal
-          </a>
+          </Link>
 
           <button
             onClick={scrollToTop}
