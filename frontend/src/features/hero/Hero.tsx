@@ -5,7 +5,7 @@ import { COMPANY_INFO } from '@/constants/company';
 
 const HERO_SLIDES = [
   {
-    titleLine1: 'Sri Senthoor',
+    titleLine1: 'Arsha',
     titleLine2: 'Granites',
     leftSpec: 'SURFACE INTELLIGENCE · CLASS A CERTIFIED',
     rightSpec: `ZERO FLAW · ZERO COMPROMISE · EST. ${COMPANY_INFO.established}`,
