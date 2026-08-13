@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { HelmetProvider, Helmet } from 'react-helmet-async';
 import { AnimatePresence } from 'framer-motion';
@@ -13,6 +13,7 @@ import { Gallery } from '@/features/gallery/Gallery';
 import { Testimonials } from '@/features/testimonials/Testimonials';
 import { Contact } from '@/features/contact/Contact';
 import { Footer } from '@/features/footer/Footer';
+import { NotFound } from '@/features/not-found/NotFound';
 
 // Dashboard Imports
 import { DashboardLayout } from '@/features/dashboard/DashboardLayout';
@@ -140,7 +141,7 @@ export const App: React.FC = () => {
         <Route path="/login" element={<LoginRoute />} />
         <Route path="/dashboard" element={<DashboardRoute />} />
         <Route path="/dashboard/*" element={<DashboardRoute />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );
