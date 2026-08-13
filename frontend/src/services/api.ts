@@ -14,7 +14,11 @@ export interface IPaginatedResponse<T> {
 }
 
 export const getAuthToken = (): string | null => {
-  return localStorage.getItem('ssg_admin_token');
+  const token = localStorage.getItem('ssg_admin_token');
+  if (!token || token === 'undefined' || token === 'null' || token.trim() === '') {
+    return null;
+  }
+  return token;
 };
 
 export const setAuthToken = (token: string) => {
