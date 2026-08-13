@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
@@ -8,6 +8,7 @@ import confetti from 'canvas-confetti';
 import { SectionHeader } from '@/components/common/SectionHeader';
 import { GlassCard } from '@/components/common/GlassCard';
 import { MagneticButton } from '@/components/common/MagneticButton';
+import { Select } from '@/components/ui/select';
 import { COMPANY_INFO, PRODUCT_CATEGORIES } from '@/constants/company';
 import { submitInquiryApi, fetchCategories } from '@/services/api';
 import { ICategory } from '@/types';
@@ -53,6 +54,7 @@ export const Contact: React.FC = () => {
   const {
     register,
     handleSubmit,
+    control,
     reset,
     formState: { errors, isSubmitting },
   } = useForm<ContactFormData>({
@@ -61,6 +63,11 @@ export const Contact: React.FC = () => {
       productCategory: 'Granites',
     },
   });
+
+  const categoryOptions = (categories.length > 0 ? categories : PRODUCT_CATEGORIES).map((c) => ({
+    label: c.title,
+    value: c.title,
+  }));
 
   const onSubmit = async (data: ContactFormData) => {
     try {
@@ -192,16 +199,21 @@ export const Contact: React.FC = () => {
                     <label className="text-xs uppercase tracking-wider text-gray-700 font-semibold mb-1.5 flex items-center gap-1.5">
                       <Layers className="w-3.5 h-3.5 text-black" /> Product Category *
                     </label>
-                    <select
-                      {...register('productCategory')}
-                      className="w-full px-4 py-3 rounded-xl glass-panel bg-gray-50 text-gray-900 focus:outline-none focus:border-black transition-colors text-sm border border-gray-200"
-                    >
-                      {(categories.length > 0 ? categories : PRODUCT_CATEGORIES).map((p) => (
-                        <option key={p.id} value={p.title} className="bg-white text-gray-900">
-                          {p.title}
-                        </option>
-                      ))}
-                    </select>
+                    <Controller
+                      name="productCategory"
+                      control={control}
+                      render={({ field }) => (
+                        <Select
+                          options={categoryOptions}
+                          value={field.value}
+                          onValueChange={field.onChange}
+                          placeholder="Select product category..."
+                        />
+                      )}
+                    />
+                    {errors.productCategory && (
+                      <span className="text-xs text-red-500 mt-1 block">{errors.productCategory.message}</span>
+                    )}
                   </div>
                 </div>
 

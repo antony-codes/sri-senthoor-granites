@@ -4,14 +4,14 @@ import { MapPin, Navigation, Phone, Clock, ArrowUpRight, Send } from 'lucide-rea
 import { FaWhatsapp } from 'react-icons/fa6';
 import { COMPANY_INFO } from '@/constants/company';
 
-// Minimal LottieFiles "Loading 40 | Paperplane" Animation Integration
+// Minimal LottieFiles "Loading 40 | Paperplane" Animation Integration (Black & White Theme)
 const ExactLottieFilesPaperplane: React.FC = () => {
   return (
     <div className="relative w-full h-[150px] sm:h-[170px] flex items-center justify-center overflow-hidden pointer-events-none">
       <iframe
         src="https://embed.lottiefiles.com/animation/9844"
         title="Loading 40 | Paperplane Lottie Animation"
-        className="w-[220px] h-[220px] sm:w-[240px] sm:h-[240px] border-0 pointer-events-none filter drop-shadow-xs scale-90 sm:scale-95"
+        className="w-[220px] h-[220px] sm:w-[240px] sm:h-[240px] border-0 pointer-events-none filter grayscale contrast-125 brightness-95 opacity-90 scale-90 sm:scale-95"
         loading="eager"
       />
     </div>

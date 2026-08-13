@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
 import {
   History,
-  Search,
   User,
   Clock,
   Package,
@@ -13,15 +11,15 @@ import {
 } from 'lucide-react';
 import { IAuditLog } from '@/types';
 import { fetchAuditLogsApi } from '@/services/api';
-
-import { Pagination } from '@/components/common/Pagination';
+import { DataTable, DataTableColumn } from '@/components/common/DataTable';
+import { Badge } from '@/components/ui/badge';
+import { Select } from '@/components/ui/select';
 
 export const AuditLogManagement: React.FC = () => {
   const [logs, setLogs] = useState<IAuditLog[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [entityFilter, setEntityFilter] = useState('all');
-  const [userFilter, setUserFilter] = useState('all');
 
   // Pagination State
   const [page, setPage] = useState(1);
@@ -32,7 +30,7 @@ export const AuditLogManagement: React.FC = () => {
   const loadAuditLogs = async () => {
     setLoading(true);
     try {
-      const res = await fetchAuditLogsApi(search, entityFilter, userFilter, page, limit);
+      const res = await fetchAuditLogsApi(search, entityFilter, 'all', page, limit);
       setLogs(res.data);
       setTotalCount(res.totalCount);
       setTotalPages(res.totalPages);
@@ -45,7 +43,7 @@ export const AuditLogManagement: React.FC = () => {
 
   useEffect(() => {
     loadAuditLogs();
-  }, [search, entityFilter, userFilter, page, limit]);
+  }, [search, entityFilter, page, limit]);
 
   const getEntityIcon = (entityType: string) => {
     switch (entityType) {
@@ -63,40 +61,96 @@ export const AuditLogManagement: React.FC = () => {
     }
   };
 
-  return (
-    <div className="space-y-8 font-sans">
-      {/* Title & Description */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-200 pb-6">
+  // Reusable DataTable Columns
+  const columns: DataTableColumn<IAuditLog>[] = [
+    {
+      header: '#',
+      headerClassName: 'w-12 text-center',
+      className: 'text-center font-bold text-gray-400',
+      cell: (_, idx) => (page - 1) * limit + idx + 1,
+    },
+    {
+      header: 'System Action & Details',
+      cell: (log) => {
+        const isPriceChange = log.action.toLowerCase().includes('price');
+        return (
+          <div className="flex items-start gap-3">
+            <div className="w-8 h-8 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center shrink-0 shadow-2xs">
+              {getEntityIcon(log.entityType)}
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-bold text-gray-900 block text-xs">{log.action}</span>
+                {isPriceChange && (
+                  <Badge variant="default" className="text-[9px] py-0 px-1.5">
+                    <TrendingUp className="w-2.5 h-2.5" /> Price Update
+                  </Badge>
+                )}
+              </div>
+              <span className="text-gray-500 text-[11px] block">
+                Target Entity: <strong className="text-gray-700 font-semibold">{log.entityType}</strong>
+              </span>
+            </div>
+          </div>
+        );
+      },
+    },
+    {
+      header: 'Performed By',
+      cell: (log) => (
         <div>
-          <h1 className="font-sans text-3xl font-bold text-gray-900 tracking-tight">System Audit Logs</h1>
-          <p className="text-xs text-gray-500 mt-1">Track business operations, price updates, user additions, and system actions.</p>
+          <span className="font-semibold text-gray-900 block">{log.userName}</span>
+          {log.userEmail && <span className="text-gray-500 text-[11px] block">{log.userEmail}</span>}
         </div>
+      ),
+    },
+    {
+      header: 'Timestamp',
+      headerClassName: 'text-right',
+      className: 'text-right font-semibold text-gray-800',
+      cell: (log) => {
+        const formattedDate = new Date(log.createdAt).toLocaleString('en-IN', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true,
+        });
+        return (
+          <span className="inline-flex items-center gap-1 text-[11px] justify-end">
+            <Clock className="w-3.5 h-3.5 text-gray-400" />
+            {formattedDate}
+          </span>
+        );
+      },
+    },
+  ];
 
-        <div className="px-4 py-2 bg-gray-100 rounded-2xl border border-gray-200 text-xs font-bold text-gray-800 flex items-center gap-2">
-          <History className="w-4 h-4 text-black" />
-          <span>Total Recorded Events: {totalCount}</span>
-        </div>
-      </div>
-
-      {/* Filters & Search */}
-      <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-white p-4 rounded-2xl border border-gray-200 shadow-sm">
-        <div className="relative w-full sm:w-96">
-          <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-          <input
-            type="text"
-            placeholder="Search audit actions, user names, or prices..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-gray-50 text-xs rounded-xl border border-gray-200 focus:outline-none focus:border-black text-gray-900 font-sans"
-          />
-        </div>
-
-        <div className="flex items-center gap-3 w-full sm:w-auto overflow-x-auto">
-          {/* Entity Type Filter */}
-          <select
+  return (
+    <div className="space-y-6 font-sans">
+      <DataTable
+        title="System Audit Logs"
+        subtitle="Track business operations, price updates, user additions, and system actions."
+        data={logs}
+        columns={columns}
+        keyExtractor={(log, idx) => log._id || `log-${idx}`}
+        loading={loading}
+        emptyMessage="No audit log entries recorded matching filter query."
+        search={search}
+        onSearchChange={(val) => {
+          setSearch(val);
+          setPage(1);
+        }}
+        searchPlaceholder="Search audit actions, user names..."
+        filters={
+          <Select
             value={entityFilter}
-            onChange={(e) => setEntityFilter(e.target.value)}
-            className="px-3.5 py-2 bg-gray-50 text-xs rounded-xl border border-gray-200 focus:outline-none focus:border-black text-gray-900 font-semibold font-sans"
+            onChange={(e) => {
+              setEntityFilter(e.target.value);
+              setPage(1);
+            }}
+            className="w-44"
           >
             <option value="all">All Entity Types</option>
             <option value="product">Products & Pricing</option>
@@ -104,97 +158,24 @@ export const AuditLogManagement: React.FC = () => {
             <option value="user">User Accounts</option>
             <option value="inquiry">Customer Leads</option>
             <option value="system">System Auth</option>
-          </select>
-        </div>
-      </div>
-
-      {/* Audit Feed List */}
-      <div className="bg-white rounded-3xl border border-gray-200 shadow-sm p-6 sm:p-8 space-y-6">
-        {loading ? (
-          <div className="py-12 text-center text-xs text-gray-500 font-sans">Loading audit history...</div>
-        ) : logs.length === 0 ? (
-          <div className="py-12 text-center text-xs text-gray-500 font-sans">No audit log entries recorded yet.</div>
-        ) : (
-          <div className="space-y-4">
-            {logs.map((log, idx) => {
-              const logId = log._id || `log-${idx}`;
-              const formattedDate = new Date(log.createdAt).toLocaleString('en-IN', {
-                day: '2-digit',
-                month: 'short',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: true,
-              });
-
-              // Check if action involves price change
-              const isPriceChange = log.action.toLowerCase().includes('price');
-
-              return (
-                <motion.div
-                  key={logId}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: Math.min(idx * 0.03, 0.3) }}
-                  className="p-5 rounded-2xl border border-gray-200 hover:border-black bg-gray-50/50 transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 group font-sans"
-                >
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-2xl bg-white border border-gray-200 flex items-center justify-center shrink-0 shadow-sm group-hover:border-black transition-colors">
-                      {getEntityIcon(log.entityType)}
-                    </div>
-
-                    <div className="space-y-1">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="font-sans text-sm font-bold text-gray-900 leading-snug">
-                          {log.action}
-                        </span>
-
-                        {isPriceChange && (
-                          <span className="px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase bg-black text-white flex items-center gap-1">
-                            <TrendingUp className="w-2.5 h-2.5 text-white" /> Price Update
-                          </span>
-                        )}
-                      </div>
-
-                      <div className="flex flex-wrap items-center gap-3 text-[11px] text-gray-500 font-sans">
-                        <span className="font-medium text-gray-700">
-                          Updated by: <strong className="text-gray-900 font-bold">{log.userName}</strong>
-                        </span>
-
-                        {log.userEmail && (
-                          <span className="text-gray-500 font-normal">({log.userEmail})</span>
-                        )}
-
-                        <span className="uppercase text-[9px] font-bold tracking-wider px-2 py-0.5 rounded bg-gray-200 text-gray-800">
-                          {log.entityType}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col items-start sm:items-end text-xs text-gray-500 shrink-0 font-sans">
-                    <span className="flex items-center gap-1.5 text-gray-900 font-semibold">
-                      <Clock className="w-3.5 h-3.5 text-gray-400" />
-                      {formattedDate}
-                    </span>
-                  </div>
-                </motion.div>
-              );
-            })}
+          </Select>
+        }
+        actions={
+          <div className="px-3 py-1.5 bg-gray-100 rounded-xl border border-gray-200 text-xs font-bold text-gray-800 flex items-center gap-2">
+            <History className="w-4 h-4 text-black" />
+            <span>Total Events: {totalCount}</span>
           </div>
-        )}
-        <Pagination
-          currentPage={page}
-          totalPages={totalPages}
-          totalCount={totalCount}
-          limit={limit}
-          onPageChange={setPage}
-          onLimitChange={(l) => {
-            setLimit(l);
-            setPage(1);
-          }}
-        />
-      </div>
+        }
+        currentPage={page}
+        totalPages={totalPages}
+        totalCount={totalCount}
+        limit={limit}
+        onPageChange={setPage}
+        onLimitChange={(l) => {
+          setLimit(l);
+          setPage(1);
+        }}
+      />
     </div>
   );
 };

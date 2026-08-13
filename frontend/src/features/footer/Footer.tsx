@@ -33,7 +33,7 @@ export const Footer: React.FC = () => {
 
             <div className="pt-1 flex items-center gap-1.5 text-[11px] text-black font-semibold uppercase tracking-wider">
               <Award className="w-3.5 h-3.5" />
-              <span>Est. {COMPANY_INFO.established} • Founder: {COMPANY_INFO.founder}</span>
+              <span>Est. {COMPANY_INFO.established}</span>
             </div>
           </div>
 
@@ -49,7 +49,7 @@ export const Footer: React.FC = () => {
             </ul>
           </div>
 
-          {/* Col 3: Contact & Location with Transparent LottieFiles Paperplane Animation */}
+          {/* Col 3: Contact & Location with Black & White LottieFiles Paperplane Animation */}
           <div className="lg:col-span-5 space-y-3 relative">
             <h4 className="font-sans text-xs font-bold text-gray-900 uppercase tracking-wider">
               Showroom Headquarters
@@ -80,12 +80,12 @@ export const Footer: React.FC = () => {
                 </li>
               </ul>
 
-              {/* Seamless Transparent LottieFiles Paperplane Animation (No Card Container) */}
+              {/* Black and White Theme LottieFiles Paperplane Animation */}
               <div className="w-[140px] h-[95px] overflow-hidden bg-transparent shrink-0 flex items-center justify-center pointer-events-none">
                 <iframe
                   src="https://embed.lottiefiles.com/animation/9844"
                   title="Loading 40 | Paperplane Lottie Animation"
-                  className="w-[180px] h-[180px] border-0 pointer-events-none bg-transparent"
+                  className="w-[180px] h-[180px] border-0 pointer-events-none bg-transparent filter grayscale contrast-125 brightness-95 opacity-90"
                   loading="eager"
                 />
               </div>

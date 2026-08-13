@@ -118,9 +118,8 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ onLogout }) =>
     <div className="h-screen w-screen overflow-hidden bg-gray-50 text-gray-900 flex flex-col md:flex-row font-sans selection:bg-black selection:text-white">
       {/* 1. Sidebar - Fixed Navigation */}
       <aside
-        className={`fixed inset-y-0 left-0 z-40 w-64 h-full bg-white border-r border-gray-200 flex flex-col justify-between p-6 shrink-0 transition-transform duration-300 md:static md:translate-x-0 overflow-hidden ${
-          mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
-        }`}
+        className={`fixed inset-y-0 left-0 z-40 w-64 h-full bg-white border-r border-gray-200 flex flex-col justify-between p-6 shrink-0 transition-transform duration-300 md:static md:translate-x-0 overflow-hidden ${mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+          }`}
       >
         <div className="space-y-8">
           {/* Top Brand Emblem */}
@@ -153,9 +152,8 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ onLogout }) =>
                     setActiveTab(item.id as any);
                     setMobileSidebarOpen(false);
                   }}
-                  className={`relative w-full flex items-center justify-between px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer ${
-                    isActive ? 'text-white font-extrabold' : 'text-gray-600 hover:text-black hover:bg-gray-100'
-                  }`}
+                  className={`relative w-full flex items-center justify-between px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer ${isActive ? 'text-white font-extrabold' : 'text-gray-600 hover:text-black hover:bg-gray-100'
+                    }`}
                 >
                   {isActive && (
                     <motion.div
@@ -259,9 +257,8 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ onLogout }) =>
                 </div>
 
                 <ChevronDown
-                  className={`w-4 h-4 text-gray-400 group-hover:text-black transition-transform ${
-                    profileDropdownOpen ? 'rotate-180' : ''
-                  }`}
+                  className={`w-4 h-4 text-gray-400 group-hover:text-black transition-transform ${profileDropdownOpen ? 'rotate-180' : ''
+                    }`}
                 />
               </button>
 
