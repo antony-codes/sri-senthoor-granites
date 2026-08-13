@@ -3,6 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import path from 'path';
+import fs from 'fs';
 
 import authRoutes from './routes/authRoutes';
 import categoryRoutes from './routes/categoryRoutes';
@@ -28,6 +29,12 @@ app.use(morgan('dev'));
 const uploadsPath = path.join(__dirname, '../uploads');
 app.use('/uploads', express.static(uploadsPath));
 
+// Static Frontend Build Directory (if built and co-located)
+const frontendDistPath = path.join(__dirname, '../../frontend/dist');
+if (fs.existsSync(frontendDistPath)) {
+  app.use(express.static(frontendDistPath));
+}
+
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/categories', categoryRoutes);
@@ -47,4 +54,20 @@ app.get('/api/health', (_req, res) => {
   });
 });
 
+// API 404 Fallback - ensures unmatched /api/* requests return 404 JSON, NOT index.html
+app.use('/api/*', (_req, res) => {
+  res.status(404).json({
+    success: false,
+    message: 'API endpoint not found',
+  });
+});
+
+// SPA Fallback - send index.html for non-API frontend routes if serving built static files
+if (fs.existsSync(frontendDistPath)) {
+  app.get('*', (_req, res) => {
+    res.sendFile(path.join(frontendDistPath, 'index.html'));
+  });
+}
+
 export default app;
+
