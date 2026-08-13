@@ -33,10 +33,20 @@ interface DashboardLayoutProps {
   onLogout: () => void;
 }
 
+const getInitialTab = (): 'overview' | 'categories' | 'products' | 'inquiries' | 'users' | 'audit' => {
+  const path = window.location.pathname.toLowerCase();
+  if (path.includes('/products')) return 'products';
+  if (path.includes('/categories')) return 'categories';
+  if (path.includes('/inquiries')) return 'inquiries';
+  if (path.includes('/users')) return 'users';
+  if (path.includes('/audit') || path.includes('/settings')) return 'audit';
+  return 'overview';
+};
+
 export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ onLogout }) => {
   const [activeTab, setActiveTab] = useState<
     'overview' | 'categories' | 'products' | 'inquiries' | 'users' | 'audit'
-  >('overview');
+  >(getInitialTab);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [inquiryBadgeCount, setInquiryBadgeCount] = useState(0);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);

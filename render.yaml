@@ -1,0 +1,21 @@
+services:
+  # Frontend Static Site
+  - type: web
+    name: sri-senthoor-granites-frontend
+    env: static
+    buildCommand: npm run build
+    staticPublishPath: ./frontend/dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+  # Backend Web Service
+  - type: web
+    name: sri-senthoor-granites-backend
+    env: node
+    buildCommand: npm --prefix backend run build
+    startCommand: npm --prefix backend run start
+    envVars:
+      - key: NODE_ENV
+        value: production

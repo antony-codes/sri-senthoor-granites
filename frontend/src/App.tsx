@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { HelmetProvider, Helmet } from 'react-helmet-async';
 import { AnimatePresence } from 'framer-motion';
 import { SmoothScrollProvider } from '@/providers/SmoothScrollProvider';
@@ -20,82 +21,10 @@ import { DashboardForgotPassword } from '@/features/dashboard/DashboardForgotPas
 import { DashboardResetPassword } from '@/features/dashboard/DashboardResetPassword';
 import { getAuthToken } from '@/services/api';
 
-export const App: React.FC = () => {
+// Public Landing Page Component
+const PublicWebsite: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const [currentPath, setCurrentPath] = useState(window.location.pathname);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => !!getAuthToken());
-  const [authMode, setAuthMode] = useState<'login' | 'forgot' | 'reset'>(() => {
-    if (window.location.pathname.includes('/reset-password') || window.location.search.includes('token=')) {
-      return 'reset';
-    }
-    if (window.location.pathname.includes('/forgot-password')) {
-      return 'forgot';
-    }
-    return 'login';
-  });
 
-  useEffect(() => {
-    const handleLocationChange = () => {
-      const path = window.location.pathname;
-      setCurrentPath(path);
-      setIsAuthenticated(!!getAuthToken());
-      if (path.includes('/reset-password') || window.location.search.includes('token=')) {
-        setAuthMode('reset');
-      } else if (path.includes('/forgot-password')) {
-        setAuthMode('forgot');
-      } else {
-        setAuthMode('login');
-      }
-    };
-
-    window.addEventListener('popstate', handleLocationChange);
-    return () => window.removeEventListener('popstate', handleLocationChange);
-  }, []);
-
-  const navigateToPath = (path: string) => {
-    window.history.pushState({}, '', path);
-    setCurrentPath(path.split('?')[0]);
-    if (path.includes('reset-password')) {
-      setAuthMode('reset');
-    } else if (path.includes('forgot-password')) {
-      setAuthMode('forgot');
-    } else {
-      setAuthMode('login');
-    }
-  };
-
-  // Dashboard View Handler
-  if (currentPath.startsWith('/dashboard')) {
-    if (isAuthenticated && authMode === 'login') {
-      return (
-        <div className="min-h-screen selection:bg-black selection:text-white">
-          <DashboardLayout onLogout={() => setIsAuthenticated(false)} />
-        </div>
-      );
-    }
-
-    return (
-      <div className="min-h-screen selection:bg-black selection:text-white">
-        {authMode === 'forgot' ? (
-          <DashboardForgotPassword
-            onBackToLogin={() => navigateToPath('/dashboard')}
-            onNavigateReset={(url) => navigateToPath(url)}
-          />
-        ) : authMode === 'reset' ? (
-          <DashboardResetPassword
-            onSuccessRedirect={() => navigateToPath('/dashboard')}
-          />
-        ) : (
-          <DashboardLogin
-            onLoginSuccess={() => setIsAuthenticated(true)}
-            onForgotPassword={() => navigateToPath('/dashboard/forgot-password')}
-          />
-        )}
-      </div>
-    );
-  }
-
-  // Public Website View
   return (
     <HelmetProvider>
       <SmoothScrollProvider>
@@ -140,6 +69,80 @@ export const App: React.FC = () => {
         </div>
       </SmoothScrollProvider>
     </HelmetProvider>
+  );
+};
+
+// Separate Dedicated Login Route Component (/login)
+const LoginRoute: React.FC = () => {
+  const navigate = useNavigate();
+  const token = getAuthToken();
+
+  if (token) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return (
+    <div className="min-h-screen selection:bg-black selection:text-white">
+      <DashboardLogin
+        onLoginSuccess={() => navigate('/dashboard')}
+        onForgotPassword={() => navigate('/dashboard/forgot-password')}
+      />
+    </div>
+  );
+};
+
+// Protected Dashboard Layout Route Component (/dashboard & /dashboard/*)
+const DashboardRoute: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const token = getAuthToken();
+
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
+
+  // Handle forgot/reset password sub-routes if explicitly navigated to under /dashboard
+  if (location.pathname.includes('/forgot-password')) {
+    return (
+      <div className="min-h-screen selection:bg-black selection:text-white">
+        <DashboardForgotPassword
+          onBackToLogin={() => navigate('/login')}
+          onNavigateReset={(url) => navigate(url)}
+        />
+      </div>
+    );
+  }
+
+  if (location.pathname.includes('/reset-password')) {
+    return (
+      <div className="min-h-screen selection:bg-black selection:text-white">
+        <DashboardResetPassword onSuccessRedirect={() => navigate('/login')} />
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen selection:bg-black selection:text-white">
+      <DashboardLayout
+        onLogout={() => {
+          navigate('/login');
+        }}
+      />
+    </div>
+  );
+};
+
+export const App: React.FC = () => {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<PublicWebsite />} />
+        <Route path="/login" element={<LoginRoute />} />
+        <Route path="/dashboard" element={<DashboardRoute />} />
+        <Route path="/dashboard/*" element={<DashboardRoute />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
   );
 };
 
